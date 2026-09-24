@@ -1,0 +1,130 @@
+@import "tailwindcss";
+@import "@fontsource/fraunces/400.css";
+@import "@fontsource/fraunces/500.css";
+@import "@fontsource/fraunces/600.css";
+@import "@fontsource/fraunces/500-italic.css";
+
+:root {
+  --font-fraunces: "Fraunces", Georgia, serif;
+  --color-ink: #1b1f23;
+  --color-ink-soft: #24292e;
+  --color-paper: #ffffff;
+  --color-panel: #f6f8fa;
+  --color-border: #d0d7de;
+  --color-accent: #1f6feb;
+  --color-accent-soft: #58a6ff;
+  --color-accent-deep: #0b3d91;
+  --color-green: #2ea44f;
+  --color-muted: #6a737d;
+  --color-term: #c9d1d9;
+  --color-term-green: #7ee787;
+
+  --background: var(--color-paper);
+  --foreground: var(--color-ink);
+}
+
+[data-theme="dark"] {
+  --background: var(--color-ink);
+  --foreground: #f0f2f5;
+  --color-panel: #20242b;
+  --color-border: #333a43;
+  --color-muted: #9aa4af;
+}
+
+@theme inline {
+  --color-ink: var(--color-ink);
+  --color-ink-soft: var(--color-ink-soft);
+  --color-paper: var(--color-paper);
+  --color-panel: var(--color-panel);
+  --color-border: var(--color-border);
+  --color-accent: var(--color-accent);
+  --color-accent-soft: var(--color-accent-soft);
+  --color-accent-deep: var(--color-accent-deep);
+  --color-green: var(--color-green);
+  --color-muted: var(--color-muted);
+  --color-term: var(--color-term);
+  --color-term-green: var(--color-term-green);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-fraunces);
+}
+
+* {
+  border-color: var(--color-border);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: white;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 999px;
+}
+
+@keyframes blink-caret {
+  0%, 45% { opacity: 1; }
+  50%, 95% { opacity: 0; }
+  100% { opacity: 1; }
+}
+.caret-blink {
+  animation: blink-caret 1s step-end infinite;
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-14px); }
+}
+.animate-float-slow {
+  animation: float-slow 6s ease-in-out infinite;
+}
+
+@keyframes grid-pan {
+  0% { background-position: 0 0; }
+  100% { background-position: 48px 48px; }
+}
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px);
+  background-size: 48px 48px;
+  animation: grid-pan 6s linear infinite;
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.9; }
+}
+.animate-glow {
+  animation: glow-pulse 4s ease-in-out infinite;
+}
+
+.font-display {
+  font-family: var(--font-display), Georgia, serif;
+}
+
+.card-flip-face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
