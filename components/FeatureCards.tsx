@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowUpRight, Layers, ListChecks, Terminal } from "lucide-react";
+import { ArrowUpRight, Bug, Layers, ListChecks, Terminal } from "lucide-react";
 import { vivaCards } from "@/lib/vivaData";
 import { quizQuestions } from "@/lib/quizData";
 import { commandReference } from "@/lib/commandData";
+import { debugCases } from "@/lib/debugData";
 
 const features = [
   {
@@ -29,6 +30,13 @@ const features = [
     desc: "Every command from all twelve experiments in one searchable, copyable reference. Good for a last-minute scan before you walk in.",
     tag: `${commandReference.length} commands`,
   },
+  {
+    href: "/debug",
+    icon: Bug,
+    title: "Debug It",
+    desc: "Real Git error messages, the kind everyone hits eventually. Read the error, diagnose it, pick the fix.",
+    tag: `${debugCases.length} scenarios`,
+  },
 ];
 
 export default function FeatureCards() {
@@ -47,7 +55,7 @@ export default function FeatureCards() {
         </h2>
       </motion.div>
 
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {features.map((f, i) => (
           <motion.div
             key={f.href}

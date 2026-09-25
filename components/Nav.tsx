@@ -11,6 +11,7 @@ const links = [
   { href: "/", label: "Home" },
   { href: "/flashcards", label: "Flashcards" },
   { href: "/quiz", label: "Quiz" },
+  { href: "/debug", label: "Debug It" },
   { href: "/cheatsheet", label: "Cheat Sheet" },
 ];
 
