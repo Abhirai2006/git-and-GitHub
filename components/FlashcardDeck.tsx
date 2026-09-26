@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, type PanInfo } from "framer-motion";
 import {
   ChevronLeft,
   ChevronRight,
@@ -111,6 +111,18 @@ export default function FlashcardDeck() {
     );
   }, [current, setStarred]);
 
+  const handleDragEnd = useCallback(
+    (_event: unknown, info: PanInfo) => {
+      const SWIPE_DISTANCE = 80;
+      const SWIPE_VELOCITY = 500;
+      const swipedLeft = info.offset.x < -SWIPE_DISTANCE || info.velocity.x < -SWIPE_VELOCITY;
+      const swipedRight = info.offset.x > SWIPE_DISTANCE || info.velocity.x > SWIPE_VELOCITY;
+      if (swipedLeft && index < deck.length - 1) goNext();
+      else if (swipedRight && index > 0) goPrev();
+    },
+    [index, deck.length, goNext, goPrev]
+  );
+
   const shuffle = () => {
     setDirection(1);
     setFlipped(false);
@@ -202,6 +214,10 @@ export default function FlashcardDeck() {
                     className="relative w-full h-full [transform-style:preserve-3d]"
                     animate={{ rotateY: flipped ? 180 : 0 }}
                     transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+                    drag="x"
+                    dragConstraints={{ left: 0, right: 0 }}
+                    dragElastic={0.7}
+                    onDragEnd={handleDragEnd}
                   >
                     {/* Front */}
                     <div className="absolute inset-0 card-flip-face rounded-2xl bg-ink text-white p-8 sm:p-10 flex flex-col justify-between shadow-xl">
@@ -213,7 +229,7 @@ export default function FlashcardDeck() {
                           {current.question}
                         </p>
                       </div>
-                      <p className="text-xs text-term/60">Tap the card, or press space, to reveal the answer</p>
+                      <p className="text-xs text-term/60">Tap to reveal the answer, or swipe to move between cards</p>
                     </div>
                     {/* Back */}
                     <div className="absolute inset-0 card-flip-face [transform:rotateY(180deg)] rounded-2xl bg-panel border border-border p-8 sm:p-10 flex flex-col justify-between overflow-y-auto">
@@ -232,23 +248,26 @@ export default function FlashcardDeck() {
           </div>
 
           <div className="flex items-center justify-between mt-6">
-            <button
+            <motion.button
+              whileTap={{ scale: 0.94 }}
               onClick={goPrev}
               disabled={index === 0}
               className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full border border-border text-sm font-medium disabled:opacity-30 disabled:cursor-not-allowed hover:border-accent transition-colors cursor-pointer"
             >
               <ChevronLeft size={15} /> Prev
-            </button>
+            </motion.button>
 
             <div className="flex items-center gap-2">
-              <button
+              <motion.button
+                whileTap={{ scale: 0.9 }}
                 onClick={shuffle}
                 className="h-10 w-10 flex items-center justify-center rounded-full border border-border hover:border-accent transition-colors cursor-pointer"
                 aria-label="Shuffle"
               >
                 <Shuffle size={15} />
-              </button>
-              <button
+              </motion.button>
+              <motion.button
+                whileTap={{ scale: 0.9 }}
                 onClick={toggleStar}
                 className={`h-10 w-10 flex items-center justify-center rounded-full border transition-colors cursor-pointer ${
                   isStarred ? "bg-accent border-accent text-white" : "border-border hover:border-accent"
@@ -256,8 +275,9 @@ export default function FlashcardDeck() {
                 aria-label="Star this card"
               >
                 <Star size={15} className={isStarred ? "fill-white" : ""} />
-              </button>
-              <button
+              </motion.button>
+              <motion.button
+                whileTap={{ scale: 0.9 }}
                 onClick={() => {
                   setFlipped(false);
                   setIndex(0);
@@ -266,16 +286,17 @@ export default function FlashcardDeck() {
                 aria-label="Restart deck"
               >
                 <RotateCcw size={14} />
-              </button>
+              </motion.button>
             </div>
 
-            <button
+            <motion.button
+              whileTap={{ scale: 0.94 }}
               onClick={goNext}
               disabled={index === deck.length - 1}
               className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-accent text-white text-sm font-medium disabled:opacity-30 disabled:cursor-not-allowed hover:bg-accent-soft transition-colors cursor-pointer"
             >
               Next <ChevronRight size={15} />
-            </button>
+            </motion.button>
           </div>
         </>
       )}

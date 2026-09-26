@@ -3,14 +3,16 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Flame, Star, Trophy } from "lucide-react";
+import { Flame, Layers, Star, Trophy } from "lucide-react";
 import { vivaCards } from "@/lib/vivaData";
 import { quizQuestions } from "@/lib/quizData";
+import { computeAndStoreStreak } from "@/lib/streak";
 
 export default function ProgressSnapshot() {
   const [seen, setSeen] = useState(0);
   const [starred, setStarred] = useState(0);
   const [best, setBest] = useState<{ score: number; total: number } | null>(null);
+  const [streak, setStreak] = useState(1);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -24,6 +26,7 @@ export default function ProgressSnapshot() {
       setSeen(Array.isArray(seenIds) ? seenIds.length : 0);
       setStarred(Array.isArray(starredIds) ? starredIds.length : 0);
       setBest(bestScore);
+      setStreak(computeAndStoreStreak());
       /* eslint-enable react-hooks/set-state-in-effect */
     } catch {
       // no stored progress yet
@@ -60,13 +63,26 @@ export default function ProgressSnapshot() {
           </Link>
         </div>
 
-        <div className="grid sm:grid-cols-3 gap-5">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="rounded-xl bg-background border border-border p-5">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-medium text-muted uppercase tracking-wide">
+                Day streak
+              </span>
+              <Flame size={15} className="text-accent" />
+            </div>
+            <div className="font-display text-2xl font-medium">{streak}</div>
+            <p className="mt-3 text-xs text-muted">
+              {streak > 1 ? "Come back tomorrow to keep it alive." : "Visit again tomorrow to start one."}
+            </p>
+          </div>
+
           <div className="rounded-xl bg-background border border-border p-5">
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs font-medium text-muted uppercase tracking-wide">
                 Cards reviewed
               </span>
-              <Flame size={15} className="text-accent" />
+              <Layers size={15} className="text-accent" />
             </div>
             <div className="font-display text-2xl font-medium">
               {seen} / {vivaCards.length}

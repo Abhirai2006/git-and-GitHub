@@ -6,6 +6,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { GitBranch, Menu, X } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
+import StreakBadge from "./StreakBadge";
 
 const links = [
   { href: "/", label: "Home" },
@@ -57,6 +58,7 @@ export default function Nav() {
         </ul>
 
         <div className="flex items-center gap-2">
+          <StreakBadge />
           <ThemeToggle />
           <button
             className="md:hidden h-9 w-9 flex items-center justify-center rounded-full border border-border cursor-pointer"

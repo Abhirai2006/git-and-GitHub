@@ -122,7 +122,8 @@ trademarked mark.
 
 ## Credits
 
-Built by **Abhishek Rai A** for the BAIL308C Git and GitHub lab course, University of
+Built by **Abhishek Rai** for the BAIL308C Git and GitHub lab course, University of
 Mysore School of Engineering.
 
 Portfolio: https://portfolio-abhirai2006.lovable.app/
+GitHub: https://github.com/Abhirai2006

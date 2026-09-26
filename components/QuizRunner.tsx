@@ -6,12 +6,14 @@ import confetti from "canvas-confetti";
 import {
   ArrowRight,
   Check,
+  Download,
   RotateCcw,
   Trophy,
   X as XIcon,
 } from "lucide-react";
 import { quizQuestions, type QuizQuestion } from "@/lib/quizData";
 import { useLocalStorage } from "@/lib/useLocalStorage";
+import { renderScoreCard, downloadDataUrl } from "@/lib/scoreCard";
 import SessionFilter from "./SessionFilter";
 
 function shuffleArray<T>(arr: T[]): T[] {
@@ -69,6 +71,7 @@ export default function QuizRunner() {
     "viva-quiz-best",
     null
   );
+  const [saved, setSaved] = useState(false);
 
   const startQuiz = () => {
     const pool =
@@ -123,6 +126,21 @@ export default function QuizRunner() {
 
   const restart = () => {
     setPhase("setup");
+  };
+
+  const shareScore = () => {
+    const pct = Math.round((score / questions.length) * 100);
+    const dataUrl = renderScoreCard({
+      title: "Quiz Complete",
+      score,
+      total: questions.length,
+      subtitle: scoreMessage(pct),
+    });
+    if (dataUrl) {
+      downloadDataUrl(dataUrl, `viva-prep-quiz-score.png`);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    }
   };
 
   if (phase === "setup") {
@@ -180,6 +198,13 @@ export default function QuizRunner() {
             Same set again <ArrowRight size={14} />
           </button>
         </div>
+        <button
+          onClick={shareScore}
+          className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-muted hover:text-accent transition-colors cursor-pointer"
+        >
+          <Download size={14} />
+          {saved ? "Saved to your downloads" : "Download a shareable score card"}
+        </button>
       </motion.div>
     );
   }
@@ -227,8 +252,9 @@ export default function QuizRunner() {
                 else style = "border-border opacity-50";
               }
               return (
-                <button
+                <motion.button
                   key={opt.id}
+                  whileTap={!selected ? { scale: 0.985 } : undefined}
                   onClick={() => selectOption(opt.id)}
                   disabled={!!selected}
                   className={`w-full flex items-center justify-between text-left rounded-xl border px-5 py-4 text-sm sm:text-base transition-colors ${style}`}
@@ -238,7 +264,7 @@ export default function QuizRunner() {
                   {selected && isSelected && !isCorrect && (
                     <XIcon size={17} className="text-accent shrink-0 ml-3" />
                   )}
-                </button>
+                </motion.button>
               );
             })}
           </div>

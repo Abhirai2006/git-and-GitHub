@@ -3,8 +3,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence, animate } from "framer-motion";
 import confetti from "canvas-confetti";
-import { ArrowRight, Check, RotateCcw, X as XIcon } from "lucide-react";
+import { ArrowRight, Check, Download, RotateCcw, X as XIcon } from "lucide-react";
 import { debugCases } from "@/lib/debugData";
+import { renderScoreCard, downloadDataUrl } from "@/lib/scoreCard";
 
 function ResultScore({ score, total }: { score: number; total: number }) {
   const [display, setDisplay] = useState(0);
@@ -29,6 +30,7 @@ export default function DebugRunner() {
   const [selected, setSelected] = useState<string | null>(null);
   const [score, setScore] = useState(0);
   const [done, setDone] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   const current = debugCases[index];
 
@@ -62,6 +64,23 @@ export default function DebugRunner() {
     setDone(false);
   };
 
+  const shareScore = () => {
+    const dataUrl = renderScoreCard({
+      title: "Debug Session Complete",
+      score,
+      total: debugCases.length,
+      subtitle:
+        score === debugCases.length
+          ? "Every scenario, correctly diagnosed."
+          : "Solid troubleshooting work.",
+    });
+    if (dataUrl) {
+      downloadDataUrl(dataUrl, "viva-prep-debug-score.png");
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    }
+  };
+
   if (done) {
     return (
       <motion.div
@@ -85,6 +104,15 @@ export default function DebugRunner() {
         >
           <RotateCcw size={14} /> Go again
         </button>
+        <div>
+          <button
+            onClick={shareScore}
+            className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-muted hover:text-accent transition-colors cursor-pointer"
+          >
+            <Download size={14} />
+            {saved ? "Saved to your downloads" : "Download a shareable score card"}
+          </button>
+        </div>
       </motion.div>
     );
   }
@@ -145,8 +173,9 @@ export default function DebugRunner() {
                 else style = "border-border opacity-50";
               }
               return (
-                <button
+                <motion.button
                   key={opt.id}
+                  whileTap={!selected ? { scale: 0.985 } : undefined}
                   onClick={() => select(opt.id)}
                   disabled={!!selected}
                   className={`w-full flex items-center justify-between text-left rounded-xl border px-5 py-4 text-sm sm:text-base transition-colors ${style}`}
@@ -156,7 +185,7 @@ export default function DebugRunner() {
                   {selected && isSelected && !isCorrect && (
                     <XIcon size={17} className="text-accent shrink-0 ml-3" />
                   )}
-                </button>
+                </motion.button>
               );
             })}
           </div>
