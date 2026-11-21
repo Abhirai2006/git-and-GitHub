@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Class 1 · First steps on GitHub · BAIL308C</title>
+<link rel="icon" href="assets/muse-logo.png">
+<link rel="stylesheet" href="engine/deck.css">
+<style>
+/* mock browser */
+.br { position: absolute; border-radius: 22px; background: #fff; border: 2px solid #D5DAE8; box-shadow: 0 30px 60px -24px rgba(14,16,32,.3); overflow: hidden; }
+.br .tb { height: 54px; background: #F1F3F9; border-bottom: 2px solid #E1E5F0; display: flex; align-items: center; gap: 10px; padding: 0 20px; }
+.br .tb i { width: 14px; height: 14px; border-radius: 50%; display: block; }
+.br .tb i:nth-child(1) { background: #FF5F57; } .br .tb i:nth-child(2) { background: #FEBC2E; } .br .tb i:nth-child(3) { background: #28C840; }
+.br .url { margin-left: 16px; flex: 1; height: 34px; border-radius: 10px; background: #fff; border: 2px solid #E1E5F0; font: 600 17px "Mono"; color: var(--ink3); display: flex; align-items: center; padding: 0 14px; }
+.br .pg { padding: 28px 36px; }
+.fld { margin-bottom: 18px; transition: all .4s var(--ease); border-radius: 14px; padding: 8px 12px; margin-left: -12px; margin-right: -12px; border: 2px solid transparent; }
+.fld .l { font: 800 15px "Body"; letter-spacing: .08em; text-transform: uppercase; color: var(--ink3); margin-bottom: 8px; }
+.fld .in { height: 50px; border-radius: 12px; border: 2px solid #D5DAE8; display: flex; align-items: center; padding: 0 16px; font: 600 22px "Mono"; color: var(--ink); background: #fff; }
+.fld .rad { display: flex; gap: 14px; }
+.fld .rad span { flex: 1; height: 54px; border-radius: 12px; border: 2px solid #D5DAE8; display: flex; align-items: center; gap: 12px; padding: 0 16px; font: 700 21px "Body"; }
+.fld .rad span b { width: 22px; height: 22px; border-radius: 50%; border: 3px solid #C4CADB; display: block; }
+.fld .rad span.on { border-color: var(--green); background: #EBFBF3; } .fld .rad span.on b { border-color: var(--green); background: radial-gradient(circle, var(--green) 45%, transparent 50%); }
+.fld .tg { display: flex; align-items: center; gap: 14px; font: 700 21px "Body"; }
+.fld .tg .sw { width: 58px; height: 32px; border-radius: 16px; background: var(--green); position: relative; }
+.fld .tg .sw::after { content: ""; position: absolute; right: 4px; top: 4px; width: 24px; height: 24px; border-radius: 50%; background: #fff; }
+.cbtn { display: inline-block; font: 800 22px "Body"; color: #fff; background: var(--green); padding: 14px 28px; border-radius: 12px; }
+.slide.st-1:not(.st-2) .f1, .slide.st-2:not(.st-3) .f2, .slide.st-3:not(.st-4) .f3, .slide.st-4:not(.st-5) .f4, .slide.st-5 .f5 { border-color: var(--coral); background: #FFF4F1; box-shadow: 0 12px 26px -14px rgba(255,77,46,.5); }
+.side .r { display: flex; gap: 18px; align-items: flex-start; margin-bottom: 18px; padding: 16px 20px; border-radius: 18px; border: 2px solid var(--line); background: #fff; transition: all .4s var(--ease); }
+.side .r .k { width: 42px; height: 42px; border-radius: 12px; background: var(--bg3); display: flex; align-items: center; justify-content: center; font: 800 20px "Head"; flex: none; transition: all .4s; }
+.side .r .t { font: 700 22px/1.3 "Body"; } .side .r .s { font: 500 18px/1.4 "Body"; color: var(--ink3); margin-top: 3px; }
+.slide.st-1:not(.st-2) .s1, .slide.st-2:not(.st-3) .s2, .slide.st-3:not(.st-4) .s3, .slide.st-4:not(.st-5) .s4, .slide.st-5 .s5 { border-color: var(--coral); transform: translateX(-8px); }
+.slide.st-1 .s1 .k, .slide.st-2 .s2 .k, .slide.st-3 .s3 .k, .slide.st-4 .s4 .k, .slide.st-5 .s5 .k { background: var(--g-hot); color: #fff; }
+/* markdown split */
+.md { position: absolute; top: 250px; width: 680px; height: 560px; border-radius: 26px; overflow: hidden; border: 2px solid #DCE1EE; background: #FBFCFF; }
+.md .hd { height: 52px; display: flex; align-items: center; padding: 0 24px; font: 800 16px "Body"; letter-spacing: .1em; text-transform: uppercase; color: var(--ink3); background: #F1F3F9; border-bottom: 2px solid #E1E5F0; }
+.md .bd { padding: 24px 30px; font: 600 24px/1.65 "Mono"; }
+.md .bd .h { color: var(--violet); } .md .bd .b { color: var(--coral); } .md .bd .c { color: var(--green); } .md .bd .lk { color: var(--blue); }
+.pv { position: absolute; top: 250px; left: 820px; width: 680px; height: 560px; border-radius: 26px; border: 2px solid var(--line); background: #fff; padding: 30px 38px; box-shadow: 0 22px 50px -20px rgba(14,16,32,.2); }
+.pv h1 { font: 800 50px "Head"; letter-spacing: -.02em; padding-bottom: 10px; border-bottom: 2px solid var(--line); }
+.pv p { font: 500 24px/1.5 "Body"; color: var(--ink2); margin-top: 16px; }
+.pv ul { margin: 14px 0 0 30px; font: 500 24px/1.6 "Body"; color: var(--ink2); }
+.pv code { font-size: 21px; }
+.pv a { color: var(--blue); font-weight: 700; text-decoration: underline; }
+/* repo folder */
+.rf { position: absolute; left: 940px; top: 220px; width: 560px; height: 560px; }
+.rf .ring { position: absolute; left: 50%; top: 50%; border-radius: 50%; border: 4px dashed; transform: translate(-50%, -50%); }
+.rf .core { position: absolute; left: 50%; top: 50%; width: 260px; height: 200px; transform: translate(-50%, -50%); }
+.rf .core svg { width: 100%; height: 100%; fill: #FFC21A; stroke: #E09A00; stroke-width: .6; }
+.rf .dot { position: absolute; width: 58px; height: 58px; border-radius: 50%; background: #fff; border: 8px solid var(--blue); }
+.dz { border: 3px solid #D92B12; border-radius: 22px; background: #FFF6F4; padding: 26px 30px; }
+.dz .t { font: 800 26px "Head"; color: #D92B12; }
+.dz .row { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 16px 0; border-top: 2px solid #FFD9D1; margin-top: 14px; }
+.dz .row b { font: 700 22px "Body"; } .dz .row span { font: 500 18px "Body"; color: var(--ink3); display: block; margin-top: 4px; }
+.dz .btn { font: 800 18px "Body"; color: #D92B12; border: 2px solid #D92B12; background: #fff; padding: 10px 18px; border-radius: 10px; white-space: nowrap; }
+.dz .row.hot { border-radius: 14px; background: #fff; padding: 16px 14px; margin: 14px -14px 0; border: 3px solid var(--coral); box-shadow: 0 14px 26px -14px rgba(255,77,46,.6); }
+</style>
+</head>
+<body>
+<div id="stage">
+
+<section class="slide glow" data-name="Title">
+  <div class="abs logos" style="left:100px;top:64px;--d:.1s" data-a="down">
+    <img class="muse" src="assets/muse-logo.png" alt="Mysore University School of Engineering logo">
+    <img class="uom" src="assets/uom-crest.png" alt="University of Mysore crest">
+    <div class="sep"></div>
+    <div class="lt">Mysore University School of Engineering<small>Dept. of AI &amp; ML · BAIL308C Project Management with Git</small></div>
+  </div>
+  <div class="abs" style="left:100px;top:258px;--d:.2s" data-a="up"><span class="pill cool">Class 1 · Saturday, 14 November</span></div>
+  <h1 class="hl" style="top:316px;width:820px;font-size:108px;line-height:.98;--d:.35s">Your first steps on <span class="gc">GitHub.</span></h1>
+  <div class="abs lead" style="left:100px;top:676px;width:720px;--d:1s" data-a="up">An account, a repository, a README, and how to delete and hide things safely.</div>
+  <div class="abs small" style="left:100px;top:800px;--d:1.3s" data-a="up"><b style="color:var(--ink)">Abhishek Rai</b> &nbsp;·&nbsp; Session 1, part 1</div>
+  <div class="abs" style="left:980px;top:200px;width:520px;height:560px">
+    <div class="abs card float" style="left:40px;top:40px;width:440px;padding:30px;--d:.6s" data-a="pop"><div class="label">github.com/you</div><div style="font:800 40px Head;margin-top:10px">my-first-repo</div><div style="display:flex;gap:10px;margin-top:16px"><span class="pill fresh">Public</span><span class="pill">README.md</span></div></div>
+    <div class="abs card float2" style="left:110px;top:290px;width:380px;padding:26px 30px;--d:1s" data-a="pop"><div class="label c-coral">Settings · Danger Zone</div><div style="font:700 24px/1.35 Body;margin-top:10px">Change visibility<br>Delete this repository</div></div>
+  </div>
+  <aside class="notes">This is the review deck for class 1, matching what we covered on 14 November: account, repository, README, deleting, and visibility. Students can replay it at home.</aside>
+</section>
+
+<section class="slide" data-name="Today">
+  <div class="eyebrow" data-a="up">Today</div>
+  <h2 class="hl">Five things, all in the browser.</h2>
+  <div class="abs ticks" style="left:100px;top:290px">
+    <div class="r" style="--td:.4s"><div class="bx"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>Create a GitHub account</div>
+    <div class="r" style="--td:.7s"><div class="bx"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>Create your first repository</div>
+    <div class="r" style="--td:1s"><div class="bx"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>Write a README.md in Markdown</div>
+    <div class="r" style="--td:1.3s"><div class="bx"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>Delete a file, and a whole repository</div>
+    <div class="r" style="--td:1.6s"><div class="bx"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>Switch a repository from public to private</div>
+  </div>
+  <div class="abs card" style="left:960px;top:280px;width:540px;padding:38px 42px;--d:1.9s" data-a="right">
+    <div class="label">No laptop needed today</div>
+    <div style="font:800 40px/1.1 Head;letter-spacing:-.02em;margin-top:14px">Everything happens on <span class="gc">github.com</span>.</div>
+    <div class="small" style="margin-top:16px">Installing Git on your own laptop comes next class.</div>
+  </div>
+  <aside class="notes">Five things today, all on the GitHub website.</aside>
+</section>
+
+<section class="slide" data-name="Why it matters">
+  <div class="eyebrow" data-a="up">Why this course</div>
+  <div class="abs big gh" style="left:92px;top:150px;font-size:300px;--d:.2s" data-a="blur">9 <span style="font-size:.5em;letter-spacing:-.02em">in</span> 10</div>
+  <div class="abs" style="left:100px;top:450px;font:800 56px/1.1 Head;letter-spacing:-.03em;width:760px;--d:.5s" data-a="up">developers use Git.</div>
+  <div class="abs small" style="left:100px;top:540px;width:680px;--d:.7s" data-a="up">Stack Overflow Developer Survey, 2022. GitHub is where most of that work is shared.</div>
+  <div class="abs card" style="left:920px;top:220px;width:580px;padding:40px 44px;--d:.6s" data-a="right">
+    <div style="font:800 38px/1.15 Head;letter-spacing:-.02em">Your GitHub profile becomes your <span class="gh">portfolio.</span></div>
+    <div class="small" style="margin-top:16px">Recruiters and teammates look at it. What you build in this course can live there.</div>
+  </div>
+  <aside class="notes">More than nine in ten developers use Git. GitHub is where that work is shared, and your profile becomes a portfolio.</aside>
+</section>
+
+<section class="slide tint" data-name="Git vs GitHub">
+  <div class="eyebrow" data-a="up">Two different things</div>
+  <h2 class="hl">Git is the engine. GitHub is the garage.</h2>
+  <div class="abs card" style="left:100px;top:300px;width:660px;padding:40px 44px;--d:.3s" data-a="left">
+    <div class="ico cool"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M2 20h20"/></svg></div>
+    <div style="font:800 60px Head;margin-top:18px" class="gc">Git</div>
+    <div class="small" style="margin-top:8px">Software on your laptop that records every change. Works offline. <b>Next class.</b></div>
+  </div>
+  <div class="abs card" style="left:840px;top:300px;width:660px;padding:40px 44px;--d:.5s" data-a="right">
+    <div class="ico pink"><svg viewBox="0 0 24 24"><path d="M17.5 19H9a7 7 0 1 1 6.7-9h1.8a4.5 4.5 0 1 1 0 9Z"/></svg></div>
+    <div style="font:800 60px Head;margin-top:18px;color:var(--pink)">GitHub</div>
+    <div class="small" style="margin-top:8px">A website that stores your projects online, so you can back them up and share them. <b>Today.</b></div>
+  </div>
+  <aside class="notes">Git is software on your laptop. GitHub is a website that hosts projects. Today is GitHub; next class we install Git.</aside>
+</section>
+
+<section class="slide" data-name="Create an account" data-sec="Account">
+  <div class="eyebrow" data-a="up">Step 1</div>
+  <h2 class="hl">Create your GitHub account.</h2>
+  <div class="abs steps" style="left:100px;top:270px;width:760px">
+    <div class="r" data-a="left" style="--d:.3s"><div class="k">1</div><div><div class="t">Go to github.com, click Sign up</div></div></div>
+    <div class="r" data-a="left" style="--d:.45s"><div class="k">2</div><div><div class="t">Enter your email and a strong password</div><div class="s">Use an email you will still have after college.</div></div></div>
+    <div class="r" data-a="left" style="--d:.6s"><div class="k">3</div><div><div class="t">Choose a username</div><div class="s">It becomes github.com/username. Choose it carefully.</div></div></div>
+    <div class="r" data-a="left" style="--d:.75s"><div class="k">4</div><div><div class="t">Verify with the code sent to your email</div></div></div>
+    <div class="r" data-a="left" style="--d:.9s"><div class="k">5</div><div><div class="t">The Free plan is all you need</div></div></div>
+  </div>
+  <div class="abs" style="left:960px;top:270px;width:540px">
+    <div class="label" style="margin-bottom:16px;--d:.6s" data-a="up">Username: good vs bad</div>
+    <div class="card" style="padding:20px 26px;margin-bottom:14px;display:flex;align-items:center;gap:16px;--d:.8s" data-a="right"><span class="pill fresh">Good</span><span style="font:700 25px Mono">abhishek-rai</span></div>
+    <div class="card" style="padding:20px 26px;margin-bottom:14px;display:flex;align-items:center;gap:16px;--d:1s" data-a="right"><span class="pill fresh">Good</span><span style="font:700 25px Mono">priya-codes</span></div>
+    <div class="card" style="padding:20px 26px;display:flex;align-items:center;gap:16px;--d:1.2s" data-a="right"><span class="pill" style="background:#FFE9E4;color:#D92B12">Bad</span><span style="font:700 25px Mono">xXdarklord99Xx</span></div>
+    <div class="small" style="margin-top:18px;--d:1.4s" data-a="up">Recruiters will see this name for years.</div>
+  </div>
+  <aside class="notes">Sign up at github.com. Use a lasting email, a strong password, and a professional username. Verify the email code and choose the Free plan.</aside>
+</section>
+
+<section class="slide tint" data-name="What is a repository" data-sec="Repositories">
+  <div class="eyebrow" data-a="up">The key word</div>
+  <h2 class="hl" style="width:800px">A repository is a project folder <span class="gh">with a memory.</span></h2>
+  <div class="abs lead" style="left:100px;top:400px;width:760px;--d:.6s" data-a="up">It holds your files, plus the full history of every change: who changed what, and when.</div>
+  <div class="abs small" style="left:100px;top:560px;width:760px;--d:.9s" data-a="up">People shorten it to <b>repo</b>. One project, one repo.</div>
+  <div class="rf">
+    <div class="ring spin-slow" style="width:520px;height:520px;border-color:rgba(37,99,255,.35)"></div>
+    <div class="ring spin-slow" style="width:380px;height:380px;border-color:rgba(255,46,136,.35);animation-direction:reverse"></div>
+    <div class="core" data-a="pop" style="--d:.3s"><svg viewBox="0 0 24 24"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.7-.9l-.8-1.2A2 2 0 0 0 7.9 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg></div>
+    <div class="dot" data-a="pop" style="left:251px;top:-9px;--d:.7s"></div>
+    <div class="dot" data-a="pop" style="left:500px;top:250px;border-color:var(--pink);--d:.9s"></div>
+    <div class="dot" data-a="pop" style="left:251px;top:510px;border-color:var(--green);--d:1.1s"></div>
+    <div class="dot" data-a="pop" style="left:2px;top:250px;border-color:var(--orange);--d:1.3s"></div>
+  </div>
+  <aside class="notes">A repository is a project folder with a memory: the files plus the full history of changes.</aside>
+</section>
+
+<section class="slide" data-name="Create a repository" data-sec="Repositories" data-steps="5">
+  <div class="eyebrow" data-a="up">Step 2 · press next for each field</div>
+  <h2 class="hl sm">Create a new repository.</h2>
+  <div class="br" data-a="zoom" style="left:100px;top:210px;width:820px;height:640px;--d:.2s">
+    <div class="tb"><i></i><i></i><i></i><div class="url">github.com/new</div></div>
+    <div class="pg">
+      <div class="fld f1"><div class="l">Repository name</div><div class="in">my-first-repo</div></div>
+      <div class="fld f2"><div class="l">Description (optional)</div><div class="in" style="font-family:Body;font-weight:500">Practice repo for BAIL308C</div></div>
+      <div class="fld f3"><div class="l">Visibility</div><div class="rad"><span class="on"><b></b>Public</span><span><b></b>Private</span></div></div>
+      <div class="fld f4"><div class="tg"><span class="sw"></span>Add a README file</div></div>
+      <div class="fld f5" style="margin-bottom:0"><span class="cbtn">Create repository</span></div>
+    </div>
+  </div>
+  <div class="abs side" style="left:980px;top:210px;width:520px">
+    <div class="r s1"><div class="k">1</div><div><div class="t">Name it</div><div class="s">Short, lowercase, hyphens: my-first-repo</div></div></div>
+    <div class="r s2"><div class="k">2</div><div><div class="t">Describe it</div><div class="s">One line: what is this project?</div></div></div>
+    <div class="r s3"><div class="k">3</div><div><div class="t">Public or private</div><div class="s">You can change this later.</div></div></div>
+    <div class="r s4"><div class="k">4</div><div><div class="t">Add a README</div><div class="s">Gives the repo a front page.</div></div></div>
+    <div class="r s5"><div class="k">5</div><div><div class="t">Create repository</div><div class="s">Done. It lives at github.com/you/my-first-repo</div></div></div>
+  </div>
+  <div data-step="5" data-confetti="5" data-cdelay="400" data-cx="420" data-cy="800" style="position:absolute;width:0;height:0"></div>
+  <aside class="notes">Top right plus menu, New repository. Name, description, visibility, add a README, Create repository. The exact layout of the page changes from time to time; the fields stay the same.</aside>
+</section>
+
+<section class="slide tint" data-name="Public vs private" data-sec="Repositories">
+  <div class="eyebrow" data-a="up">Who can see it?</div>
+  <h2 class="hl">Public or private.</h2>
+  <div class="abs card" style="left:100px;top:290px;width:660px;padding:40px 44px;--d:.3s" data-a="left">
+    <div class="ico fresh"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 0 1 0 20a15 15 0 0 1 0-20"/></svg></div>
+    <div style="font:800 54px Head;margin-top:18px" class="gf">Public</div>
+    <div class="small" style="margin-top:10px">Anyone on the internet can see it. Only you, and people you add, can change it. Good for portfolio work.</div>
+  </div>
+  <div class="abs card" style="left:840px;top:290px;width:660px;padding:40px 44px;--d:.5s" data-a="right">
+    <div class="ico hot"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+    <div style="font:800 54px Head;margin-top:18px" class="gh">Private</div>
+    <div class="small" style="margin-top:10px">Only you, and people you invite, can see it. Good for unfinished work or anything personal.</div>
+  </div>
+  <div class="abs small" style="left:100px;top:760px;--d:.9s" data-a="up">Never put passwords or API keys in any repo, public or private.</div>
+  <aside class="notes">Public: anyone can see, only collaborators can change. Private: only you and invited people can see.</aside>
+</section>
+
+<section class="slide" data-name="README.md" data-sec="README">
+  <div class="eyebrow" data-a="up">Your repo's front page</div>
+  <h2 class="hl sm">Type Markdown. See it formatted.</h2>
+  <div class="md" style="left:100px" data-a="left">
+    <div class="hd">README.md (what you type)</div>
+    <div class="bd"><span class="h"># My First Repo</span><br><br>Practice repo for <span class="b">**BAIL308C**</span>.<br><br>- Learn Git<br>- Learn GitHub<br><br>Run <span class="c">`git init`</span> to start.<br><span class="lk">[My profile](https://github.com)</span></div>
+  </div>
+  <div class="pv" data-a="right" style="--d:.5s">
+    <h1>My First Repo</h1>
+    <p>Practice repo for <b style="color:var(--ink)">BAIL308C</b>.</p>
+    <ul><li>Learn Git</li><li>Learn GitHub</li></ul>
+    <p>Run <code>git init</code> to start.<br><a>My profile</a></p>
+  </div>
+  <div class="hnote" style="left:700px;top:820px;--d:1.4s">.md = Markdown</div>
+  <aside class="notes">README.md is the front page of a repository, shown under the file list. It is written in Markdown: simple symbols that GitHub turns into formatting.</aside>
+</section>
+
+<section class="slide tint" data-name="Markdown basics" data-sec="README">
+  <div class="eyebrow" data-a="up">Cheat sheet</div>
+  <h2 class="hl">Six Markdown symbols.</h2>
+  <div class="abs card" style="left:100px;top:270px;width:1400px;padding:26px 40px;--d:.2s" data-a="up">
+    <table class="tbl" style="font-size:26px">
+      <tr><th style="width:460px">You type</th><th>You get</th></tr>
+      <tr><td class="mono"># Title</td><td>A big heading (## for smaller)</td></tr>
+      <tr><td class="mono">**bold**</td><td><b>bold</b> text</td></tr>
+      <tr><td class="mono">*italic*</td><td><i>italic</i> text</td></tr>
+      <tr><td class="mono">- item</td><td>A bullet list</td></tr>
+      <tr><td class="mono">[text](https://link)</td><td>A clickable link</td></tr>
+      <tr><td class="mono">`code`</td><td><code>code</code> in a box</td></tr>
+    </table>
+  </div>
+  <aside class="notes">Six symbols cover almost every README: headings, bold, italic, lists, links and code.</aside>
+</section>
+
+<section class="slide" data-name="Editing = a commit" data-sec="README">
+  <div class="eyebrow" data-a="up">Edit on the website</div>
+  <h2 class="hl">Pencil, edit, Commit changes.</h2>
+  <div class="abs steps" style="left:100px;top:270px;width:740px">
+    <div class="r" data-a="left" style="--d:.3s"><div class="k">1</div><div><div class="t">Open README.md, click the pencil icon</div></div></div>
+    <div class="r" data-a="left" style="--d:.45s"><div class="k">2</div><div><div class="t">Edit, then check the Preview tab</div></div></div>
+    <div class="r" data-a="left" style="--d:.6s"><div class="k">3</div><div><div class="t">Click Commit changes</div><div class="s">Type a short message saying what you changed.</div></div></div>
+  </div>
+  <div class="abs card" style="left:920px;top:270px;width:580px;padding:40px 44px;--d:.8s" data-a="right">
+    <div class="label c-violet">Remember this word</div>
+    <div style="font:800 64px/1 Head;letter-spacing:-.03em;margin-top:16px" class="gc">commit</div>
+    <div class="small" style="margin-top:18px">A saved version with a message. GitHub runs Git for you when you press that button. Next class, you run Git yourself.</div>
+  </div>
+  <aside class="notes">Every edit on GitHub ends with Commit changes. That is a commit, a saved version with a message. Next class, students make commits themselves with Git.</aside>
+</section>
+
+<section class="slide tint" data-name="Delete a file" data-sec="Delete & visibility">
+  <div class="eyebrow" data-a="up">Removing data</div>
+  <h2 class="hl">Delete one file.</h2>
+  <div class="abs steps" style="left:100px;top:270px;width:760px">
+    <div class="r" data-a="left" style="--d:.3s"><div class="k">1</div><div><div class="t">Click the file to open it</div></div></div>
+    <div class="r" data-a="left" style="--d:.45s"><div class="k">2</div><div><div class="t">Open the ⋯ menu at the top right of the file</div></div></div>
+    <div class="r" data-a="left" style="--d:.6s"><div class="k">3</div><div><div class="t">Choose Delete file</div></div></div>
+    <div class="r" data-a="left" style="--d:.75s"><div class="k">4</div><div><div class="t">Commit changes</div><div class="s">Yes, deleting is a commit too.</div></div></div>
+  </div>
+  <div class="abs card" style="left:960px;top:280px;width:540px;padding:38px 42px;--d:.9s" data-a="right">
+    <div class="ico sun"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></div>
+    <div style="font:800 32px/1.2 Head;margin-top:18px">The old version is still in history.</div>
+    <div class="small" style="margin-top:12px">Deleting removes it from the latest version, not from past commits. That is why secrets must never be committed.</div>
+  </div>
+  <aside class="notes">Open the file, use the three-dot menu, Delete file, Commit changes. The file stays in the history of earlier commits.</aside>
+</section>
+
+<section class="slide" data-name="Delete a repository" data-sec="Delete & visibility">
+  <div class="eyebrow" data-a="up">The nuclear option</div>
+  <h2 class="hl">Delete a whole repository.</h2>
+  <div class="abs" style="left:100px;top:270px;width:760px">
+    <div class="steps">
+      <div class="r" data-a="left" style="--d:.3s"><div class="k">1</div><div><div class="t">Open the repo, click Settings</div></div></div>
+      <div class="r" data-a="left" style="--d:.45s"><div class="k">2</div><div><div class="t">Scroll to the Danger Zone</div></div></div>
+      <div class="r" data-a="left" style="--d:.6s"><div class="k">3</div><div><div class="t">Delete this repository</div><div class="s">GitHub asks you to confirm, by typing the repo name.</div></div></div>
+    </div>
+  </div>
+  <div class="abs dz" style="left:920px;top:270px;width:580px;--d:.6s" data-a="right">
+    <div class="t">Danger Zone</div>
+    <div class="row"><div><b>Change visibility</b><span>Public or private</span></div><div class="btn">Change</div></div>
+    <div class="row hot"><div><b>Delete this repository</b><span>Cannot be undone casually</span></div><div class="btn">Delete</div></div>
+  </div>
+  <aside class="notes">Settings, Danger Zone, Delete this repository, confirm by typing the name. Treat it as permanent. Everything in it, files and history, goes.</aside>
+</section>
+
+<section class="slide tint" data-name="Public to private" data-sec="Delete & visibility">
+  <div class="eyebrow" data-a="up">Hide a repo</div>
+  <h2 class="hl">Switch public to private.</h2>
+  <div class="abs" style="left:100px;top:270px;width:760px">
+    <div class="steps">
+      <div class="r" data-a="left" style="--d:.3s"><div class="k">1</div><div><div class="t">Settings, scroll to the Danger Zone</div></div></div>
+      <div class="r" data-a="left" style="--d:.45s"><div class="k">2</div><div><div class="t">Change visibility</div></div></div>
+      <div class="r" data-a="left" style="--d:.6s"><div class="k">3</div><div><div class="t">Make private, then confirm</div><div class="s">Switch back the same way.</div></div></div>
+    </div>
+  </div>
+  <div class="abs dz" style="left:920px;top:270px;width:580px;--d:.6s" data-a="right">
+    <div class="t">Danger Zone</div>
+    <div class="row hot"><div><b>Change visibility</b><span>This repository is currently public</span></div><div class="btn">Change</div></div>
+    <div class="row"><div><b>Delete this repository</b><span>Cannot be undone casually</span></div><div class="btn">Delete</div></div>
+  </div>
+  <aside class="notes">Settings, Danger Zone, Change visibility, Make private, confirm.</aside>
+</section>
+
+<section class="slide" data-name="Recap" data-sec="Delete & visibility">
+  <div class="eyebrow" data-a="up">Recap</div>
+  <h2 class="hl sm">Four questions.</h2>
+  <div class="qcard" style="left:100px;top:250px;width:650px;--d:.1s" data-a="up"><div class="qn gc">01</div><div class="qq">What is a repository?</div><div class="qa" data-step="1">A project folder plus the full history of its changes.</div></div>
+  <div class="qcard" style="left:850px;top:250px;width:650px;--d:.2s" data-a="up"><div class="qn gh">02</div><div class="qq">What is README.md for?</div><div class="qa" data-step="2">The front page of the repo, written in Markdown.</div></div>
+  <div class="qcard" style="left:100px;top:560px;width:650px;--d:.3s" data-a="up"><div class="qn gf">03</div><div class="qq">Where do you change visibility?</div><div class="qa" data-step="3">Settings, Danger Zone, Change visibility.</div></div>
+  <div class="qcard" style="left:850px;top:560px;width:650px;--d:.4s" data-a="up"><div class="qn gs">04</div><div class="qq">What does Commit changes do?</div><div class="qa" data-step="4">Saves a new version with a message. That is a commit.</div></div>
+  <aside class="notes">One press per answer.</aside>
+</section>
+
+<section class="slide glow" data-name="Next class" data-confetti-enter="500">
+  <div class="abs logos" style="left:100px;top:64px;--d:.1s" data-a="down">
+    <img class="muse" src="assets/muse-logo.png" alt="Mysore University School of Engineering logo">
+    <img class="uom" src="assets/uom-crest.png" alt="University of Mysore crest">
+  </div>
+  <h2 class="hl" style="top:250px;font-size:130px;width:1300px">Next: Git on <span class="gh">your laptop.</span></h2>
+  <div class="abs lead" style="left:100px;top:560px;width:900px;--d:1s" data-a="up">Bring a charged laptop. We install Git and make your first commit.</div>
+  <div class="abs" style="left:100px;top:660px;font:800 40px Mono;letter-spacing:-.01em;--d:1.3s" data-a="up"><span class="gc">git-github-by-abhirai2006.netlify.app</span></div>
+  <aside class="notes">Next class: bring a laptop, we install Git.</aside>
+</section>
+
+</div>
+<script>
+window.DECK = { id: "class-1", title: "Class 1: First steps on GitHub", sections: ["Account", "Repositories", "README", "Delete & visibility"] };
+</script>
+<script src="engine/deck.js"></script>
+</body>
+</html>
