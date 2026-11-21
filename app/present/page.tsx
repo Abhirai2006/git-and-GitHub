@@ -17,13 +17,13 @@ const grads = [
 export default function PresentPage() {
   return (
     <section className="mx-auto max-w-6xl px-5 sm:px-8 py-14 sm:py-20">
-      <span className="inline-flex items-center gap-2 rounded-full bg-accent/10 px-3 py-1 text-sm font-semibold text-accent">
+      <span className="sticker inline-flex -rotate-2 items-center gap-2 rounded-lg bg-pop-sun px-3 py-1 text-xs font-extrabold uppercase tracking-wider text-ink">
         <Presentation size={14} /> Class slides
       </span>
-      <h1 className="font-display text-4xl sm:text-5xl font-semibold mt-4 tracking-tight">
-        Missed something? <span className="text-accent">Replay the class.</span>
+      <h1 className="font-display text-5xl sm:text-7xl mt-5 leading-[0.95]">
+        Missed something? <span className="grad-text">Replay the class.</span>
       </h1>
-      <p className="text-muted mt-4 max-w-2xl text-lg">
+      <p className="text-muted mt-5 max-w-2xl text-lg font-medium">
         The same animated slides used in the lab, one deck per class. Open one, then use the arrow keys, click, or swipe on
         your phone. Every terminal has a Copy button, so you can paste the commands straight into Git Bash.
       </p>
@@ -32,7 +32,7 @@ export default function PresentPage() {
         {decks.map((d, i) => {
           const body = (
             <>
-              <div className={`relative h-40 bg-gradient-to-br ${grads[i % grads.length]} p-6 text-white overflow-hidden`}>
+              <div className={`relative h-44 bg-gradient-to-br ${grads[i % grads.length]} p-6 text-white overflow-hidden border-b-[2.5px] border-line`}>
                 <div className="absolute -right-6 -bottom-10 text-[150px] font-display font-bold leading-none opacity-20 select-none">
                   {d.classNo}
                 </div>
@@ -56,7 +56,7 @@ export default function PresentPage() {
                   {d.ready ? (
                     <>
                       <span className="text-xs text-muted">{d.slides} slides</span>
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-foreground text-background px-4 py-2 text-sm font-semibold group-hover:bg-accent group-hover:text-white transition-colors">
+                      <span className="inline-flex items-center gap-1.5 rounded-full border-[2.5px] border-ink bg-pop-sun text-ink px-4 py-2 text-sm font-extrabold group-hover:bg-accent group-hover:text-white transition-colors">
                         Open deck <ArrowUpRight size={15} />
                       </span>
                     </>
@@ -73,19 +73,19 @@ export default function PresentPage() {
             <a
               key={d.slug}
               href={`/decks/${d.slug}.html`}
-              className="group flex flex-col rounded-3xl border border-border bg-background overflow-hidden transition-all hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-accent/15 hover:border-accent"
+              className="pop-card group flex flex-col rounded-3xl bg-background overflow-hidden"
             >
               {body}
             </a>
           ) : (
-            <div key={d.slug} className="flex flex-col rounded-3xl border border-dashed border-border bg-background overflow-hidden opacity-70">
+            <div key={d.slug} className="flex flex-col rounded-3xl border-[2.5px] border-dashed border-line bg-background overflow-hidden opacity-60">
               {body}
             </div>
           );
         })}
       </div>
 
-      <div className="mt-12 rounded-2xl bg-panel p-6 text-sm text-muted">
+      <div className="pop-card mt-12 rounded-2xl bg-panel p-6 text-sm text-muted">
         <b className="text-foreground">Keys inside a deck:</b> → or Space next · ← back · O all slides · F full screen · M sound on/off · ? help
       </div>
     </section>
