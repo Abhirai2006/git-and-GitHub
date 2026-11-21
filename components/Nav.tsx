@@ -14,6 +14,7 @@ const links = [
   { href: "/quiz", label: "Quiz" },
   { href: "/debug", label: "Debug It" },
   { href: "/cheatsheet", label: "Cheat Sheet" },
+  { href: "/present", label: "Slides" },
 ];
 
 export default function Nav() {
