@@ -22,10 +22,10 @@ export default function StreakBadge() {
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3 }}
-      className="hidden sm:flex items-center gap-1 rounded-full border border-border px-3 py-1.5 text-xs font-semibold"
+      className="sticker hidden sm:flex items-center gap-1 rounded-full bg-pop-sun text-ink px-3 py-1.5 text-xs font-extrabold"
       title={`${streak} day streak, visit again tomorrow to keep it going`}
     >
-      <Flame size={13} className="text-accent" />
+      <Flame size={13} className="text-pop-coral" />
       {streak}
     </motion.div>
   );
