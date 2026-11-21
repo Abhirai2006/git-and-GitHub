@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<!-- Generated from decks-src/class-2.html by scripts/build-decks.mjs. Edit the source file, not this one. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Class 2 · Git on your laptop · BAIL308C</title>
+<link rel="icon" href="assets/muse-logo.png">
+<link rel="stylesheet" href="engine/deck.css">
+<style>
+/* ---------- title graph ---------- */
+.tg { position: absolute; left: 860px; top: 90px; width: 680px; height: 720px; }
+.tg svg { width: 100%; height: 100%; overflow: visible; }
+.tg .ln { fill: none; stroke-width: 14; stroke-linecap: round; }
+.tg .nd { transform-box: fill-box; transform-origin: center; transform: scale(0); }
+.slide.play .tg .nd { animation: ndPop .7s var(--spring) forwards; animation-delay: var(--d); }
+@keyframes ndPop { to { transform: scale(1); } }
+.tg .tagp { opacity: 0; }
+.slide.play .tg .tagp { animation: tagIn .6s var(--ease) forwards; animation-delay: var(--d); }
+@keyframes tagIn { from { opacity: 0; transform: translateX(-14px); } to { opacity: 1; transform: none; } }
+
+/* ---------- agenda ---------- */
+.ag { position: absolute; left: 100px; right: 100px; top: 300px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
+.ag .b { border-radius: 26px; padding: 24px 22px; height: 400px; color: #fff; position: relative; overflow: hidden; }
+.ag .b .t { font: 800 15px "Body"; letter-spacing: .12em; text-transform: uppercase; opacity: .9; }
+.ag .b .h { font: 800 34px/1.05 "Head"; letter-spacing: -.02em; margin-top: 12px; }
+.ag .b .s { font: 500 19px/1.4 "Body"; margin-top: 12px; opacity: .95; }
+.ag .b .x { position: absolute; left: 22px; bottom: 20px; font: 800 15px "Body"; letter-spacing: .08em; padding: 6px 12px; border-radius: 999px; background: rgba(255,255,255,.25); }
+
+/* ---------- FINAL files ---------- */
+.ff { position: absolute; width: 390px; height: 96px; border-radius: 20px; background: #fff; border: 2px solid var(--line); box-shadow: 0 16px 34px -14px rgba(14,16,32,.3); display: flex; align-items: center; gap: 18px; padding: 0 22px; font: 700 23px "Body"; opacity: 0; transition: all .8s var(--ease); }
+.ff .fi { width: 44px; height: 54px; border-radius: 8px; background: #2B6BFF; flex: none; position: relative; }
+.ff .fi::after { content: "W"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #fff; font: 800 22px "Head"; }
+.slide.play .ff { animation: drop .8s cubic-bezier(.3,1.4,.5,1) forwards; animation-delay: var(--d); }
+@keyframes drop { from { opacity: 0; transform: translateY(-300px) rotate(var(--r)); } to { opacity: 1; transform: rotate(var(--r)); } }
+.slide.st-1 .ff { opacity: 0 !important; transform: translate(var(--tx, 0), 120px) scale(.6) !important; animation: none; }
+.one { position: absolute; left: 860px; top: 260px; width: 640px; opacity: 0; transform: scale(.9); transition: all .8s var(--spring) .3s; }
+.slide.st-1 .one { opacity: 1; transform: none; }
+.tl5 { display: flex; align-items: center; margin-top: 40px; position: relative; }
+.tl5::before { content: ""; position: absolute; left: 20px; right: 20px; top: 50%; height: 8px; margin-top: -4px; border-radius: 4px; background: var(--g-cool); }
+.tl5 i { position: relative; width: 40px; height: 40px; border-radius: 50%; background: #fff; border: 8px solid var(--blue); margin-right: 104px; z-index: 1; }
+.tl5 i:last-child { margin-right: 0; border-color: var(--pink); box-shadow: 0 0 0 10px rgba(255,46,136,.18); }
+
+/* ---------- save points ---------- */
+.sp { position: absolute; left: 100px; right: 100px; top: 470px; height: 260px; }
+.sp .track { position: absolute; left: 0; right: 0; top: 120px; height: 12px; border-radius: 6px; background: var(--bg3); }
+.sp .fill { position: absolute; left: 0; top: 120px; height: 12px; width: 100%; border-radius: 6px; background: var(--g-hot); }
+.sp .pt { position: absolute; top: 72px; width: 108px; margin-left: -54px; text-align: center; }
+.sp .pt .flag { width: 108px; height: 108px; border-radius: 30px; background: #fff; border: 4px solid var(--coral); display: flex; align-items: center; justify-content: center; box-shadow: 0 14px 30px -10px rgba(255,77,46,.45); }
+.sp .pt .flag svg { width: 50px; height: 50px; fill: none; stroke: var(--coral); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.sp .pt .cap { font: 700 21px/1.3 "Body"; margin-top: 18px; width: 220px; margin-left: -56px; }
+.sp .pt.bad .flag { border-color: var(--ink3); box-shadow: none; }
+.sp .pt.bad .flag svg { stroke: var(--ink3); }
+
+/* ---------- git vs github ---------- */
+.gvg { position: absolute; top: 250px; width: 660px; height: 470px; padding: 40px 44px; }
+.gvg .h { font: 800 64px "Head"; letter-spacing: -.03em; margin-top: 20px; }
+.gvg .s { font: 600 26px/1.4 "Body"; color: var(--ink2); margin-top: 6px; }
+.gvg ul { list-style: none; margin-top: 24px; }
+.gvg li { font: 500 24px/1.45 "Body"; color: var(--ink2); padding-left: 34px; position: relative; margin-bottom: 8px; }
+.gvg li::before { content: ""; position: absolute; left: 0; top: 13px; width: 14px; height: 14px; border-radius: 50%; background: var(--blue); }
+.gvg.hub li::before { background: var(--pink); }
+.wifi { position: absolute; right: 40px; top: 40px; width: 80px; height: 80px; }
+.wifi svg { width: 80px; height: 80px; fill: none; stroke: var(--green); stroke-width: 2.4; stroke-linecap: round; transition: stroke .4s; }
+.wifi .slash { stroke: var(--coral); stroke-width: 3; stroke-dasharray: 40; stroke-dashoffset: 40; transition: stroke-dashoffset .5s ease .2s; }
+.slide.st-1 .wifi svg { stroke: var(--ink3); } .slide.st-1 .wifi .slash { stroke-dashoffset: 0; stroke: var(--coral); }
+.offline-ok { position: absolute; left: 44px; bottom: 34px; display: flex; gap: 12px; align-items: center; }
+.offline-ok i { width: 30px; height: 30px; border-radius: 50%; background: var(--blue); transform: scale(0); transition: transform .5s var(--spring); }
+.slide.st-1 .offline-ok i { transform: scale(1); }
+.slide.st-1 .offline-ok i:nth-child(2) { transition-delay: .5s; } .slide.st-1 .offline-ok i:nth-child(3) { transition-delay: .9s; } .slide.st-1 .offline-ok i:nth-child(4) { transition-delay: 1.3s; }
+.offline-ok b { font: 700 22px "Body"; color: var(--green); margin-left: 8px; opacity: 0; transition: opacity .5s 1.6s; }
+.slide.st-1 .offline-ok b { opacity: 1; }
+
+/* ---------- OS cards ---------- */
+.os { position: absolute; top: 250px; width: 440px; height: 540px; padding: 36px 34px; }
+.os .h { font: 800 44px "Head"; letter-spacing: -.02em; margin-top: 18px; }
+.os ol { margin-top: 20px; padding-left: 28px; }
+.os li { font: 500 23px/1.45 "Body"; color: var(--ink2); margin-bottom: 12px; padding-left: 6px; }
+.os li code { font-size: 21px; }
+
+/* ---------- installer mock ---------- */
+.inst { position: absolute; left: 100px; top: 250px; width: 820px; height: 560px; border-radius: 22px; background: #fff; border: 2px solid #D5DAE8; box-shadow: 0 30px 60px -24px rgba(14,16,32,.3); overflow: hidden; }
+.inst .tb { height: 50px; background: #F1F3F9; border-bottom: 2px solid #E1E5F0; display: flex; align-items: center; padding: 0 20px; font: 700 18px "Body"; color: var(--ink2); gap: 12px; }
+.inst .pg { position: absolute; left: 0; right: 0; top: 50px; bottom: 0; padding: 34px 40px; opacity: 0; transform: translateX(40px); transition: all .5s var(--ease); }
+.inst .p0 { opacity: 1; transform: none; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 14px; }
+.slide.st-1 .inst .p0 { opacity: 0; }
+.slide.st-1 .inst .p1, .slide.st-2 .inst .p2, .slide.st-3 .inst .p3 { opacity: 1; transform: none; }
+.slide.st-2 .inst .p1, .slide.st-3 .inst .p2 { opacity: 0; transform: translateX(-40px); }
+.inst .ph { font: 800 30px "Head"; letter-spacing: -.01em; }
+.inst .pd { font: 500 21px/1.4 "Body"; color: var(--ink3); margin-top: 8px; }
+.inst .opt { margin-top: 18px; border: 2px solid var(--line); border-radius: 14px; padding: 16px 20px; font: 600 22px "Body"; display: flex; align-items: center; gap: 16px; color: var(--ink2); }
+.inst .opt .rd { width: 26px; height: 26px; border-radius: 50%; border: 3px solid #C4CADB; flex: none; }
+.inst .opt.pick { border-color: var(--green); background: #EBFBF3; color: var(--ink); }
+.inst .opt.pick .rd { border-color: var(--green); background: radial-gradient(circle, var(--green) 45%, transparent 50%); }
+.inst .opt.no { opacity: .55; text-decoration: line-through; text-decoration-color: var(--coral); text-decoration-thickness: 3px; }
+.inst .btn { position: absolute; right: 40px; bottom: 30px; font: 800 20px "Body"; padding: 12px 34px; border-radius: 12px; background: var(--blue); color: #fff; }
+.instside { position: absolute; left: 980px; top: 250px; width: 520px; }
+.instside .r { display: flex; gap: 18px; align-items: flex-start; margin-bottom: 26px; padding: 20px 22px; border-radius: 20px; border: 2px solid var(--line); background: #fff; transition: all .4s var(--ease); }
+.instside .r .k { width: 44px; height: 44px; border-radius: 13px; background: var(--bg3); display: flex; align-items: center; justify-content: center; font: 800 21px "Head"; flex: none; transition: all .4s; }
+.instside .r .t { font: 700 23px/1.3 "Body"; } .instside .r .s { font: 500 19px/1.4 "Body"; color: var(--ink3); margin-top: 4px; }
+.slide.st-1:not(.st-2) .instside .r1, .slide.st-2:not(.st-3) .instside .r2, .slide.st-3 .instside .r3 { border-color: var(--coral); box-shadow: 0 16px 30px -16px rgba(255,77,46,.45); transform: translateX(-10px); }
+.slide.st-1 .instside .r1 .k, .slide.st-2 .instside .r2 .k, .slide.st-3 .instside .r3 .k { background: var(--g-hot); color: #fff; }
+
+/* ---------- three areas ---------- */
+.area { position: absolute; top: 290px; width: 440px; height: 470px; border-radius: 32px; padding: 32px 32px; border: 3px solid; background: #fff; }
+.area .h { font: 800 36px/1.05 "Head"; letter-spacing: -.02em; margin-top: 18px; }
+.area .m { font: 700 34px "Hand"; margin-top: 8px; }
+.area .s { font: 500 21px/1.4 "Body"; color: var(--ink2); margin-top: 8px; }
+.area.wd { left: 100px; border-color: var(--wd); } .area.wd .m { color: var(--wd); }
+.area.st { left: 580px; border-color: var(--st); } .area.st .m { color: #E07800; }
+.area.rp { left: 1060px; border-color: var(--repo); } .area.rp .m { color: var(--repo); }
+.chip { position: absolute; left: 150px; top: 640px; width: 340px; height: 84px; border-radius: 20px; display: flex; align-items: center; gap: 16px; padding: 0 22px; font: 800 26px "Mono"; color: #fff; background: var(--wd); box-shadow: 0 18px 34px -14px rgba(255,77,46,.6); opacity: 0; transform: translateY(30px) scale(.9); transition: transform 1s cubic-bezier(.5,0,.2,1.15), background .5s ease .5s, opacity .5s, box-shadow .5s; z-index: 5; }
+.chip small { font: 700 16px "Body"; letter-spacing: .08em; text-transform: uppercase; opacity: .9; margin-left: auto; }
+.slide.st-1 .chip { opacity: 1; transform: none; }
+.slide.st-2 .chip { transform: translateX(480px); background: var(--st); box-shadow: 0 18px 34px -14px rgba(255,158,0,.6); }
+.slide.st-3 .chip { transform: translateX(960px); background: var(--repo); box-shadow: 0 18px 34px -14px rgba(0,168,98,.6); }
+.chip .s1, .chip .s2, .chip .s3 { display: none; }
+.slide.st-1 .chip .s1 { display: inline; } .slide.st-2 .chip .s1 { display: none; } .slide.st-2 .chip .s2 { display: inline; } .slide.st-3 .chip .s2 { display: none; } .slide.st-3 .chip .s3 { display: inline; }
+.arr { position: absolute; top: 585px; width: 120px; text-align: center; z-index: 6; }
+.arr .a { font: 800 20px "Mono"; color: #fff; background: var(--ink); padding: 10px 14px; border-radius: 12px; display: inline-block; white-space: nowrap; }
+
+/* ---------- git init folder ---------- */
+.fold { position: absolute; left: 1020px; top: 290px; width: 460px; height: 420px; }
+.fold .big { position: absolute; left: 40px; top: 30px; width: 380px; height: 290px; }
+.fold .big svg { width: 100%; height: 100%; fill: #FFC21A; stroke: #E09A00; stroke-width: .6; }
+.fold .nm { position: absolute; left: 0; right: 0; top: 330px; text-align: center; font: 800 28px "Mono"; }
+.fold .dotgit { position: absolute; left: 290px; top: -10px; width: 170px; height: 120px; border-radius: 22px; border: 4px dashed var(--violet); background: rgba(124,58,237,.08); display: flex; flex-direction: column; align-items: center; justify-content: center; font: 800 34px "Mono"; color: var(--violet); opacity: 0; transform: translate(-60px, 80px) scale(.3) rotate(-20deg); transition: all .9s var(--spring) 3.4s; }
+.fold .dotgit small { font: 700 15px "Body"; letter-spacing: .1em; text-transform: uppercase; }
+.slide.play .fold .dotgit { opacity: 1; transform: rotate(6deg); }
+
+/* ---------- branch scene ---------- */
+.bg-area { position: absolute; left: 860px; top: 200px; width: 660px; height: 450px; }
+.bg-area svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.bline { fill: none; stroke-width: 12; stroke-linecap: round; }
+.bline.m { stroke: var(--main); }
+.bline.f { stroke: var(--feat); stroke-dasharray: 420; stroke-dashoffset: 420; transition: stroke-dashoffset .9s var(--ease), stroke .5s; }
+.slide.st-3 .bline.f { stroke-dashoffset: 0; }
+.slide.st-5 .bline.f { stroke: var(--main); }
+.cn { position: absolute; width: 64px; height: 64px; margin: -32px 0 0 -32px; border-radius: 50%; background: #fff; border: 10px solid var(--main); z-index: 2; transition: transform .6s var(--spring), border-color .5s; }
+.cn .id { position: absolute; top: 66px; left: 50%; transform: translateX(-50%); font: 700 19px "Mono"; color: var(--ink3); white-space: nowrap; }
+.cn .msg { position: absolute; top: 92px; left: 50%; transform: translateX(-50%); font: 600 18px "Body"; color: var(--ink2); white-space: nowrap; }
+.cn.c2 { border-color: var(--feat); transform: scale(0); }
+.slide.st-3 .cn.c2 { transform: scale(1); transition-delay: .7s; }
+.slide.st-5 .cn.c2 { border-color: var(--main); }
+.bl { position: absolute; z-index: 3; font: 800 21px "Mono"; color: #fff; padding: 9px 16px; border-radius: 12px; white-space: nowrap; transition: left .9s cubic-bezier(.5,0,.2,1.1), top .9s cubic-bezier(.5,0,.2,1.1), opacity .4s, transform .5s var(--spring); }
+.bl.master { background: var(--main); left: 30px; top: 160px; }
+.bl.feat { background: var(--feat); left: 30px; top: 100px; opacity: 0; transform: scale(.4); }
+.slide.st-1 .bl.feat { opacity: 1; transform: none; }
+.slide.st-3 .bl.feat { left: 380px; top: 40px; }
+.slide.st-5 .bl.master { left: 404px; top: 264px; }
+.head { position: absolute; z-index: 4; font: 800 19px "Body"; letter-spacing: .1em; color: var(--ink); background: var(--sun); padding: 8px 14px; border-radius: 10px; transition: left .9s cubic-bezier(.5,0,.2,1.1), top .9s cubic-bezier(.5,0,.2,1.1); left: 160px; top: 162px; box-shadow: 0 10px 20px -8px rgba(255,158,0,.6); }
+.head::before { content: "◀"; position: absolute; left: -18px; top: 8px; color: var(--sun); font-size: 18px; }
+.slide.st-2 .head { left: 258px; top: 102px; }
+.slide.st-3 .head { left: 608px; top: 42px; }
+.slide.st-4 .head { left: 160px; top: 162px; }
+.slide.st-5 .head { left: 530px; top: 266px; }
+.folder { position: absolute; left: 860px; top: 690px; width: 660px; height: 120px; border-radius: 22px; background: var(--bg2); display: flex; align-items: center; gap: 16px; padding: 0 26px; }
+.folder .lab { font: 800 15px "Body"; letter-spacing: .1em; text-transform: uppercase; color: var(--ink3); width: 110px; line-height: 1.3; }
+.folder .f { font: 700 22px "Mono"; padding: 12px 18px; border-radius: 14px; background: #fff; border: 2px solid var(--line); transition: all .5s var(--spring); }
+.folder .f.login { opacity: 0; transform: scale(.4); border-color: var(--feat); color: var(--feat); }
+.slide.st-3 .folder .f.login { opacity: 1; transform: none; transition-delay: .5s; }
+.slide.st-4 .folder .f.login { opacity: .25; transform: scale(.85); border-style: dashed; transition-delay: 0s; }
+.slide.st-5 .folder .f.login { opacity: 1; transform: none; border-style: solid; color: var(--main); border-color: var(--main); }
+.ffstamp { position: absolute; left: 1000px; top: 520px; z-index: 6; font: 800 34px "Head"; color: var(--green); border: 5px solid var(--green); border-radius: 16px; padding: 6px 20px; background: #fff; letter-spacing: .02em; opacity: 0; transform: scale(2.2) rotate(-14deg); transition: all .5s cubic-bezier(.5,0,.4,1.4); }
+.slide.st-5 .ffstamp { opacity: 1; transform: rotate(-6deg); transition-delay: 1.7s; }
+.lostnote { position: absolute; left: 1000px; top: 620px; font: 700 34px "Hand"; color: var(--coral); opacity: 0; transform: rotate(-3deg); transition: opacity .4s; white-space: nowrap; z-index: 7; }
+.slide.st-4:not(.st-5) .lostnote { opacity: 1; transition-delay: 1.2s; }
+
+/* ---------- merge outcomes ---------- */
+.mo { position: absolute; top: 260px; width: 440px; height: 560px; padding: 32px; }
+.mo svg { width: 100%; height: 190px; margin-top: 10px; overflow: visible; }
+.mo .h { font: 800 36px "Head"; letter-spacing: -.02em; margin-top: 14px; }
+.mo .s { font: 500 21px/1.45 "Body"; color: var(--ink2); margin-top: 10px; }
+
+/* ---------- conflict code ---------- */
+.cf { position: absolute; left: 100px; top: 260px; width: 820px; border-radius: 26px; background: #FBFCFF; border: 2px solid #DCE1EE; padding: 34px 38px; font: 600 27px/1.7 "Mono"; }
+.cf .mk { color: #D92B12; font-weight: 800; } .cf .a { background: rgba(37,99,255,.1); display: block; margin: 0 -14px; padding: 0 14px; border-radius: 8px; } .cf .b { background: rgba(255,46,136,.1); display: block; margin: 0 -14px; padding: 0 14px; border-radius: 8px; }
+
+/* ---------- stash scene ---------- */
+.wf { position: absolute; left: 900px; top: 210px; width: 600px; height: 300px; border-radius: 28px; background: #fff; border: 3px solid var(--line); padding: 26px 30px; }
+.wf .top { display: flex; justify-content: space-between; align-items: center; }
+.brp { font: 800 19px "Mono"; color: #fff; padding: 7px 14px; border-radius: 10px; background: var(--main); transition: background .4s; }
+.brp::after { content: "master"; }
+.slide.st-4 .brp { background: var(--feat); } .slide.st-4 .brp::after { content: "other-branch"; }
+.slide.st-5 .brp { background: var(--main); } .slide.st-5 .brp::after { content: "master"; }
+.doc { margin-top: 22px; border-radius: 16px; background: var(--bg2); padding: 18px 22px; font: 600 24px/1.65 "Mono"; position: relative; }
+.doc .new { color: var(--coral); display: block; opacity: 0; transform: translateX(-20px); transition: all .6s var(--ease); }
+.slide.st-1 .doc .new { opacity: 1; transform: none; transition-delay: 1.6s; }
+.slide.st-2 .doc .new { opacity: 0; transform: translate(0, 260px) scale(.7); transition: all .9s cubic-bezier(.6,0,.3,1); }
+.slide.st-6 .doc .new { opacity: 1; transform: none; transition-delay: .6s; }
+.badge { position: absolute; right: 30px; bottom: 24px; font: 800 17px "Body"; letter-spacing: .08em; text-transform: uppercase; padding: 7px 14px; border-radius: 999px; background: var(--green); color: #fff; transition: background .4s; }
+.badge::after { content: "clean"; }
+.slide.st-1 .badge { background: var(--coral); } .slide.st-1 .badge::after { content: "modified"; }
+.slide.st-2 .badge { background: var(--green); } .slide.st-2 .badge::after { content: "clean"; }
+.slide.st-6 .badge { background: var(--coral); } .slide.st-6 .badge::after { content: "modified"; }
+.drawer { position: absolute; left: 960px; top: 560px; width: 480px; height: 230px; }
+.drawer .box { position: absolute; left: 0; right: 0; bottom: 0; height: 150px; border-radius: 0 0 26px 26px; background: var(--g-cool); box-shadow: 0 20px 40px -18px rgba(37,99,255,.6); }
+.drawer .box::after { content: ""; position: absolute; left: 50%; top: 58px; width: 100px; height: 16px; margin-left: -50px; border-radius: 8px; background: rgba(255,255,255,.55); }
+.drawer .lid { position: absolute; left: -14px; right: -14px; top: 64px; height: 24px; border-radius: 12px; background: #1E40C8; transform-origin: 0 50%; transition: transform .6s var(--spring); }
+.slide.st-1 .drawer .lid { transform: rotate(-16deg); }
+.slide.st-3 .drawer .lid { transform: none; }
+.slide.st-6 .drawer .lid { transform: rotate(-16deg); }
+.drawer .nm { position: absolute; left: 0; right: 0; bottom: 18px; text-align: center; font: 800 22px "Body"; color: #fff; letter-spacing: .04em; }
+.drawer .stk { position: absolute; left: 150px; top: 0; font: 800 22px "Mono"; color: var(--violet); background: #fff; border: 3px solid var(--violet); border-radius: 12px; padding: 6px 14px; opacity: 0; transform: translateY(30px); transition: all .5s var(--spring) .6s; }
+.slide.st-2 .drawer .stk { opacity: 1; transform: none; }
+.slide.st-6 .drawer .stk { opacity: 0; transform: translateY(-40px); transition-delay: 0s; }
+
+/* misc */
+.vimkeys { display: flex; gap: 12px; align-items: center; margin: 18px 0 6px; }
+.vimkeys .kbd { font-size: 30px; }
+.three-help { position: absolute; left: 100px; right: 100px; top: 250px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+.three-help .card { padding: 30px 30px; height: 560px; }
+.three-help .msg { font: 700 20px/1.45 "Mono"; color: #D92B12; background: #FFF2EF; border-radius: 14px; padding: 14px 16px; margin-top: 18px; }
+.three-help .msg.w { color: #A85A00; background: #FFF6E5; }
+.three-help .h { font: 800 30px/1.15 "Head"; letter-spacing: -.01em; margin-top: 18px; }
+.three-help .s { font: 500 21px/1.45 "Body"; color: var(--ink2); margin-top: 14px; }
+.rec { position: absolute; left: 100px; right: 100px; top: 290px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+.rec .card { padding: 32px; height: 470px; position: relative; }
+.rec .n { font: 800 110px/1 "Head"; letter-spacing: -.05em; }
+.rec .h { font: 800 30px/1.15 "Head"; margin-top: 8px; letter-spacing: -.01em; }
+.rec .s { font: 500 21px/1.45 "Body"; color: var(--ink2); margin-top: 12px; }
+.rec .pg { position: absolute; left: 32px; bottom: 28px; font: 800 16px "Body"; letter-spacing: .1em; text-transform: uppercase; color: var(--ink3); }
+</style>
+</head>
+<body>
+<div id="stage">
+
+<!-- ============================================================ 1 TITLE -->
+<section class="slide glow" data-name="Title" data-min="0">
+  <div class="abs logos" style="left:100px;top:64px;--d:.1s" data-a="down">
+    <img class="muse" src="assets/muse-logo.png" alt="Mysore University School of Engineering logo">
+    <img class="uom" src="assets/uom-crest.png" alt="University of Mysore crest">
+    <div class="sep"></div>
+    <div class="lt">Mysore University School of Engineering<small>Dept. of AI &amp; ML · BAIL308C Project Management with Git</small></div>
+  </div>
+  <div class="abs" style="left:100px;top:258px;--d:.2s" data-a="up"><span class="pill hot">Class 2 · Saturday, 21 November</span></div>
+  <h1 class="hl" style="top:316px;width:780px;font-size:108px;line-height:.98;--d:.35s">Git, on <span class="gh">your own</span> laptop.</h1>
+  <div class="abs lead" style="left:100px;top:676px;width:720px;--d:1s" data-a="up">Install it. Make your first commit. Then branch, merge and stash like a real team.</div>
+  <div class="abs small" style="left:100px;top:800px;--d:1.3s" data-a="up"><b style="color:var(--ink)">Abhishek Rai</b> &nbsp;·&nbsp; Experiments 1, 2 and 3</div>
+  <div class="tg">
+    <svg viewBox="0 0 680 720">
+      <path class="ln draw" style="stroke:var(--main);--len:700;--d:.3s" d="M90 660 L90 60"/>
+      <path class="ln draw" style="stroke:var(--feat);--len:520;--d:.9s" d="M90 520 C90 440 330 460 330 380 L330 260 C330 190 90 210 90 140"/>
+      <path class="ln draw" style="stroke:var(--green);--len:520;--d:1.3s" d="M90 400 C90 330 560 360 560 280 L560 170"/>
+      <g fill="#fff" stroke-width="12">
+        <circle class="nd" cx="90" cy="660" r="26" stroke="var(--main)" style="--d:.4s"/>
+        <circle class="nd" cx="90" cy="520" r="26" stroke="var(--main)" style="--d:.6s"/>
+        <circle class="nd" cx="90" cy="400" r="26" stroke="var(--main)" style="--d:.8s"/>
+        <circle class="nd" cx="330" cy="380" r="26" stroke="var(--feat)" style="--d:1.3s"/>
+        <circle class="nd" cx="330" cy="260" r="26" stroke="var(--feat)" style="--d:1.5s"/>
+        <circle class="nd" cx="560" cy="280" r="26" stroke="var(--green)" style="--d:1.8s"/>
+        <circle class="nd" cx="560" cy="170" r="26" stroke="var(--green)" style="--d:2s"/>
+        <circle class="nd" cx="90" cy="140" r="34" stroke="var(--main)" style="--d:2.2s"/>
+      </g>
+      <g font-family="Mono" font-weight="800" font-size="24">
+        <g class="tagp" style="--d:2.4s"><rect x="140" y="116" width="128" height="46" rx="12" fill="#2563FF"/><text x="160" y="148" fill="#fff">master</text></g>
+        <g class="tagp" style="--d:2.6s"><rect x="372" y="236" width="218" height="46" rx="12" fill="#FF2E88"/><text x="388" y="268" fill="#fff">feature-branch</text></g>
+        <g class="tagp" style="--d:2.8s"><rect x="458" y="96" width="196" height="46" rx="12" fill="#00A862"/><text x="474" y="128" fill="#fff">other-branch</text></g>
+      </g>
+    </svg>
+  </div>
+  
+</section>
+
+<!-- ============================================================ 2 AGENDA -->
+<section class="slide" data-name="Today's plan" data-min="2">
+  <div class="eyebrow" data-a="up">Today, two hours</div>
+  <h2 class="hl">Six stops. One real project.</h2>
+  <div class="ag">
+    <div class="b" style="background:var(--g-cool);--d:.3s" data-a="up"><div class="t">0:03</div><div class="h">Recap</div><div class="s">What we did on GitHub last week</div><div class="x">5 min</div></div>
+    <div class="b" style="background:linear-gradient(160deg,#FF2E88,#7C3AED);--d:.4s" data-a="up"><div class="t">0:08</div><div class="h">Why Git</div><div class="s">Save points, and Git vs GitHub</div><div class="x">10 min</div></div>
+    <div class="b" style="background:var(--g-hot);--d:.5s" data-a="up"><div class="t">0:18</div><div class="h">Install &amp; set up</div><div class="s">Git on every laptop, your name and email</div><div class="x">20 min</div></div>
+    <div class="b" style="background:var(--g-fresh);--d:.6s" data-a="up"><div class="t">0:38</div><div class="h">First commit</div><div class="s">Three areas, init, add, commit</div><div class="x">Exp 1</div></div>
+    <div class="b" style="background:var(--g-sun);color:var(--ink);--d:.7s" data-a="up"><div class="t">1:12</div><div class="h">Branches</div><div class="s">Create, switch, merge</div><div class="x" style="background:rgba(14,16,32,.12)">Exp 2</div></div>
+    <div class="b" style="background:linear-gradient(160deg,#00B2D6,#2563FF);--d:.8s" data-a="up"><div class="t">1:34</div><div class="h">Stash</div><div class="s">Save unfinished work, come back later</div><div class="x">Exp 3</div></div>
+  </div>
+  <div class="abs small" style="left:100px;top:740px;--d:1.1s" data-a="up">A 5-minute break after the first commit. Last 10 minutes: recap and your practical record.</div>
+  
+</section>
+
+<!-- ============================================================ 3 RECAP ASK -->
+<section class="slide" data-name="Recap: last class" data-sec="Recap" data-ask data-min="3">
+  <div class="ask"><div class="q-tag">Quick question</div><div class="aq">Last Saturday, what did we do on GitHub?</div><div class="ah">Shout out one thing. Then press next.</div></div>
+  <div class="eyebrow" data-a="up">Class 1 recap</div>
+  <h2 class="hl">You already did a lot.</h2>
+  <div class="abs ticks" style="left:100px;top:290px">
+    <div class="r" style="--td:.4s"><div class="bx"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>Created a GitHub account</div>
+    <div class="r" style="--td:.7s"><div class="bx"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>Created a repository</div>
+    <div class="r" style="--td:1s"><div class="bx"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>Wrote a README.md</div>
+    <div class="r" style="--td:1.3s"><div class="bx"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>Deleted files and data</div>
+    <div class="r" style="--td:1.6s"><div class="bx"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>Switched a repo from public to private</div>
+  </div>
+  <div class="abs card" style="left:900px;top:270px;width:600px;padding:40px 44px;--d:1.9s" data-a="right">
+    <div class="label">What was left</div>
+    <div style="font:800 46px/1.1 Head;letter-spacing:-.02em;margin-top:14px">No laptops last week, so Git itself waited <span class="gh">until today.</span></div>
+    <div class="small" style="margin-top:18px">Installing Git, <code>git config</code>, <code>git init</code> and your first commit. We do all of it now.</div>
+  </div>
+  
+</section>
+
+<!-- ============================================================ 4 RECAP QUIZ -->
+<section class="slide tint" data-name="Recap: four quick questions" data-sec="Recap" data-min="5">
+  <div class="eyebrow" data-a="up">Warm-up</div>
+  <h2 class="hl sm">Four questions from last week.</h2>
+  <div class="qcard" style="left:100px;top:250px;--d:.2s" data-a="up"><div class="qn gc">01</div><div class="qq">Where do you make a repo private?</div><div class="qa" data-step="1">Settings, scroll to the Danger Zone, Change visibility.</div></div>
+  <div class="qcard" style="left:575px;top:250px;--d:.35s" data-a="up"><div class="qn gh">02</div><div class="qq">What is README.md for?</div><div class="qa" data-step="2">The front page of your repo, written in Markdown, shown below the file list.</div></div>
+  <div class="qcard" style="left:1050px;top:250px;--d:.5s" data-a="up"><div class="qn gf">03</div><div class="qq">Public vs private: who can see each?</div><div class="qa" data-step="3">Public: anyone on the internet. Private: only you and people you invite.</div></div>
+  <div class="abs card" style="left:100px;top:640px;width:1400px;padding:30px 40px;display:flex;align-items:center;gap:34px;--d:.7s" data-a="up">
+    <div class="gs" style="font:800 52px Head">04</div>
+    <div style="font:700 30px/1.3 Body">When you edited or deleted a file on GitHub, which green button did you press last?</div>
+    <div data-step="4" data-sa="stamp" style="margin-left:auto;font:800 30px Head;color:#fff;background:var(--green);padding:14px 26px;border-radius:14px;white-space:nowrap">Commit changes</div>
+  </div>
+  
+</section>
+
+<!-- ============================================================ 5 FINAL FILES -->
+<section class="slide" data-name="Sound familiar?" data-sec="Why Git" data-steps="1" data-min="8">
+  <div class="eyebrow" data-a="up">Sound familiar?</div>
+  <h2 class="hl" style="width:700px">One file. Six copies. Which one is real?</h2>
+  <div class="ff" style="left:860px;top:150px;--r:-4deg;--d:.4s;--tx:100px"><div class="fi"></div>report.docx</div>
+  <div class="ff" style="left:1000px;top:270px;--r:3deg;--d:.6s;--tx:-40px"><div class="fi"></div>report_final.docx</div>
+  <div class="ff" style="left:880px;top:390px;--r:-2deg;--d:.8s;--tx:80px"><div class="fi"></div>report_final2.docx</div>
+  <div class="ff" style="left:1060px;top:510px;--r:5deg;--d:1s;--tx:-100px"><div class="fi"></div>report_FINAL_final.docx</div>
+  <div class="ff" style="left:900px;top:630px;--r:-5deg;--d:1.2s;--tx:60px"><div class="fi"></div>report_USE_THIS.docx</div>
+  <div class="ff" style="left:1100px;top:750px;--r:2deg;--d:1.4s;--tx:-60px"><div class="fi"></div>report_v3_NEW.docx</div>
+  <div class="abs lead" style="left:100px;top:480px;width:660px;--d:1.6s" data-a="up">Everyone has made this mess. Nobody ever taught us a better way.</div>
+  <div class="abs" data-step="1" style="left:100px;top:640px;width:660px"><div style="font:800 46px/1.1 Head;letter-spacing:-.02em">Git: <span class="gh">one file</span>, with its whole history inside.</div></div>
+  <div class="one">
+    <div class="card" style="padding:30px 34px;display:flex;align-items:center;gap:22px"><div style="width:58px;height:70px;border-radius:10px;background:#2B6BFF;flex:none"></div><div style="font:800 34px Mono">report.docx</div></div>
+    <div class="tl5"><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="small" style="margin-top:16px">Every version saved, labelled, and one command away.</div>
+  </div>
+  
+</section>
+
+<!-- ============================================================ 6 SAVE POINTS -->
+<section class="slide glow" data-name="Commits are save points" data-sec="Why Git" data-min="10">
+  <div class="eyebrow" data-a="up">The one big idea</div>
+  <h2 class="hl">A commit is a <span class="gh">save point</span> in a game.</h2>
+  <div class="abs lead" style="left:100px;top:300px;width:1200px;--d:.6s" data-a="up">Break something later? You do not restart the level. You load the last save.</div>
+  <div class="sp">
+    <div class="track"></div>
+    <div class="fill" data-a="growx" style="--d:.8s"></div>
+    <div class="pt" style="left:6%;--d:1s" data-a="pop"><div class="flag"><svg viewBox="0 0 24 24"><path d="M5 21V4h11l-2 4 2 4H5"/></svg></div><div class="cap">Add notes file</div></div>
+    <div class="pt" style="left:30%;--d:1.3s" data-a="pop"><div class="flag"><svg viewBox="0 0 24 24"><path d="M5 21V4h11l-2 4 2 4H5"/></svg></div><div class="cap">Add login page</div></div>
+    <div class="pt" style="left:54%;--d:1.6s" data-a="pop"><div class="flag"><svg viewBox="0 0 24 24"><path d="M5 21V4h11l-2 4 2 4H5"/></svg></div><div class="cap">Fix spelling</div></div>
+    <div class="pt" style="left:78%;--d:1.9s" data-a="pop"><div class="flag"><svg viewBox="0 0 24 24"><path d="M5 21V4h11l-2 4 2 4H5"/></svg></div><div class="cap">Add contact page</div></div>
+    <div class="pt bad" style="left:96%;--d:2.2s" data-a="pop"><div class="flag"><svg viewBox="0 0 24 24"><path d="M12 8v5M12 16.5v.5"/><circle cx="12" cy="12" r="9"/></svg></div><div class="cap">Oops, broke it</div></div>
+  </div>
+  <div class="hnote" style="left:1000px;top:790px;--d:2.8s">just load the last save</div>
+  
+</section>
+
+<!-- ============================================================ 7 WHY IT MATTERS -->
+<section class="slide" data-name="Why it matters" data-sec="Why Git" data-min="12">
+  <div class="eyebrow" data-a="up">Why this is worth two hours</div>
+  <div class="abs big gh" style="left:92px;top:150px;font-size:300px;--d:.2s" data-a="blur">9 <span style="font-size:.5em;letter-spacing:-.02em">in</span> 10</div>
+  <div class="abs" style="left:100px;top:450px;font:800 56px/1.1 Head;letter-spacing:-.03em;width:760px;--d:.5s" data-a="up">developers use Git.</div>
+  <div class="abs small" style="left:100px;top:540px;width:680px;--d:.7s" data-a="up">Stack Overflow Developer Survey, 2022. It is the default tool for version control in almost every software job.</div>
+  <div class="abs card" style="left:920px;top:170px;width:580px;padding:36px 40px;--d:.6s" data-a="right">
+    <div class="label">Born in</div><div class="big gc" style="font-size:120px;margin-top:10px">2005</div>
+    <div class="small" style="margin-top:12px">Linus Torvalds wrote Git to manage the Linux kernel, which today has <b style="color:var(--ink)">over a million commits</b> from thousands of people.</div>
+  </div>
+  <div class="abs card" style="left:920px;top:580px;width:580px;padding:30px 40px;--d:.9s" data-a="right">
+    <div style="font:700 28px/1.35 Body">Internship and job posts list <span class="hi" style="--hd:1.6s">Git and GitHub</span> as a basic skill.</div>
+  </div>
+  
+</section>
+
+<!-- ============================================================ 8 GIT VS GITHUB -->
+<section class="slide tint" data-name="Git vs GitHub" data-sec="Why Git" data-steps="1" data-min="14">
+  <div class="eyebrow" data-a="up">The mix-up everyone makes</div>
+  <h2 class="hl">Git is not GitHub.</h2>
+  <div class="gvg card" style="left:100px;--d:.3s" data-a="left">
+    <div class="ico cool"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M2 20h20"/></svg></div>
+    <div class="wifi"><svg viewBox="0 0 24 24"><path d="M5 12.5a11 11 0 0 1 14 0"/><path d="M1.5 9a16 16 0 0 1 21 0"/><path d="M8.5 16a6 6 0 0 1 7 0"/><circle cx="12" cy="20" r="1"/><path class="slash" d="M3 3l18 18"/></svg></div>
+    <div class="h gc">Git</div><div class="s">The engine. Software on your laptop.</div>
+    <ul><li>Tracks every change, saves history</li><li>Works fully offline</li><li>Today we install it</li></ul>
+    <div class="offline-ok"><i></i><i></i><i></i><i></i><b>Wi-Fi off, still committing</b></div>
+  </div>
+  <div class="gvg card hub" style="left:840px;--d:.5s" data-a="right">
+    <div class="ico pink"><svg viewBox="0 0 24 24"><path d="M17.5 19H9a7 7 0 1 1 6.7-9h1.8a4.5 4.5 0 1 1 0 9Z"/></svg></div>
+    <div class="h" style="color:var(--pink)">GitHub</div><div class="s">The garage. A website that parks your project online.</div>
+    <ul><li>Backup and sharing</li><li>Teamwork: reviews, issues</li><li>What we used last week</li></ul>
+  </div>
+  
+</section>
+
+<!-- ============================================================ 9 INSTALL -->
+<section class="slide" data-name="Install Git" data-sec="Install & set up" data-min="18">
+  <div class="eyebrow" data-a="up">Laptops open</div>
+  <h2 class="hl">Install Git. Pick your laptop.</h2>
+  <div class="os card" style="left:100px;--d:.2s" data-a="up">
+    <div class="ico cool"><svg viewBox="0 0 24 24"><path d="M3 5l8-1v8H3zM13 4l8-1v9h-8zM3 13h8v8l-8-1zM13 13h8v9l-8-1z"/></svg></div>
+    <div class="h">Windows</div>
+    <ol><li>Go to <b>git-scm.com</b>, click <b>Download for Windows</b></li><li>Run the installer and press <b>Next</b> (3 screens need care, next slide)</li><li>Open <b>Git Bash</b> from the Start menu</li></ol>
+  </div>
+  <div class="os card" style="left:580px;--d:.35s" data-a="up">
+    <div class="ico hot"><svg viewBox="0 0 24 24"><path d="M12 20.5c-1.3 0-1.8-.7-3-.7-1.9 0-4.5-4-4.5-7.6 0-3 1.9-4.7 3.9-4.7 1.3 0 2.2.8 3.6.8s2-.8 3.6-.8c1.4 0 2.8.8 3.6 2-1.3.8-2.1 2.1-2.1 3.6 0 1.8 1 3.2 2.6 4-.8 1.9-2.3 3.4-3.6 3.4-1.2 0-1.7-.7-3.1-.7z"/><path d="M14.5 2.5c-1.3.3-2.6 1.6-2.5 3.3 1.4 0 2.7-1.4 2.5-3.3z"/></svg></div>
+    <div class="h">macOS</div>
+    <ol><li>Open <b>Terminal</b></li><li>Type <code>git --version</code></li><li>If asked, click <b>Install</b> for the Command Line Tools and wait</li></ol>
+  </div>
+  <div class="os card" style="left:1060px;--d:.5s" data-a="up">
+    <div class="ico fresh"><svg viewBox="0 0 24 24"><path d="m4 17 6-6-6-6"/><path d="M12 19h8"/></svg></div>
+    <div class="h">Linux</div>
+    <ol><li>Ubuntu / Debian:<br><code>sudo apt install git</code></li><li>Fedora:<br><code>sudo dnf install git</code></li></ol>
+  </div>
+  
+</section>
+
+<!-- ============================================================ 10 INSTALLER -->
+<section class="slide tint" data-name="Windows installer: 3 screens" data-sec="Install & set up" data-steps="3" data-min="21">
+  <div class="eyebrow" data-a="up">Windows only</div>
+  <h2 class="hl sm">Press Next, except on these three screens.</h2>
+  <div class="inst" data-a="zoom" style="--d:.2s">
+    <div class="tb"><span style="width:14px;height:14px;border-radius:50%;background:#FF5F57"></span>Git Setup</div>
+    <div class="pg p0"><div class="ph">Git Setup</div><div class="pd">Press next to walk through the three screens.</div></div>
+    <div class="pg p1"><div class="ph">Choosing the default editor used by Git</div><div class="pd">Git opens this editor when it needs you to type a message.</div>
+      <div class="opt no"><span class="rd"></span>Use Vim (the default)</div>
+      <div class="opt pick"><span class="rd"></span>Use Notepad as Git's default editor</div>
+      <div class="opt"><span class="rd"></span>Use Visual Studio Code (if you have it)</div><div class="btn">Next</div></div>
+    <div class="pg p2"><div class="ph">Adjusting the name of the initial branch</div><div class="pd">The name of the first branch in every new repository.</div>
+      <div class="opt pick"><span class="rd"></span>Let Git decide</div>
+      <div class="opt"><span class="rd"></span>Override the default branch name</div>
+      <div class="pd" style="margin-top:22px">Leave it. We set it to <b>master</b> ourselves in a few minutes.</div><div class="btn">Next</div></div>
+    <div class="pg p3"><div class="ph">Adjusting your PATH environment</div><div class="pd">Where you can use Git from.</div>
+      <div class="opt"><span class="rd"></span>Use Git from Git Bash only</div>
+      <div class="opt pick"><span class="rd"></span>Git from the command line and also from 3rd-party software (Recommended)</div>
+      <div class="opt"><span class="rd"></span>Use Git and optional Unix tools…</div><div class="btn">Next</div></div>
+  </div>
+  <div class="instside">
+    <div class="r r1"><div class="k">1</div><div><div class="t">Default editor: Notepad</div><div class="s">Vim confuses beginners. Notepad is easy to close.</div></div></div>
+    <div class="r r2"><div class="k">2</div><div><div class="t">Branch name: Let Git decide</div><div class="s">We fix it with git config.</div></div></div>
+    <div class="r r3"><div class="k">3</div><div><div class="t">PATH: Recommended</div><div class="s">Already selected. Just press Next.</div></div></div>
+    <div class="small" style="margin-top:8px">Every other screen: leave it and press <b>Next</b>, then <b>Install</b>.</div>
+  </div>
+  
+</section>
+
+<!-- ============================================================ 11 VERSION -->
+<section class="slide" data-name="Check it worked" data-sec="Install & set up" data-min="26">
+  <div class="eyebrow" data-a="up">Did it work?</div>
+  <h2 class="hl">Open Git Bash. Type this.</h2>
+  <div class="term" data-type data-delay="900" style="left:100px;top:280px;width:880px">
+    <div class="bar"><i></i><i></i><i></i><b>Git Bash</b></div>
+    <div class="body">
+      <div class="ln cmd">git --version</div>
+      <div class="ln out ok">git version 2.51.0.windows.1</div>
+    </div>
+  </div>
+  <div class="hnote" style="left:560px;top:490px;--d:2.6s">any 2.x number is fine</div>
+  <div class="abs card" style="left:1050px;top:280px;width:450px;padding:34px 36px;--d:.6s" data-a="right">
+    <div class="ico sun" style="margin-bottom:18px"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></div>
+    <div style="font:800 30px/1.2 Head">"command not found"?</div>
+    <div class="small" style="margin-top:12px">Close the window and open a <b>new</b> one. A fresh terminal picks up the new install.</div>
+  </div>
+  <div class="abs small" style="left:100px;top:600px;width:860px;--d:1.2s" data-a="up">Mac and Linux: use Terminal. The version line looks slightly different, that is fine.</div>
+  
+</section>
+
+<!-- ============================================================ 12 TERMINAL KIT -->
+<section class="slide tint" data-name="Terminal survival kit" data-sec="Install & set up" data-min="30">
+  <div class="eyebrow" data-a="up">Never used a terminal?</div>
+  <h2 class="hl">Five commands to get around.</h2>
+  <div class="abs card" style="left:100px;top:270px;width:640px;padding:26px 34px;--d:.2s" data-a="left">
+    <table class="tbl">
+      <tr><td class="mono">pwd</td><td>Where am I?</td></tr>
+      <tr><td class="mono">ls</td><td>What is in this folder?</td></tr>
+      <tr><td class="mono">mkdir name</td><td>Make a new folder</td></tr>
+      <tr><td class="mono">cd name</td><td>Go into a folder</td></tr>
+      <tr><td class="mono">cd ..</td><td>Go back up one level</td></tr>
+    </table>
+  </div>
+  <div class="term" data-type data-delay="900" style="left:800px;top:270px;width:700px">
+    <div class="bar"><i></i><i></i><i></i><b>Try it</b></div>
+    <div class="body">
+      <div class="ln cmd">pwd</div>
+      <div class="ln out">/c/Users/student</div>
+      <div class="ln cmd">ls</div>
+      <div class="ln out">Desktop  Documents  Downloads</div>
+      <div class="ln cmd">cd Desktop</div>
+      <div class="ln cmd">pwd</div>
+      <div class="ln out ok">/c/Users/student/Desktop</div>
+    </div>
+  </div>
+  <div class="abs small" style="left:800px;top:740px;width:700px;--d:1.6s" data-a="up">Tip: press <span class="kbd">Tab</span> to auto-complete a folder name.</div>
+  
+</section>
+
+<!-- ============================================================ 13 CONFIG -->
+<section class="slide" data-name="Tell Git who you are" data-sec="Install & set up" data-min="33">
+  <div class="eyebrow" data-a="up">Once per laptop</div>
+  <h2 class="hl">Tell Git who you are.</h2>
+  <div class="term" data-type data-delay="800" data-speed="26" style="left:100px;top:260px;width:1000px;font-size:24px">
+    <div class="bar"><i></i><i></i><i></i><b>Git Bash</b></div>
+    <div class="body">
+      <div class="ln cmd">git config --global user.name "Your Name"</div>
+      <div class="ln cmd">git config --global user.email "you@example.com"</div>
+      <div class="ln cmd">git config --global init.defaultBranch master</div>
+      <div class="ln cmd">git config --list</div>
+      <div class="ln out">user.name=Your Name</div>
+      <div class="ln out">user.email=you@example.com</div>
+      <div class="ln out">init.defaultbranch=master</div>
+    </div>
+  </div>
+  <div class="abs" style="left:1150px;top:260px;width:350px">
+    <div class="card" style="padding:26px 28px;margin-bottom:20px;--d:.6s" data-a="right"><div class="label c-blue">Name &amp; email</div><div class="small" style="margin-top:8px">Stamped on <b>every</b> commit. Use the email from your GitHub account.</div></div>
+    <div class="card" style="padding:26px 28px;--d:.9s" data-a="right"><div class="label c-pink">defaultBranch</div><div class="small" style="margin-top:8px">Names your first branch <b>master</b>, the name the syllabus and exam use.</div></div>
+  </div>
+  
+</section>
+
+<!-- ============================================================ 14 THREE AREAS -->
+<section class="slide" data-name="Three areas" data-sec="Your first commit" data-steps="3" data-min="38">
+  <div class="eyebrow" data-a="up">The idea everything builds on</div>
+  <h2 class="hl">Three rooms every change walks through.</h2>
+  <div class="area wd" data-a="up" style="--d:.2s"><div class="ico hot"><svg viewBox="0 0 24 24"><path d="M3 10 12 3l9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/></svg></div><div class="h">Working Directory</div><div class="m">your messy bedroom</div><div class="s">The files you see and edit.</div></div>
+  <div class="area st" data-a="up" style="--d:.35s"><div class="ico sun"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div><div class="h">Staging Area</div><div class="m">the suitcase you pack</div><div class="s">Changes you chose for the next commit.</div></div>
+  <div class="area rp" data-a="up" style="--d:.5s"><div class="ico fresh"><svg viewBox="0 0 24 24"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/></svg></div><div class="h">Repository</div><div class="m">the sealed container</div><div class="s">Permanent history, kept in <code>.git</code></div></div>
+  <div class="arr" data-step="2" data-sa="zoom" style="left:480px"><span class="a">git add →</span></div>
+  <div class="arr" data-step="3" data-sa="zoom" style="left:950px"><span class="a">git commit →</span></div>
+  <div class="chip">notes.txt <small class="s1">new</small><small class="s2">staged</small><small class="s3">committed</small></div>
+  <div data-step="3" data-confetti="3" data-cdelay="900" data-cx="1280" data-cy="680"></div>
+  
+</section>
+
+<!-- ============================================================ 15 INIT -->
+<section class="slide tint" data-name="Lab 1: git init" data-sec="Your first commit" data-min="44">
+  <div class="eyebrow" data-a="up">Experiment 1 · type along</div>
+  <h2 class="hl">Turn a folder into a repository.</h2>
+  <div class="term" data-type data-delay="700" style="left:100px;top:270px;width:860px">
+    <div class="bar"><i></i><i></i><i></i><b>~/Desktop</b></div>
+    <div class="body">
+      <div class="ln cmd">mkdir my-first-project</div>
+      <div class="ln cmd">cd my-first-project</div>
+      <div class="ln cmd">git init</div>
+      <div class="ln out ok">Initialized empty Git repository in</div>
+      <div class="ln out ok">  .../my-first-project/.git/</div>
+      <div class="ln cmd" data-s="1">git status</div>
+      <div class="ln out" data-s="1">On branch master</div>
+      <div class="ln out" data-s="1">No commits yet</div>
+      <div class="ln out dim" data-s="1">nothing to commit</div>
+    </div>
+  </div>
+  <div class="fold">
+    <div class="big" data-a="pop" style="--d:.3s"><svg viewBox="0 0 24 24"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.7-.9l-.8-1.2A2 2 0 0 0 7.9 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg></div>
+    <div class="nm" data-a="up" style="--d:.5s">my-first-project</div>
+    <div class="dotgit">.git<small>hidden</small></div>
+  </div>
+  <div class="hnote" style="left:1080px;top:770px;--d:4.2s">this is the whole history</div>
+  
+</section>
+
+<!-- ============================================================ 16 FIRST COMMIT -->
+<section class="slide" data-name="Lab 1: add and commit" data-sec="Your first commit" data-min="49">
+  <div class="eyebrow" data-a="up">Experiment 1 · type along</div>
+  <h2 class="hl">Make your first commit.</h2>
+  <div class="term" data-type data-delay="600" data-speed="30" style="left:100px;top:250px;width:1000px;font-size:23px">
+    <div class="bar"><i></i><i></i><i></i><b>~/Desktop/my-first-project (master)</b></div>
+    <div class="body">
+      <div class="ln cmd">echo "Hello Git" > notes.txt</div>
+      <div class="ln cmd">git status</div>
+      <div class="ln out">Untracked files:</div>
+      <div class="ln out hl-r">        notes.txt</div>
+      <div class="ln cmd" data-s="1">git add notes.txt</div>
+      <div class="ln cmd" data-s="1">git status</div>
+      <div class="ln out" data-s="1">Changes to be committed:</div>
+      <div class="ln out hl-g" data-s="1">        new file:   notes.txt</div>
+      <div class="ln cmd" data-s="2">git commit -m "Add initial notes file"</div>
+      <div class="ln out ok" data-s="2">[master (root-commit) 92d4b40] Add initial notes file</div>
+      <div class="ln out" data-s="2"> 1 file changed, 1 insertion(+)</div>
+    </div>
+  </div>
+  <div class="abs" style="left:1150px;top:250px;width:350px">
+    <div class="card" style="padding:22px 26px;margin-bottom:16px;border-color:var(--wd);--d:2.2s" data-a="left"><div class="label" style="color:var(--wd)">Red</div><div class="small" style="margin-top:6px">Git sees the file, but is not tracking it yet.</div></div>
+    <div class="card" data-step="1" style="padding:22px 26px;margin-bottom:16px;border-color:var(--repo)"><div class="label" style="color:var(--repo)">Green</div><div class="small" style="margin-top:6px">Staged. In the suitcase, ready to commit.</div></div>
+    <div class="card" data-step="2" style="padding:22px 26px;border-color:var(--blue)"><div class="label" style="color:var(--blue)">Committed</div><div class="small" style="margin-top:6px"><b>92d4b40</b> is this save point's ID. Yours will be different.</div></div>
+  </div>
+  <div data-step="2" data-confetti="2" data-cdelay="2400" data-cx="560" data-cy="760"></div>
+  
+</section>
+
+<!-- ============================================================ 17 LOG -->
+<section class="slide tint" data-name="Lab 1: git log" data-sec="Your first commit" data-min="56">
+  <div class="eyebrow" data-a="up">Read the history</div>
+  <h2 class="hl">git log shows every save point.</h2>
+  <div class="term" data-type data-delay="700" style="left:100px;top:260px;width:960px;font-size:24px">
+    <div class="bar"><i></i><i></i><i></i><b>my-first-project (master)</b></div>
+    <div class="body">
+      <div class="ln cmd">git log</div>
+      <div class="ln out hl-o">commit 92d4b40a57bf0423612a21e302b72a6ee8df497e</div>
+      <div class="ln out">Author: Ada Lovelace &lt;ada@example.com&gt;</div>
+      <div class="ln out">Date:   Sat Nov 21 10:15:00 2026 +0530</div>
+      <div class="ln out"> </div>
+      <div class="ln out hl-g">    Add initial notes file</div>
+      <div class="ln cmd" data-s="1">git log --oneline</div>
+      <div class="ln out hl-o" data-s="1">92d4b40 Add initial notes file</div>
+    </div>
+  </div>
+  <div class="abs" style="left:1110px;top:270px;width:400px">
+    <div class="small" style="margin-bottom:22px;--d:2s" data-a="left"><b class="c-orange">commit</b> · the ID, a long hash</div>
+    <div class="small" style="margin-bottom:22px;--d:2.2s" data-a="left"><b class="c-blue">Author</b> · from your git config</div>
+    <div class="small" style="margin-bottom:22px;--d:2.4s" data-a="left"><b>Date</b> · when you committed</div>
+    <div class="small" style="--d:2.6s" data-a="left"><b class="c-green">Message</b> · what changed and why</div>
+  </div>
+  <div class="abs small" style="left:100px;top:780px;--d:1s" data-a="up">Long log and the prompt vanished? Press <span class="kbd">q</span> to get back.</div>
+  
+</section>
+
+<!-- ============================================================ 18 YOUR TURN -->
+<section class="slide" data-name="Your turn: second commit" data-sec="Your first commit" data-min="59">
+  <div class="eyebrow" data-a="up">Your turn, 5 minutes</div>
+  <h2 class="hl">Make a second commit, on your own.</h2>
+  <div class="abs card" style="left:100px;top:270px;width:700px;padding:36px 40px;--d:.2s" data-a="left">
+    <div class="steps">
+      <div class="r"><div class="k">1</div><div><div class="t">Create <code>todo.txt</code> with one line</div><div class="s"><code>echo "Buy milk" > todo.txt</code></div></div></div>
+      <div class="r"><div class="k">2</div><div><div class="t">Stage it</div><div class="s"><code>git add todo.txt</code></div></div></div>
+      <div class="r"><div class="k">3</div><div><div class="t">Commit with a real message</div><div class="s"><code>git commit -m "Add todo list"</code></div></div></div>
+      <div class="r" style="margin:0"><div class="k">4</div><div><div class="t">Check: two commits?</div><div class="s"><code>git log --oneline</code></div></div></div>
+    </div>
+  </div>
+  <div class="abs" style="left:870px;top:270px;width:630px">
+    <div class="label" style="margin-bottom:16px;--d:.4s" data-a="up">Good message vs bad message</div>
+    <div class="card" style="padding:22px 28px;margin-bottom:16px;display:flex;align-items:center;gap:18px;--d:.6s" data-a="right"><span class="pill" style="background:#FFE9E4;color:#D92B12">Bad</span><span style="font:700 26px Mono">"update"</span></div>
+    <div class="card" style="padding:22px 28px;margin-bottom:16px;display:flex;align-items:center;gap:18px;--d:.8s" data-a="right"><span class="pill" style="background:#FFE9E4;color:#D92B12">Bad</span><span style="font:700 26px Mono">"final fix"</span></div>
+    <div class="card" style="padding:22px 28px;display:flex;align-items:center;gap:18px;border-color:var(--green);--d:1s" data-a="right"><span class="pill fresh">Good</span><span style="font:700 26px Mono">"Add todo list"</span></div>
+    <div class="small" style="margin-top:20px;--d:1.2s" data-a="up">Say <b>what</b> changed. Future you will thank you.</div>
+  </div>
+  
+</section>
+
+<!-- ============================================================ 19 STUCK HELP -->
+<section class="slide tint" data-name="Help, something went wrong" data-sec="Your first commit" data-min="64">
+  <div class="eyebrow" data-a="up">Everyone hits these</div>
+  <h2 class="hl sm">Three things that look scary, and are not.</h2>
+  <div class="three-help">
+    <div class="card" data-a="up" style="--d:.2s"><div class="ico hot"><svg viewBox="0 0 24 24"><path d="m4 17 6-6-6-6"/><path d="M12 19h8"/></svg></div><div class="h">A strange editor opened</div><div class="s">You forgot <code>-m</code>. If it is Vim (full screen, no menus), quit with:</div><div class="vimkeys"><span class="kbd">Esc</span><span class="kbd">:</span><span class="kbd">q</span><span class="kbd">!</span><span class="kbd">Enter</span></div><div class="s">If it is Notepad: type a message on line 1, save, close. Next time use <code>-m "message"</code>.</div></div>
+    <div class="card" data-a="up" style="--d:.35s"><div class="ico sun"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></div><div class="h">A warning about LF and CRLF</div><div class="msg w">warning: LF will be replaced by CRLF</div><div class="s">Normal on Windows. Windows and Mac end lines differently. Ignore it; your command worked.</div></div>
+    <div class="card" data-a="up" style="--d:.5s"><div class="ico cool"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></div><div class="h">"Please tell me who you are"</div><div class="msg">*** Please tell me who you are.</div><div class="s">Git has no name or email yet. Run the two <code>git config --global</code> lines, then commit again.</div></div>
+  </div>
+  
+</section>
+
+<!-- ============================================================ 20 BREAK -->
+<section class="slide glow" data-name="Break" data-fx="timer" data-mins="5" data-min="67">
+  <div class="eyebrow" data-a="up">Break</div>
+  <h2 class="hl" style="width:640px">Stretch. Water. Back in five.</h2>
+  <div class="abs lead" style="left:100px;top:330px;width:600px;--d:.6s" data-a="up">Keep your terminal open in <code>my-first-project</code>. We use it next.</div>
+  <div class="abs timer-btns no-advance" style="left:100px;top:470px;--d:.8s" data-a="up"><button class="t-go go">Start</button><button class="t-add">+1 min</button></div>
+  <div class="ring-wrap no-advance" style="left:860px;top:150px;width:660px;height:660px" data-a="zoom">
+    <svg viewBox="0 0 660 660"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF9E00"/><stop offset=".5" stop-color="#FF4D2E"/><stop offset="1" stop-color="#FF2E88"/></linearGradient></defs><circle cx="330" cy="330" r="300" fill="none" stroke="#EEF1F8" stroke-width="34"/><circle class="ring-fg" cx="330" cy="330" r="300" fill="none" stroke="url(#rg)" stroke-width="34" stroke-linecap="round"/></svg>
+    <div class="tt"><div class="v">5:00</div><div class="l">minutes left</div></div>
+  </div>
+  
+</section>
+
+<!-- ============================================================ 21 WHY BRANCHES -->
+<section class="slide" data-name="Why branches" data-sec="Branches" data-ask data-min="72">
+  <div class="ask"><div class="q-tag">Think about it</div><div class="aq">Five of you build one app, all editing master at the same time. What happens?</div><div class="ah">Take a guess, then press next.</div></div>
+  <div class="eyebrow" data-a="up">Experiment 2</div>
+  <h2 class="hl">A branch is a safe copy to experiment in.</h2>
+  <div class="abs lead" style="left:100px;top:300px;width:700px;--d:.4s" data-a="up">You want a new kitchen, so you build a full-size mock-up in the garage first. Only when it works do you bring it into the house.</div>
+  <div class="abs card" style="left:100px;top:550px;width:700px;padding:30px 36px;--d:.8s" data-a="up">
+    <div style="display:flex;align-items:center;gap:16px;font:700 28px Body"><span style="width:22px;height:22px;border-radius:50%;background:var(--main);flex:none"></span><b style="font-family:Mono">master</b>&nbsp;= the real house, always working</div>
+    <div style="display:flex;align-items:center;gap:16px;font:700 28px Body;margin-top:16px"><span style="width:22px;height:22px;border-radius:50%;background:var(--feat);flex:none"></span><b style="font-family:Mono">feature-branch</b>&nbsp;= the mock-up</div>
+  </div>
+  <div class="abs" style="left:900px;top:240px;width:600px;height:560px">
+    <svg viewBox="0 0 600 560" style="width:100%;height:100%;overflow:visible">
+      <path class="draw" style="--len:560;--d:.6s" d="M40 480 L560 480" stroke="#2563FF" stroke-width="16" stroke-linecap="round" fill="none"/>
+      <path class="draw" style="--len:600;--d:1.2s" d="M150 480 C150 360 230 300 300 300 L400 300 C470 300 520 360 520 480" stroke="#FF2E88" stroke-width="16" stroke-linecap="round" fill="none"/>
+      <g fill="#fff" stroke-width="12"><circle cx="40" cy="480" r="24" stroke="#2563FF"/><circle cx="150" cy="480" r="24" stroke="#2563FF"/><circle cx="300" cy="300" r="24" stroke="#FF2E88"/><circle cx="400" cy="300" r="24" stroke="#FF2E88"/><circle cx="520" cy="480" r="30" stroke="#2563FF"/></g>
+      <text x="350" y="250" text-anchor="middle" font-family="Hand" font-size="44" fill="#FF2E88">try ideas here</text>
+      <text x="300" y="548" text-anchor="middle" font-family="Hand" font-size="44" fill="#2563FF">master stays safe</text>
+    </svg>
+  </div>
+  
+</section>
+
+<!-- ============================================================ 22 FOUR COMMANDS -->
+<section class="slide tint" data-name="Four branch commands" data-sec="Branches" data-min="75">
+  <div class="eyebrow" data-a="up">All you need</div>
+  <h2 class="hl">Four commands to branch.</h2>
+  <div class="abs card" style="left:100px;top:270px;width:1400px;padding:26px 40px;--d:.2s" data-a="up">
+    <table class="tbl" style="font-size:27px">
+      <tr><th style="width:520px">Command</th><th>What it does</th></tr>
+      <tr><td class="mono">git branch feature-branch</td><td>Creates a branch. You do <b>not</b> move onto it.</td></tr>
+      <tr><td class="mono">git checkout feature-branch</td><td>Moves you onto that branch. <code>git switch</code> also works.</td></tr>
+      <tr><td class="mono">git branch</td><td>Lists branches. <b>*</b> marks the one you are on.</td></tr>
+      <tr><td class="mono">git merge feature-branch</td><td>Brings that branch's commits into the branch you are on.</td></tr>
+    </table>
+  </div>
+  
+</section>
+
+<!-- ============================================================ 23 BRANCH SCENE -->
+<section class="slide" data-name="Lab 2: create, switch, merge" data-sec="Branches" data-min="77">
+  <div class="eyebrow" data-a="up">Experiment 2 · type along, press next for each step</div>
+  <h2 class="hl sm" style="width:760px">Branch, commit, merge.</h2>
+  <div class="term" data-type data-delay="400" data-speed="28" style="left:80px;top:200px;width:740px;font-size:21px;line-height:1.42">
+    <div class="bar"><i></i><i></i><i></i><b>my-first-project</b></div>
+    <div class="body" style="padding:16px 24px 20px">
+      <div class="ln out dim">  (press next for step 1)</div>
+      <div class="ln cmd" data-s="1">git branch feature-branch</div>
+      <div class="ln cmd" data-s="1">git branch</div>
+      <div class="ln out" data-s="1">  feature-branch</div>
+      <div class="ln out hl-g" data-s="1">* master</div>
+      <div class="ln cmd" data-s="2">git checkout feature-branch</div>
+      <div class="ln out" data-s="2">Switched to branch 'feature-branch'</div>
+      <div class="ln cmd" data-s="3">echo "Login page" > login.txt</div>
+      <div class="ln cmd" data-s="3">git add login.txt</div>
+      <div class="ln cmd" data-s="3">git commit -m "Add login page"</div>
+      <div class="ln out ok" data-s="3">[feature-branch b2651d7] Add login page</div>
+      <div class="ln cmd" data-s="4">git checkout master</div>
+      <div class="ln out" data-s="4">Switched to branch 'master'</div>
+      <div class="ln cmd" data-s="5">git merge feature-branch</div>
+      <div class="ln out" data-s="5">Updating 92d4b40..b2651d7</div>
+      <div class="ln out ok" data-s="5">Fast-forward</div>
+    </div>
+  </div>
+  <div class="bg-area" data-a="up" style="--d:.2s">
+    <svg viewBox="0 0 660 450">
+      <path class="bline m" d="M-10 250 L120 250"/>
+      <path class="bline f" d="M120 250 C120 180 200 140 300 140 L470 140"/>
+    </svg>
+    <div class="cn" style="left:120px;top:250px"><span class="id">your last commit</span></div>
+    <div class="cn c2" style="left:470px;top:140px"><span class="id">b2651d7</span><span class="msg">Add login page</span></div>
+    <div class="bl master">master</div>
+    <div class="bl feat">feature-branch</div>
+    <div class="head">HEAD</div>
+  </div>
+  <div class="ffstamp">FAST-FORWARD</div>
+  <div class="lostnote">login.txt gone? It is safe on the branch.</div>
+  <div class="folder" data-a="up" style="--d:.4s"><div class="lab">Files in your folder</div><div class="f">notes.txt</div><div class="f">todo.txt</div><div class="f login">login.txt</div></div>
+  <div data-step="5" data-confetti="5" data-cdelay="2000" data-cx="1180" data-cy="520" style="position:absolute;width:0;height:0"></div>
+  
+</section>
+
+<!-- ============================================================ 24 MERGE OUTCOMES -->
+<section class="slide tint" data-name="Three ways a merge goes" data-sec="Branches" data-min="90">
+  <div class="eyebrow" data-a="up">Not every merge is a fast-forward</div>
+  <h2 class="hl">Three ways a merge can go.</h2>
+  <div class="mo card" style="left:100px;--d:.2s" data-a="up">
+    <span class="pill fresh">Fast-forward</span>
+    <svg viewBox="0 0 380 190"><path class="draw" style="--len:400;--d:.6s" d="M20 140 L120 140" stroke="#2563FF" stroke-width="10" fill="none" stroke-linecap="round"/><path class="draw" style="--len:300;--d:1s" d="M120 140 C120 80 180 60 240 60 L330 60" stroke="#FF2E88" stroke-width="10" fill="none" stroke-linecap="round"/><g fill="#fff" stroke-width="9"><circle cx="20" cy="140" r="15" stroke="#2563FF"/><circle cx="120" cy="140" r="15" stroke="#2563FF"/><circle cx="240" cy="60" r="15" stroke="#FF2E88"/><circle cx="330" cy="60" r="15" stroke="#FF2E88"/></g><text x="300" y="22" text-anchor="middle" font-family="Mono" font-weight="800" font-size="18" fill="#2563FF">master slides here</text></svg>
+    <div class="h">Just slide forward</div><div class="s">Master did not move. Git moves the label. No new commit.</div>
+  </div>
+  <div class="mo card" style="left:580px;--d:.35s" data-a="up">
+    <span class="pill cool">Three-way merge</span>
+    <svg viewBox="0 0 380 190"><path class="draw" style="--len:400;--d:.6s" d="M20 140 L330 140" stroke="#2563FF" stroke-width="10" fill="none" stroke-linecap="round"/><path class="draw" style="--len:340;--d:1s" d="M90 140 C90 70 150 60 200 60 C260 60 330 80 330 140" stroke="#FF2E88" stroke-width="10" fill="none" stroke-linecap="round"/><g fill="#fff" stroke-width="9"><circle cx="20" cy="140" r="15" stroke="#2563FF"/><circle cx="90" cy="140" r="15" stroke="#2563FF"/><circle cx="210" cy="140" r="15" stroke="#2563FF"/><circle cx="200" cy="60" r="15" stroke="#FF2E88"/><circle cx="330" cy="140" r="21" stroke="#7C3AED"/></g></svg>
+    <div class="h">Both moved</div><div class="s">Different parts changed. Git makes a new <b>merge commit</b> joining both.</div>
+  </div>
+  <div class="mo card" style="left:1060px;--d:.5s" data-a="up">
+    <span class="pill hot">Conflict</span>
+    <svg viewBox="0 0 380 190"><path class="draw" style="--len:400;--d:.6s" d="M20 140 L270 140" stroke="#2563FF" stroke-width="10" fill="none" stroke-linecap="round"/><path class="draw" style="--len:300;--d:1s" d="M90 140 C90 70 150 60 200 60 C250 60 280 90 290 115" stroke="#FF2E88" stroke-width="10" fill="none" stroke-linecap="round"/><g fill="#fff" stroke-width="9"><circle cx="20" cy="140" r="15" stroke="#2563FF"/><circle cx="90" cy="140" r="15" stroke="#2563FF"/><circle cx="210" cy="140" r="15" stroke="#2563FF"/><circle cx="200" cy="60" r="15" stroke="#FF2E88"/></g><text x="330" y="156" text-anchor="middle" font-family="Head" font-weight="800" font-size="64" fill="#FF4D2E">!</text></svg>
+    <div class="h">Same lines changed</div><div class="s">Git will not guess. It pauses and asks <b>you</b> to choose.</div>
+  </div>
+  
+</section>
+
+<!-- ============================================================ 25 CONFLICT -->
+<section class="slide" data-name="A conflict is not a crisis" data-sec="Branches" data-min="92">
+  <div class="eyebrow" data-a="up">When Git asks you to choose</div>
+  <h2 class="hl">A conflict is not a crisis.</h2>
+  <div class="cf" data-a="zoom" style="--d:.2s">
+    <div class="mk">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</div>
+    <span class="a">Welcome to our app!</span>
+    <div class="mk">=======</div>
+    <span class="b">Hello and welcome, friend!</span>
+    <div class="mk">&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature-branch</div>
+  </div>
+  <div class="abs" style="left:990px;top:260px;width:510px">
+    <div class="steps">
+      <div class="r" data-a="left" style="--d:.5s"><div class="k">1</div><div><div class="t">Open the file</div><div class="s">Find the &lt;&lt;&lt; === &gt;&gt;&gt; markers.</div></div></div>
+      <div class="r" data-a="left" style="--d:.7s"><div class="k">2</div><div><div class="t">Keep the right text</div><div class="s">Delete the other version and all three marker lines.</div></div></div>
+      <div class="r" data-a="left" style="--d:.9s"><div class="k">3</div><div><div class="t">Stage and commit</div><div class="s"><code>git add</code> the file, then <code>git commit</code>.</div></div></div>
+    </div>
+  </div>
+  <div class="hnote" style="left:140px;top:650px;--d:1.5s">blue = where you are · pink = the branch coming in</div>
+  
+</section>
+
+<!-- ============================================================ 26 WHY STASH -->
+<section class="slide tint" data-name="Why stash" data-sec="Stash" data-ask data-min="94">
+  <div class="ask"><div class="q-tag">Picture this</div><div class="aq">Half-way through editing, your teammate says: it is broken, fix it now.</div><div class="ah">You are not ready to commit. What do you do?</div></div>
+  <div class="eyebrow" data-a="up">Experiment 3</div>
+  <h2 class="hl">Stash is a drawer for unfinished work.</h2>
+  <div class="term" data-nocopy style="left:100px;top:300px;width:880px;font-size:23px">
+    <div class="bar"><i></i><i></i><i></i><b>switching with unfinished changes</b></div>
+    <div class="body">
+      <div class="ln cmd">git checkout other-branch</div>
+      <div class="ln out err">error: Your local changes to the following files</div>
+      <div class="ln out err">would be overwritten by checkout:</div>
+      <div class="ln out">        notes.txt</div>
+      <div class="ln out warn">Please commit your changes or stash them</div>
+    </div>
+  </div>
+  <div class="abs card" style="left:1040px;top:300px;width:460px;padding:34px 36px;--d:.6s" data-a="right">
+    <div style="font:800 34px/1.15 Head">Git may refuse to switch with work in progress.</div>
+    <div class="small" style="margin-top:16px"><code>git stash</code> puts it in a drawer, cleans your desk, and lets you switch. Later you take it back out.</div>
+  </div>
+  
+</section>
+
+<!-- ============================================================ 27 STASH SCENE -->
+<section class="slide" data-name="Lab 3: stash and pop" data-sec="Stash" data-min="96">
+  <div class="eyebrow" data-a="up">Experiment 3 · type along, press next for each step</div>
+  <h2 class="hl sm" style="width:760px">Stash, switch, pop.</h2>
+  <div class="term" data-type data-delay="400" data-speed="28" style="left:80px;top:200px;width:770px;font-size:21px;line-height:1.42">
+    <div class="bar"><i></i><i></i><i></i><b>my-first-project (master)</b></div>
+    <div class="body" style="padding:16px 24px 20px">
+      <div class="ln out dim">  (press next for step 1)</div>
+      <div class="ln cmd" data-s="1">git branch other-branch</div>
+      <div class="ln cmd" data-s="1">echo "Half-finished idea" >> notes.txt</div>
+      <div class="ln cmd" data-s="1">git status --short</div>
+      <div class="ln out hl-r" data-s="1"> M notes.txt</div>
+      <div class="ln cmd" data-s="2">git stash</div>
+      <div class="ln out ok" data-s="2">Saved working directory and index state WIP on master</div>
+      <div class="ln cmd" data-s="3">git stash list</div>
+      <div class="ln out" data-s="3">stash@{0}: WIP on master: b2651d7 Add login page</div>
+      <div class="ln cmd" data-s="4">git checkout other-branch</div>
+      <div class="ln out dim" data-s="4">  ...the urgent fix happens here...</div>
+      <div class="ln cmd" data-s="5">git checkout master</div>
+      <div class="ln cmd" data-s="6">git stash pop</div>
+      <div class="ln out" data-s="6">        modified:   notes.txt</div>
+      <div class="ln out ok" data-s="6">Dropped refs/stash@{0} (95578d5...)</div>
+    </div>
+  </div>
+  <div class="wf" data-a="up" style="--d:.2s">
+    <div class="top"><span class="label">notes.txt on</span><span class="brp"></span></div>
+    <div class="doc">Hello Git<span class="new">Half-finished idea</span></div>
+    <div class="badge"></div>
+  </div>
+  <div class="drawer" data-a="up" style="--d:.4s"><div class="stk">stash@{0}</div><div class="lid"></div><div class="box"><div class="nm">the stash drawer</div></div></div>
+  
+</section>
+
+<!-- ============================================================ 28 STASH FAMILY -->
+<section class="slide tint" data-name="Stash commands" data-sec="Stash" data-min="106">
+  <div class="eyebrow" data-a="up">The stash family</div>
+  <h2 class="hl">Four stash commands.</h2>
+  <div class="abs card" style="left:100px;top:270px;width:1400px;padding:26px 40px;--d:.2s" data-a="up">
+    <table class="tbl" style="font-size:27px">
+      <tr><th style="width:420px">Command</th><th>What it does</th></tr>
+      <tr><td class="mono">git stash</td><td>Put unfinished changes in the drawer. Desk is clean.</td></tr>
+      <tr><td class="mono">git stash list</td><td>See everything in the drawer.</td></tr>
+      <tr><td class="mono">git stash pop</td><td>Take the newest one back out <b>and remove it</b> from the drawer.</td></tr>
+      <tr><td class="mono">git stash apply</td><td>Bring it back but <b>keep a copy</b> in the drawer.</td></tr>
+    </table>
+  </div>
+  
+</section>
+
+<!-- ============================================================ 29 RECAP -->
+<section class="slide" data-name="Recap, cold-call" data-sec="Wrap-up" data-min="108">
+  <div class="eyebrow" data-a="up">Recap, I pick who answers</div>
+  <h2 class="hl sm">Six questions. Hands down.</h2>
+  <div class="qcard" style="left:100px;top:230px;--d:.1s" data-a="up"><div class="qn gc">01</div><div class="qq">What does git init create?</div><div class="qa" data-step="1">A hidden <code>.git</code> folder. That is the repository.</div></div>
+  <div class="qcard" style="left:575px;top:230px;--d:.2s" data-a="up"><div class="qn gh">02</div><div class="qq">Git vs GitHub, in one line?</div><div class="qa" data-step="2">Git tracks history on your laptop. GitHub hosts it online.</div></div>
+  <div class="qcard" style="left:1050px;top:230px;--d:.3s" data-a="up"><div class="qn gf">03</div><div class="qq">What is the staging area for?</div><div class="qa" data-step="3">Choosing exactly which changes go in the next commit.</div></div>
+  <div class="qcard" style="left:100px;top:545px;--d:.4s" data-a="up"><div class="qn gs">04</div><div class="qq">Why branch instead of editing master?</div><div class="qa" data-step="4">Master stays working while you experiment safely.</div></div>
+  <div class="qcard" style="left:575px;top:545px;--d:.5s" data-a="up"><div class="qn gc">05</div><div class="qq">What does Fast-forward mean?</div><div class="qa" data-step="5">Master had not moved, so Git just slid its label forward.</div></div>
+  <div class="qcard" style="left:1050px;top:545px;--d:.6s" data-a="up"><div class="qn gh">06</div><div class="qq">What does stash solve?</div><div class="qa" data-step="6">Switching branches without committing unfinished work.</div></div>
+  
+</section>
+
+<!-- ============================================================ 30 RECORD -->
+<section class="slide tint" data-name="Practical record" data-sec="Wrap-up" data-min="113">
+  <div class="eyebrow" data-a="up">Before next class</div>
+  <h2 class="hl">Write up Experiments 1, 2 and 3.</h2>
+  <div class="rec">
+    <div class="card" data-a="up" style="--d:.2s"><div class="n gc">1</div><div class="h">Setting up and basic commands</div><div class="s">init, add, commit with a message.</div><div class="pg">Aim · Commands · Output · Result</div></div>
+    <div class="card" data-a="up" style="--d:.35s"><div class="n gh">2</div><div class="h">Create and merge a branch</div><div class="s">branch, checkout, commit on the branch, merge into master.</div><div class="pg">Aim · Commands · Output · Result</div></div>
+    <div class="card" data-a="up" style="--d:.5s"><div class="n gf">3</div><div class="h">Stash</div><div class="s">stash, switch branches, come back, stash pop.</div><div class="pg">Aim · Commands · Output · Result</div></div>
+  </div>
+  <div class="abs small" style="left:100px;top:790px;--d:.8s" data-a="up">Write the <b>exact</b> commands you typed and what the terminal printed. Each experiment is marked out of 10.</div>
+  
+</section>
+
+<!-- ============================================================ 31 NEXT -->
+<section class="slide glow" data-name="Next class" data-sec="Wrap-up" data-min="116">
+  <div class="eyebrow" data-a="up">Next class</div>
+  <h2 class="hl" style="width:900px">Your laptop meets your <span class="gh">GitHub repo.</span></h2>
+  <div class="abs lead" style="left:100px;top:340px;width:760px;--d:.6s" data-a="up">We download the repository you made in class 1 onto your laptop, then keep it in sync. Experiments 4, 5 and 6.</div>
+  <div class="abs" style="left:100px;top:520px;display:flex;gap:14px;flex-wrap:wrap;width:780px;--d:.9s" data-a="up"><span class="pill cool">git clone</span><span class="pill hot">git fetch</span><span class="pill fresh">git rebase</span><span class="pill sun">merge --no-ff</span></div>
+  <div class="abs card" style="left:960px;top:260px;width:540px;padding:36px 40px;--d:.5s" data-a="right">
+    <div class="label">Bring</div>
+    <div class="ticks" style="margin-top:20px">
+      <div class="r" style="--td:1s"><div class="bx"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>Laptop, charged</div>
+      <div class="r" style="--td:1.3s"><div class="bx"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>Git installed</div>
+      <div class="r" style="--td:1.6s;margin:0"><div class="bx"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>Your GitHub login</div>
+    </div>
+  </div>
+  
+</section>
+
+<!-- ============================================================ 32 THANKS -->
+<section class="slide glow" data-name="Thank you" data-confetti-enter="500" data-min="118">
+  <div class="abs logos" style="left:100px;top:64px;--d:.1s" data-a="down">
+    <img class="muse" src="assets/muse-logo.png" alt="Mysore University School of Engineering logo">
+    <img class="uom" src="assets/uom-crest.png" alt="University of Mysore crest">
+  </div>
+  <h2 class="hl" style="top:250px;font-size:150px;width:1300px">You made <span class="gh">real commits.</span></h2>
+  <div class="abs lead" style="left:100px;top:570px;width:900px;--d:1s" data-a="up">Practise at home: flashcards, quiz, cheat sheet and these slides.</div>
+  <div class="abs" style="left:100px;top:660px;font:800 40px Mono;letter-spacing:-.01em;--d:1.3s" data-a="up"><span class="gc">git-github-by-abhirai2006.netlify.app</span></div>
+  <div class="abs small" style="left:100px;top:760px;--d:1.5s" data-a="up">Questions? Ask now, or catch me after class.</div>
+  
+</section>
+
+</div>
+<script>
+window.DECK = { id: "class-2", title: "Class 2: Git on your laptop", sections: ["Recap", "Why Git", "Install & set up", "Your first commit", "Branches", "Stash", "Wrap-up"] };
+</script>
+<script type="text/plain" id="deck-notes">==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</script>
+<script src="engine/deck.js"></script>
+</body>
+</html>
