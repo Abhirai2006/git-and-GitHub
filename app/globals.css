@@ -1,34 +1,45 @@
 @import "tailwindcss";
-@import "@fontsource/fraunces/400.css";
-@import "@fontsource/fraunces/500.css";
-@import "@fontsource/fraunces/600.css";
-@import "@fontsource/fraunces/500-italic.css";
+@import "@fontsource-variable/bricolage-grotesque";
 
+/* ------------------------------------------------------------------
+   viva.prep pop theme: cream paper, ink outlines, hard offset shadows,
+   and loud colour blocks. Light is the default; dark keeps the same
+   colours on a deep violet-black.
+   ------------------------------------------------------------------ */
 :root {
-  --font-fraunces: "Fraunces", Georgia, serif;
-  --color-ink: #1b1f23;
-  --color-ink-soft: #24292e;
-  --color-paper: #ffffff;
-  --color-panel: #f6f8fa;
-  --color-border: #d0d7de;
-  --color-accent: #1f6feb;
-  --color-accent-soft: #58a6ff;
-  --color-accent-deep: #0b3d91;
-  --color-green: #2ea44f;
-  --color-muted: #6a737d;
+  --font-fraunces: "Bricolage Grotesque Variable", "Bricolage Grotesque", system-ui, sans-serif;
+  --color-ink: #0e1020;
+  --color-ink-soft: #1b1d30;
+  --color-paper: #fffdf6;
+  --color-panel: #f5f0e4;
+  --color-border: #e3dccb;
+  --color-accent: #6d3bff;
+  --color-accent-soft: #9b7bff;
+  --color-accent-deep: #3b1db8;
+  --color-green: #00b864;
+  --color-muted: #5f6178;
   --color-term: #c9d1d9;
   --color-term-green: #7ee787;
+  --color-pop-pink: #ff3ea5;
+  --color-pop-sun: #ffd23f;
+  --color-pop-lime: #b8f23b;
+  --color-pop-coral: #ff5a36;
+  --color-pop-sky: #3bc8ff;
+  --color-line: #0e1020;
+  --shadow-hard: #0e1020;
 
   --background: var(--color-paper);
   --foreground: var(--color-ink);
 }
 
 [data-theme="dark"] {
-  --background: var(--color-ink);
-  --foreground: #f0f2f5;
-  --color-panel: #20242b;
-  --color-border: #333a43;
-  --color-muted: #9aa4af;
+  --background: #0f0b1c;
+  --foreground: #f6f3ff;
+  --color-panel: #1b1530;
+  --color-border: #322a4f;
+  --color-muted: #aaa3c6;
+  --color-line: #f6f3ff;
+  --shadow-hard: #6d3bff;
 }
 
 @theme inline {
@@ -44,6 +55,12 @@
   --color-muted: var(--color-muted);
   --color-term: var(--color-term);
   --color-term-green: var(--color-term-green);
+  --color-pop-pink: var(--color-pop-pink);
+  --color-pop-sun: var(--color-pop-sun);
+  --color-pop-lime: var(--color-pop-lime);
+  --color-pop-coral: var(--color-pop-coral);
+  --color-pop-sky: var(--color-pop-sky);
+  --color-line: var(--color-line);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -67,8 +84,8 @@ body {
 }
 
 ::selection {
-  background: var(--color-accent);
-  color: white;
+  background: var(--color-pop-sun);
+  color: var(--color-ink);
 }
 
 ::-webkit-scrollbar {
@@ -121,7 +138,51 @@ body {
 }
 
 .font-display {
-  font-family: var(--font-display), Georgia, serif;
+  font-family: var(--font-display), system-ui, sans-serif;
+  letter-spacing: -0.03em;
+}
+/* chunky display headings everywhere, whatever weight class a page used */
+h1.font-display, h2.font-display, h3.font-display, .font-display.text-6xl, .font-display.text-7xl {
+  font-weight: 800;
+}
+
+/* ---------- pop helpers ---------- */
+.pop-card {
+  border: 2.5px solid var(--color-line);
+  box-shadow: 6px 6px 0 0 var(--shadow-hard);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.pop-card:hover { transform: translate(-3px, -3px); box-shadow: 9px 9px 0 0 var(--shadow-hard); }
+.pop-btn {
+  border: 2.5px solid var(--color-ink);
+  box-shadow: 4px 4px 0 0 var(--color-ink);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.pop-btn:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 0 var(--color-ink); }
+.pop-btn:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 0 var(--color-ink); }
+[data-theme="dark"] .pop-btn { border-color: #f6f3ff; box-shadow: 4px 4px 0 0 #6d3bff; }
+.sticker { border: 2.5px solid var(--color-ink); box-shadow: 3px 3px 0 0 var(--color-ink); }
+.text-stroke { -webkit-text-stroke: 2.5px var(--color-line); color: transparent; }
+.grad-text { background: linear-gradient(100deg, #6d3bff 0%, #ff3ea5 50%, #ff5a36 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.paper-grid {
+  background-image:
+    linear-gradient(to right, rgba(14,16,32,.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(14,16,32,.06) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+[data-theme="dark"] .paper-grid {
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,.06) 1px, transparent 1px);
+}
+@keyframes wobble { 0%, 100% { transform: rotate(var(--r, -6deg)) translateY(0); } 50% { transform: rotate(calc(var(--r, -6deg) * -1)) translateY(-8px); } }
+.animate-wobble { animation: wobble 5s ease-in-out infinite; }
+@keyframes blob { 0%, 100% { transform: translate(0, 0) scale(1); } 33% { transform: translate(30px, -40px) scale(1.08); } 66% { transform: translate(-20px, 20px) scale(.95); } }
+.animate-blob { animation: blob 14s ease-in-out infinite; }
+@keyframes spin-slow { to { transform: rotate(360deg); } }
+.animate-spin-slow { animation: spin-slow 18s linear infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .animate-wobble, .animate-blob, .animate-spin-slow, .animate-marquee, .animate-float-slow { animation: none !important; }
 }
 
 .card-flip-face {
