@@ -22,14 +22,14 @@ export default function Nav() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 backdrop-blur-md bg-background/75 border-b border-border">
+    <header className="sticky top-0 z-50 backdrop-blur-md bg-background/85 border-b-[2.5px] border-line">
       <nav className="mx-auto max-w-6xl px-5 sm:px-8 h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 font-display text-lg font-semibold shrink-0">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-ink text-accent">
-            <GitBranch size={16} strokeWidth={2.5} />
+        <Link href="/" className="flex items-center gap-2.5 font-display text-xl shrink-0">
+          <span className="sticker flex h-9 w-9 items-center justify-center rounded-xl bg-pop-sun text-ink -rotate-6">
+            <GitBranch size={17} strokeWidth={2.6} />
           </span>
           <span>
-            viva<span className="text-accent">.</span>prep
+            viva<span className="text-pop-pink">.</span>prep
           </span>
         </Link>
 
@@ -40,8 +40,8 @@ export default function Nav() {
               <li key={l.href} className="relative">
                 <Link
                   href={l.href}
-                  className={`relative z-10 px-4 py-2 text-sm font-medium rounded-full transition-colors ${
-                    active ? "text-white" : "text-foreground/70 hover:text-foreground"
+                  className={`relative z-10 px-4 py-2 text-sm font-bold rounded-full transition-colors ${
+                    active ? "text-white" : "text-foreground/75 hover:text-foreground"
                   }`}
                 >
                   {l.label}
@@ -49,7 +49,7 @@ export default function Nav() {
                 {active && (
                   <motion.span
                     layoutId="nav-pill"
-                    className="absolute inset-0 rounded-full bg-accent"
+                    className="absolute inset-0 rounded-full bg-accent border-2 border-ink"
                     transition={{ type: "spring", stiffness: 380, damping: 30 }}
                   />
                 )}
@@ -62,7 +62,7 @@ export default function Nav() {
           <StreakBadge />
           <ThemeToggle />
           <button
-            className="md:hidden h-9 w-9 flex items-center justify-center rounded-full border border-border cursor-pointer"
+            className="md:hidden h-10 w-10 flex items-center justify-center rounded-full border-[2.5px] border-line cursor-pointer"
             onClick={() => setOpen((v) => !v)}
             aria-label="Toggle menu"
           >
@@ -87,7 +87,7 @@ export default function Nav() {
                     href={l.href}
                     onClick={() => setOpen(false)}
                     className={`block px-3 py-2.5 rounded-lg text-sm font-medium ${
-                      pathname === l.href ? "bg-accent text-white" : "hover:bg-panel"
+                      pathname === l.href ? "bg-accent text-white font-bold" : "hover:bg-panel font-semibold"
                     }`}
                   >
                     {l.label}
