@@ -5,12 +5,12 @@ import { Moon, Sun } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function ThemeToggle() {
-  const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [theme, setTheme] = useState<"dark" | "light">("light");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     const stored = window.localStorage.getItem("viva-theme");
-    const initial = stored === "light" ? "light" : "dark";
+    const initial = stored === "dark" ? "dark" : "light";
     // The real theme is only knowable client-side, after mount, so this
     // sync-on-mount effect is intentional rather than something to memoize.
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -33,7 +33,7 @@ export default function ThemeToggle() {
     <button
       onClick={toggle}
       aria-label="Toggle color theme"
-      className="relative h-9 w-9 rounded-full border border-border flex items-center justify-center overflow-hidden hover:border-accent transition-colors cursor-pointer"
+      className="relative h-10 w-10 rounded-full border-[2.5px] border-line flex items-center justify-center overflow-hidden hover:bg-pop-sun hover:text-ink transition-colors cursor-pointer"
     >
       <motion.div
         key={theme}
