@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useInView, animate } from "framer-motion";
 import { vivaCards } from "@/lib/vivaData";
 import { quizQuestions } from "@/lib/quizData";
+import { decks } from "@/lib/deckData";
 
 function CountUp({ to, suffix = "" }: { to: number; suffix?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
@@ -29,29 +30,30 @@ function CountUp({ to, suffix = "" }: { to: number; suffix?: string }) {
 }
 
 const stats = [
-  { label: "Lab sessions", value: 5 },
-  { label: "Lab experiments", value: 12 },
-  { label: "Viva questions", value: vivaCards.length },
-  { label: "Quiz questions", value: quizQuestions.length },
+  { label: "lab experiments", value: 12, cls: "bg-pop-sun text-ink", r: "-2deg" },
+  { label: "viva flashcards", value: vivaCards.length, cls: "bg-accent text-white", r: "1.5deg" },
+  { label: "quiz questions", value: quizQuestions.length, cls: "bg-pop-pink text-white", r: "-1deg" },
+  { label: "class decks", value: decks.filter((d) => d.ready).length, cls: "bg-pop-lime text-ink", r: "2deg" },
 ];
 
 export default function StatsSection() {
   return (
-    <section className="border-y border-border bg-panel">
-      <div className="mx-auto max-w-6xl px-5 sm:px-8 py-14 grid grid-cols-2 sm:grid-cols-4 gap-8">
+    <section className="mx-auto max-w-6xl px-5 sm:px-8 py-16">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-7">
         {stats.map((s, i) => (
           <motion.div
             key={s.label}
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 30, rotate: 0 }}
+            whileInView={{ opacity: 1, y: 0, rotate: parseFloat(s.r) }}
+            whileHover={{ rotate: 0, scale: 1.04 }}
             viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.5, delay: i * 0.08 }}
-            className="text-center sm:text-left"
+            transition={{ type: "spring", stiffness: 200, damping: 16, delay: i * 0.08 }}
+            className={`pop-card rounded-3xl p-6 sm:p-7 ${s.cls}`}
           >
-            <div className="font-display text-4xl sm:text-5xl font-medium text-accent">
-              <CountUp to={s.value} suffix="+" />
+            <div className="font-display text-5xl sm:text-6xl font-extrabold tracking-tight">
+              <CountUp to={s.value} />
             </div>
-            <div className="mt-1 text-sm text-muted">{s.label}</div>
+            <div className="mt-1 text-sm sm:text-base font-bold opacity-90">{s.label}</div>
           </motion.div>
         ))}
       </div>
