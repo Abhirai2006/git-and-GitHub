@@ -46,7 +46,7 @@ export default function ProgressSnapshot() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-60px" }}
         transition={{ duration: 0.5 }}
-        className="rounded-2xl border border-border bg-panel p-7 sm:p-9"
+        className="pop-card rounded-3xl bg-panel p-7 sm:p-9"
       >
         <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
           <div>
