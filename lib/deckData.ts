@@ -23,8 +23,8 @@ export const decks: Deck[] = [
     blurb: "Account, repositories, README and Markdown, deleting files and repos, and public vs private.",
     experiments: "GitHub basics",
     topics: ["GitHub account", "New repository", "README.md", "Delete files", "Public ↔ private"],
-    slides: 15,
-    ready: false,
+    slides: 16,
+    ready: true,
   },
   {
     slug: "class-2",
