@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "node scripts/build-decks.mjs && next dev",
+    "decks": "node scripts/build-decks.mjs",
+    "prebuild": "node scripts/build-decks.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
