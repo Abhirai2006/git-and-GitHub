@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Class 3 · Commit, branch, stash · BAIL308C</title>
+<link rel="icon" href="assets/muse-logo.png">
+<link rel="stylesheet" href="engine/deck.css">
+<style>
+/* =============== 3D: rotating commit graph on a floor =============== */
+.g3 { left: 820px; top: 70px; width: 760px; height: 760px; perspective: 1500px; perspective-origin: 50% 20%; }
+.g3 .world { transform: rotateX(58deg) rotateZ(var(--rz)) scale3d(1.22,1.22,1.22); animation: g3spin 60s linear infinite; }
+@keyframes g3spin { to { --rz: 360deg; } }
+.g3 .floor { position: absolute; left: 80px; top: 80px; width: 600px; height: 600px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(20,22,31,.05) 0 60%, transparent 70%),
+  repeating-radial-gradient(circle, transparent 0 58px, rgba(20,22,31,.08) 58px 59px); }
+.g3 svg.lines { position: absolute; left: 80px; top: 80px; width: 600px; height: 600px; overflow: visible; }
+.g3 .nd { position: absolute; width: 0; height: 0; transform-style: preserve-3d; }
+.g3 .nd .stem { position: absolute; left: -1px; top: 0; width: 2px; height: var(--h); background: linear-gradient(var(--c), rgba(0,0,0,0)); transform-origin: 50% 0; transform: rotateX(-90deg); }
+.g3 .nd .ball { position: absolute; left: -22px; top: -22px; width: 44px; height: 44px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff 0 8%, var(--c) 55%, #000 140%);
+  transform: translateZ(var(--h)) rotateZ(calc(-1 * var(--rz))) rotateX(-58deg); box-shadow: 0 0 0 4px rgba(255,255,255,.9); }
+.g3 .nd .shadow { position: absolute; left: -20px; top: -20px; width: 40px; height: 40px; border-radius: 50%; background: radial-gradient(circle, rgba(20,22,31,.25), transparent 70%); }
+.g3 .nd .tag { position: absolute; left: 0; top: 0; transform: translateZ(calc(var(--h) + 34px)) rotateZ(calc(-1 * var(--rz))) rotateX(-58deg) translate(-50%, -100%); font: 600 26px "Mono"; color: #fff; background: var(--c); padding: 6px 12px; border-radius: 8px; white-space: nowrap; }
+.slide.play .g3 .nd { animation: ndUp .9s var(--spring) both; animation-delay: var(--d); }
+@keyframes ndUp { from { opacity: 0; } to { opacity: 1; } }
+
+/* =============== plan timeline =============== */
+.plan { position: absolute; left: 100px; right: 100px; top: 300px; display: grid; grid-template-columns: repeat(6, 1fr); }
+.plan .c { position: relative; padding: 34px 22px 0 0; border-top: 1px solid var(--line2); }
+.plan .c::before { content: ""; position: absolute; left: 0; top: -6px; width: 11px; height: 11px; border-radius: 50%; background: #fff; border: 1.5px solid var(--ink); }
+.plan .c:nth-child(1)::before { background: #2563FF; border-color: #2563FF; } .plan .c:nth-child(2)::before { background: #7C3AED; border-color: #7C3AED; } .plan .c:nth-child(3)::before { background: #FF9E00; border-color: #FF9E00; } .plan .c:nth-child(4)::before { background: #00A862; border-color: #00A862; } .plan .c:nth-child(5)::before { background: #FF2E88; border-color: #FF2E88; } .plan .c:nth-child(6)::before { background: #00B2D6; border-color: #00B2D6; }
+.plan .c::before { width: 14px !important; height: 14px !important; top: -8px !important; }
+.plan .t { font: 500 16px "Mono"; color: var(--ink3); }
+.plan .h { font: 500 36px/1.08 "Serif"; margin-top: 12px; letter-spacing: -.01em; }
+.plan .s { font: 400 19px/1.45 "Body"; color: var(--ink3); margin-top: 12px; }
+.plan .e { display: inline-block; margin-top: 18px; font: 600 13px "Body"; letter-spacing: .14em; text-transform: uppercase; color: var(--acc); }
+
+/* =============== the FINAL mess =============== */
+.mess { position: absolute; left: 900px; top: 190px; width: 600px; }
+.mess .f { display: flex; align-items: center; gap: 18px; padding: 16px 0; border-bottom: 1px solid var(--line); font: 500 26px "Mono"; color: var(--ink2); opacity: 0; transform: translateY(-16px); }
+.slide.play .mess .f { animation: fIn .6s var(--ease) forwards; animation-delay: var(--d); }
+@keyframes fIn { to { opacity: 1; transform: none; } }
+.mess .f i { width: 26px; height: 32px; border: 1.5px solid var(--ink3); border-radius: 3px; position: relative; flex: none; }
+.mess .f i::after { content: ""; position: absolute; right: -1.5px; top: -1.5px; width: 9px; height: 9px; background: var(--bg); border-left: 1.5px solid var(--ink3); border-bottom: 1.5px solid var(--ink3); }
+.mess .f .x { margin-left: auto; font: 500 18px "Body"; color: var(--err); opacity: 0; transition: opacity .4s; }
+.slide.st-1 .mess .f { color: #B8BAC2; text-decoration: line-through; text-decoration-color: rgba(185,28,28,.6); }
+.slide.st-1 .mess .f.keep { color: var(--ink); text-decoration: none; font-weight: 700; }
+.slide.st-1 .mess .f .x { opacity: 1; }
+.hist { position: absolute; left: 900px; top: 660px; width: 600px; opacity: 0; transform: translateY(20px); transition: all .8s var(--ease) .4s; }
+.slide.st-1 .hist { opacity: 1; transform: none; }
+.hist .line { display: flex; align-items: center; gap: 0; }
+.hist .line i { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--navy); background: #fff; flex: none; }
+.hist .line i:last-child { background: var(--acc); border-color: var(--acc); }
+.hist .line b { flex: 1; height: 2px; background: var(--navy); }
+
+/* =============== save points =============== */
+.sp { position: absolute; left: 100px; right: 100px; top: 500px; height: 240px; }
+.sp .track { position: absolute; left: 0; right: 0; top: 53px; height: 4px; border-radius: 2px; background: var(--g-hot); }
+.sp .pt { position: absolute; top: 30px; width: 50px; margin-left: -25px; text-align: center; }
+.sp .pt .flag { width: 50px; height: 50px; border-radius: 50%; background: #fff; border: 2px solid var(--ink); display: flex; align-items: center; justify-content: center; font: 500 20px "Serif"; }
+.sp .pt .flag { border-color: var(--coral); color: var(--coral); } .sp .pt.now .flag { background: var(--g-hot); border: 0; color: #fff; }
+.sp .pt.bad .flag { border-color: var(--err); color: var(--err); border-style: dashed; }
+.sp .pt .cap { position: absolute; left: 50%; transform: translateX(-50%); top: 74px; width: 240px; font: 500 21px/1.35 "Body"; color: var(--ink2); }
+.sp .back { position: absolute; top: -50px; height: 60px; border: 2px solid var(--acc); border-bottom: 0; border-radius: 30px 30px 0 0; }
+
+/* =============== 3D laptop =============== */
+.lap { perspective: 1800px; perspective-origin: 50% 0%; }
+.lap .world { transform: rotateX(-14deg) rotateY(-24deg) scale3d(.8,.8,.8); transform-origin: 50% 40%; }
+.lap .lid { position: absolute; left: 0; top: 0; width: 560px; height: 350px; transform-origin: 50% 100%; transform: rotateX(-88deg); transition: transform 1.8s cubic-bezier(.3,.1,.2,1) .4s; transform-style: preserve-3d; }
+.slide.play .lap .lid { transform: rotateX(-4deg); }
+.lap .lid .face { position: absolute; inset: 0; border-radius: 18px 18px 6px 6px; background: #1C1E26; padding: 16px; backface-visibility: hidden; }
+.lap .lid .back { position: absolute; inset: 0; border-radius: 18px 18px 6px 6px; background: linear-gradient(135deg, #D9D9DE, #B9BAC2); transform: rotateY(180deg) translateZ(1px); }
+.lap .screen { width: 100%; height: 100%; border-radius: 6px; background: #FBFBF9; padding: 22px 24px; font: 500 22px/1.6 "Mono"; color: var(--ink); overflow: hidden; }
+.lap .screen .p { color: var(--acc); font-weight: 700; }
+.lap .screen .o { color: var(--ok); font-weight: 600; opacity: 0; animation: lnIn .3s ease forwards 3.2s; }
+.lap .base { position: absolute; left: -20px; top: 350px; width: 600px; height: 380px; transform-origin: 50% 0; transform: rotateX(90deg); border-radius: 6px 6px 22px 22px; background: linear-gradient(#E4E4E8, #C9CAD1); box-shadow: 0 0 0 1px rgba(0,0,0,.06) inset; }
+.lap .base .kb { position: absolute; left: 50px; right: 50px; top: 34px; height: 190px; border-radius: 10px; background: repeating-linear-gradient(90deg, #B3B4BC 0 34px, transparent 34px 40px), #CDCED5; opacity: .9; }
+.lap .base .tp { position: absolute; left: 50%; top: 250px; width: 200px; height: 100px; margin-left: -100px; border-radius: 10px; background: #D3D4DA; }
+.lap .shadow { position: absolute; left: -40px; top: 360px; width: 640px; height: 360px; transform-origin: 50% 0; transform: rotateX(90deg) translateZ(-2px); background: radial-gradient(closest-side, rgba(20,22,31,.18), transparent); }
+.lap .typed { display: inline-block; overflow: hidden; white-space: nowrap; vertical-align: bottom; width: 0; animation: typeW 1.1s steps(13) forwards 2s; }
+@keyframes typeW { to { width: 13ch; } }
+
+/* =============== OS columns =============== */
+.os3 { position: absolute; left: 100px; top: 280px; width: 720px; }
+.os3 .r { padding: 22px 0 24px; border-top: 1px solid var(--line2); display: grid; grid-template-columns: 160px 1fr; gap: 20px; }
+.os3 .r:last-child { border-bottom: 1px solid var(--line2); }
+.os3 .n { font: 500 34px "Serif"; }
+.os3 .d { font: 400 22px/1.5 "Body"; color: var(--ink2); }
+
+/* =============== installer mock =============== */
+.inst { position: absolute; left: 100px; top: 250px; width: 820px; height: 560px; border-radius: 14px; background: #fff; border: 1px solid var(--line2); box-shadow: 0 30px 60px -36px rgba(20,22,31,.4); overflow: hidden; }
+.inst .tb { height: 46px; background: #F1F0EC; border-bottom: 1px solid var(--line2); display: flex; align-items: center; padding: 0 18px; font: 500 16px "Body"; color: var(--ink3); }
+.inst .pg { position: absolute; left: 0; right: 0; top: 46px; bottom: 0; padding: 34px 40px; opacity: 0; transform: translateX(30px); transition: all .5s var(--ease); }
+.inst .p0 { opacity: 1; transform: none; display: flex; flex-direction: column; justify-content: center; }
+.slide.st-1 .inst .p0 { opacity: 0; }
+.slide.st-1 .inst .p1, .slide.st-2 .inst .p2, .slide.st-3 .inst .p3 { opacity: 1; transform: none; }
+.slide.st-2 .inst .p1, .slide.st-3 .inst .p2 { opacity: 0; transform: translateX(-30px); }
+.inst .ph { font: 500 32px "Serif"; }
+.inst .pd { font: 400 20px/1.45 "Body"; color: var(--ink3); margin-top: 8px; }
+.inst .opt { margin-top: 16px; border: 1px solid var(--line2); border-radius: 10px; padding: 15px 18px; font: 500 21px "Body"; display: flex; align-items: center; gap: 16px; color: var(--ink2); }
+.inst .opt .rd { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--ink3); flex: none; }
+.inst .opt.pick { border-color: var(--ink); color: var(--ink); box-shadow: 0 0 0 1px var(--ink) inset; }
+.inst .opt.pick .rd { border-color: var(--ink); background: radial-gradient(circle, var(--ink) 42%, transparent 46%); }
+.inst .opt.no { color: #A6A9B3; text-decoration: line-through; }
+.inst .btn { position: absolute; right: 40px; bottom: 30px; font: 600 18px "Body"; padding: 11px 30px; border-radius: 8px; background: var(--ink); color: #fff; }
+.instside { position: absolute; left: 990px; top: 250px; width: 510px; }
+.instside .r { display: grid; grid-template-columns: 50px 1fr; gap: 14px; padding: 20px 0; border-top: 1px solid var(--line2); transition: opacity .4s; opacity: .4; }
+.instside .r .k { font: 400 40px/1 "Serif"; font-style: italic; color: var(--ink3); }
+.instside .r .t { font: 600 23px/1.3 "Body"; } .instside .r .s { font: 400 19px/1.45 "Body"; color: var(--ink3); margin-top: 4px; }
+.slide.st-1 .instside .r1, .slide.st-2 .instside .r2, .slide.st-3 .instside .r3 { opacity: 1; }
+.slide.st-1 .instside .r1 .k, .slide.st-2 .instside .r2 .k, .slide.st-3 .instside .r3 .k { color: var(--acc); }
+.slide:not(.st-1) .instside .r { opacity: 1; }
+
+/* =============== 3D three areas =============== */
+.box { position: absolute; transform-style: preserve-3d; width: var(--w); height: var(--h); }
+.box > .f { position: absolute; inset: 0; transform: translateZ(calc(var(--dp) / 2)); }
+.box > .tp { position: absolute; left: 0; width: var(--w); height: var(--dp); top: calc(50% - var(--dp) / 2); transform: rotateX(90deg) translateZ(calc(var(--h) / 2)); }
+.box > .rt { position: absolute; top: 0; width: var(--dp); height: var(--h); left: calc(50% - var(--dp) / 2); transform: rotateY(90deg) translateZ(calc(var(--w) / 2)); }
+.areas { left: 10px; top: 210px; width: 1480px; height: 600px; perspective: 2200px; perspective-origin: 50% -10%; }
+.areas .world { transform: rotateX(-10deg) rotateY(-10deg); }
+.areas .box { --w: 380px; --h: 380px; --dp: 140px; top: 150px; }
+.areas .box > .f { background: #fff; border: 1px solid var(--line2); border-top: 6px solid var(--c); border-radius: 4px; padding: 30px 30px; }
+.areas .box > .tp { background: linear-gradient(#F4F3EF, #E9E8E2); border: 1px solid var(--line2); }
+.areas .box > .rt { background: linear-gradient(90deg, #E6E5DF, #D9D8D1); border: 1px solid var(--line2); }
+.areas .box .n { font: 500 15px "Body"; letter-spacing: .2em; text-transform: uppercase; color: var(--ink3); }
+.areas .box .h { font: 500 40px/1.05 "Serif"; margin-top: 14px; letter-spacing: -.01em; }
+.areas .box .m { font: 400 40px/1 "Script"; color: var(--c); margin-top: 14px; }
+.areas .box .s { font: 400 20px/1.45 "Body"; color: var(--ink3); margin-top: 16px; }
+.areas .box .slot { position: absolute; left: 30px; right: 30px; bottom: 26px; height: 64px; border: 1.5px dashed var(--line2); border-radius: 10px; }
+.chip3 { position: absolute; top: 410px; left: 120px; width: 300px; height: 64px; border-radius: 10px; background: var(--ink); color: #fff; display: flex; align-items: center; gap: 12px; padding: 0 20px; font: 600 22px "Mono"; transform: translate3d(0, -60px, 160px) rotateX(10deg); opacity: 0; transition: transform 1.1s cubic-bezier(.6,0,.2,1), opacity .5s, background .5s .6s; }
+.chip3 small { margin-left: auto; font: 600 13px "Body"; letter-spacing: .14em; text-transform: uppercase; opacity: .85; }
+.chip3 .s1, .chip3 .s2, .chip3 .s3 { display: none; }
+.slide.st-1 .chip3 { opacity: 1; transform: translate3d(0, 0, 72px); background: #FF4D2E; }
+.slide.st-1 .chip3 .s1 { display: inline; }
+.slide.st-2 .chip3 { transform: translate3d(500px, 0, 72px); background: #FF9E00; animation: hop1 1.1s cubic-bezier(.6,0,.2,1); }
+.slide.st-2 .chip3 .s1 { display: none; } .slide.st-2 .chip3 .s2 { display: inline; }
+.slide.st-3 .chip3 { transform: translate3d(1000px, 0, 72px); background: #00A862; animation: hop2 1.1s cubic-bezier(.6,0,.2,1); }
+.slide.st-3 .chip3 .s2 { display: none; } .slide.st-3 .chip3 .s3 { display: inline; }
+@keyframes hop1 { 0% { transform: translate3d(0, 0, 72px); } 50% { transform: translate3d(250px, -160px, 240px) rotateZ(-4deg); } 100% { transform: translate3d(500px, 0, 72px); } }
+@keyframes hop2 { 0% { transform: translate3d(500px, 0, 72px); } 50% { transform: translate3d(750px, -160px, 240px) rotateZ(4deg); } 100% { transform: translate3d(1000px, 0, 72px); } }
+.acmd { position: absolute; top: 90px; font: 600 20px "Mono"; color: var(--ink); padding: 8px 14px; border: 1.5px solid var(--ink); border-radius: 8px; background: #fff; }
+
+/* =============== git init folder =============== */
+.fold { position: absolute; left: 1030px; top: 300px; width: 440px; height: 420px; }
+.fold .big svg { width: 330px; height: 260px; fill: #FFC21A; stroke: #E09A00; stroke-width: .5; }
+.fold .nm { font: 600 26px "Mono"; margin-top: 14px; }
+.fold .dotgit { position: absolute; left: 230px; top: 20px; padding: 14px 22px; border: 1.5px dashed var(--acc); border-radius: 12px; background: var(--acc-soft); font: 700 30px "Mono"; color: var(--acc); opacity: 0; transform: translateY(40px) scale(.8); transition: all .8s var(--spring) 3.4s; }
+.fold .dotgit small { display: block; font: 600 13px "Body"; letter-spacing: .16em; text-transform: uppercase; }
+.slide.play .fold .dotgit { opacity: 1; transform: rotate(4deg); }
+
+/* =============== branch scene =============== */
+.bg-area { position: absolute; left: 860px; top: 200px; width: 660px; height: 450px; }
+.bg-area svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.bline { fill: none; stroke-width: 6; stroke-linecap: round; }
+.bline.m { stroke: var(--navy); }
+.bline.f { stroke: var(--feat); stroke-dasharray: 420; stroke-dashoffset: 420; transition: stroke-dashoffset .9s var(--ease), stroke .5s; }
+.slide.st-3 .bline.f { stroke-dashoffset: 0; }
+.slide.st-5 .bline.f { stroke: var(--navy); }
+.cn { position: absolute; width: 40px; height: 40px; margin: -20px 0 0 -20px; border-radius: 50%; background: #fff; border: 6px solid var(--navy); z-index: 2; transition: transform .6s var(--spring), border-color .5s; }
+.cn .id { position: absolute; top: 50px; left: 50%; transform: translateX(-50%); font: 500 18px "Mono"; color: var(--ink3); white-space: nowrap; }
+.cn .msg { position: absolute; top: 76px; left: 50%; transform: translateX(-50%); font: 400 18px "Body"; color: var(--ink2); white-space: nowrap; }
+.cn.c2 { border-color: var(--feat); transform: scale(0); }
+.slide.st-3 .cn.c2 { transform: scale(1); transition-delay: .7s; }
+.slide.st-5 .cn.c2 { border-color: var(--navy); }
+.bl { position: absolute; z-index: 3; font: 600 20px "Mono"; color: #fff; padding: 8px 15px; border-radius: 8px; white-space: nowrap; transition: left .9s cubic-bezier(.5,0,.2,1.1), top .9s cubic-bezier(.5,0,.2,1.1), opacity .4s, transform .5s var(--spring); }
+.bl.master { background: var(--navy); left: 30px; top: 160px; }
+.bl.feat { background: var(--feat); left: 30px; top: 100px; opacity: 0; transform: scale(.5); }
+.slide.st-1 .bl.feat { opacity: 1; transform: none; }
+.slide.st-3 .bl.feat { left: 380px; top: 40px; }
+.slide.st-5 .bl.master { left: 404px; top: 264px; }
+.head { position: absolute; z-index: 4; font: 700 17px "Body"; letter-spacing: .14em; color: var(--ink); background: #fff; border: 1.5px solid var(--ink); padding: 6px 12px; border-radius: 8px; transition: left .9s cubic-bezier(.5,0,.2,1.1), top .9s cubic-bezier(.5,0,.2,1.1); left: 160px; top: 162px; }
+.head::before { content: ""; position: absolute; left: -11px; top: 50%; margin-top: -7px; border-style: solid; border-width: 7px 10px 7px 0; border-color: transparent var(--ink) transparent transparent; }
+.slide.st-2 .head { left: 258px; top: 102px; }
+.slide.st-3 .head { left: 608px; top: 42px; }
+.slide.st-4 .head { left: 160px; top: 162px; }
+.slide.st-5 .head { left: 530px; top: 266px; }
+.folder { position: absolute; left: 860px; top: 690px; width: 660px; height: 104px; border-radius: 14px; background: var(--bg2); display: flex; align-items: center; gap: 14px; padding: 0 24px; }
+.folder .lab { font: 600 13px "Body"; letter-spacing: .16em; text-transform: uppercase; color: var(--ink3); width: 110px; line-height: 1.35; }
+.folder .f { font: 600 21px "Mono"; padding: 10px 16px; border-radius: 8px; background: #fff; border: 1px solid var(--line2); transition: all .5s var(--spring); }
+.folder .f.login { opacity: 0; transform: scale(.5); border-color: var(--feat); color: var(--feat); }
+.slide.st-3 .folder .f.login { opacity: 1; transform: none; transition-delay: .5s; }
+.slide.st-4 .folder .f.login { opacity: .3; transform: scale(.9); border-style: dashed; transition-delay: 0s; }
+.slide.st-5 .folder .f.login { opacity: 1; transform: none; border-style: solid; color: var(--navy); border-color: var(--navy); }
+.ffstamp { position: absolute; left: 1010px; top: 520px; z-index: 6; font: 400 56px "Script"; color: var(--ok); opacity: 0; transform: rotate(-6deg) translateY(10px); transition: all .6s var(--ease); }
+.slide.st-5 .ffstamp { opacity: 1; transform: rotate(-6deg); transition-delay: 1.7s; }
+.lostnote { position: absolute; left: 990px; top: 600px; font: 400 44px "Script"; color: var(--acc); opacity: 0; transform: rotate(-3deg); transition: opacity .4s; white-space: nowrap; z-index: 7; }
+.slide.st-4:not(.st-5) .lostnote { opacity: 1; transition-delay: 1.2s; }
+
+/* =============== merge outcomes =============== */
+.mo { position: absolute; top: 270px; width: 440px; height: 520px; padding: 30px; }
+.mo svg { width: 100%; height: 180px; margin-top: 14px; overflow: visible; }
+.mo .h { font: 500 36px "Serif"; margin-top: 16px; }
+.mo .s { font: 400 21px/1.45 "Body"; color: var(--ink2); margin-top: 10px; }
+
+.cf { position: absolute; left: 100px; top: 270px; width: 820px; border-radius: 16px; background: #FBFBF9; border: 1px solid var(--line2); padding: 34px 38px; font: 500 27px/1.75 "Mono"; }
+.cf .mk { color: var(--err); font-weight: 700; }
+.cf .a, .cf .b { display: block; margin: 0 -14px; padding: 0 14px; border-left: 4px solid var(--navy); background: var(--navy-soft); }
+.cf .b { border-color: var(--feat); background: #FFE8F2; }
+
+/* =============== 3D stash cabinet =============== */
+.wf { position: absolute; left: 900px; top: 200px; width: 600px; padding: 24px 28px; border-radius: 14px; background: #fff; border: 1px solid var(--line2); }
+.wf .top { display: flex; justify-content: space-between; align-items: center; }
+.brp { font: 600 18px "Mono"; color: #fff; padding: 6px 13px; border-radius: 8px; background: var(--navy); transition: background .4s; }
+.brp::after { content: "master"; }
+.slide.st-4 .brp { background: var(--feat); } .slide.st-4 .brp::after { content: "other-branch"; }
+.slide.st-5 .brp { background: var(--navy); } .slide.st-5 .brp::after { content: "master"; }
+.doc { margin-top: 18px; border-radius: 10px; background: var(--bg2); padding: 16px 20px; font: 500 23px/1.65 "Mono"; min-height: 104px; }
+.doc .new { color: var(--acc); display: block; opacity: 0; transform: translateX(-16px); transition: all .6s var(--ease); }
+.slide.st-1 .doc .new { opacity: 1; transform: none; transition-delay: 1.6s; }
+.slide.st-2 .doc .new { opacity: 0; transform: translate(0, 200px) scale(.7); transition: all .9s cubic-bezier(.6,0,.3,1); }
+.slide.st-6 .doc .new { opacity: 1; transform: none; transition-delay: 1s; }
+.badge { position: absolute; right: 28px; top: 26px; font: 600 13px "Body"; letter-spacing: .14em; text-transform: uppercase; color: var(--ok); }
+.badge::after { content: "● clean"; }
+.slide.st-1 .badge { color: var(--acc); } .slide.st-1 .badge::after { content: "● modified"; }
+.slide.st-2 .badge { color: var(--ok); } .slide.st-2 .badge::after { content: "● clean"; }
+.slide.st-6 .badge { color: var(--acc); } .slide.st-6 .badge::after { content: "● modified"; }
+.wf .top .label { margin-right: auto; margin-left: 16px; }
+.cab { left: 960px; top: 420px; width: 520px; height: 380px; perspective: 1600px; perspective-origin: 50% -20%; }
+.cab .world { transform: rotateX(-16deg) rotateY(-22deg); }
+.cab .body { --w: 400px; --h: 220px; --dp: 240px; left: 40px; top: 80px; }
+.cab .body > .f { background: linear-gradient(135deg, #2563FF, #7C3AED); border-radius: 6px; }
+.cab .body > .tp { background: #5B8BFF; }
+.cab .body > .rt { background: #4B21B0; }
+.cab .drw { --w: 360px; --h: 120px; --dp: 220px; left: 70px; top: 140px; transition: transform 1s cubic-bezier(.5,0,.2,1); transform: translateZ(22px); }
+.cab .drw > .f { background: linear-gradient(#F4F3EF, #DEDDD6); border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 10px; }
+.cab .drw > .f i { width: 90px; height: 10px; border-radius: 5px; background: #B9BAC2; }
+.cab .drw > .f span { font: 600 14px "Body"; letter-spacing: .18em; text-transform: uppercase; color: var(--ink3); }
+.cab .drw > .tp { background: #E9E8E2; }
+.cab .drw > .rt { background: #CFCEC6; }
+.slide.st-1 .cab .drw, .slide.st-6 .cab .drw { transform: translateZ(180px); }
+.slide.st-3 .cab .drw { transform: translateZ(22px); }
+.cab .stk { position: absolute; left: 120px; top: 20px; font: 600 20px "Mono"; color: #fff; background: var(--acc); border-radius: 8px; padding: 6px 13px; opacity: 0; transform: translateY(30px); transition: all .5s var(--spring) .6s; }
+.slide.st-2 .cab .stk { opacity: 1; transform: none; }
+.slide.st-6 .cab .stk { opacity: 0; transform: translateY(-30px); transition-delay: 0s; }
+
+/* misc */
+.vimkeys { display: flex; gap: 10px; align-items: center; margin: 18px 0 6px; }
+.vimkeys .kbd { font-size: 28px; }
+.three-help { position: absolute; left: 100px; right: 100px; top: 270px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; }
+.three-help .c { padding: 0 40px 0 0; margin-right: 40px; border-right: 1px solid var(--line); }
+.three-help .c:last-child { border-right: 0; margin-right: 0; padding-right: 0; }
+.three-help .msg { font: 500 19px/1.45 "Mono"; color: var(--err); background: #FBEFEF; border-radius: 8px; padding: 12px 14px; margin-top: 18px; }
+.three-help .msg.w { color: var(--warn); background: #F8F2E3; }
+.three-help .n { font: 400 56px/1 "Serif"; font-style: italic; color: var(--acc); }
+.three-help .h { font: 500 32px/1.15 "Serif"; margin-top: 14px; }
+.three-help .s { font: 400 21px/1.5 "Body"; color: var(--ink2); margin-top: 14px; }
+.rec { position: absolute; left: 100px; right: 100px; top: 290px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; }
+.rec .c { padding: 30px 40px 0 0; border-top: 1.5px solid var(--ink); margin-right: 40px; }
+.rec .c:last-child { margin-right: 0; }
+.rec .n { font: 400 30px "Serif"; font-style: italic; color: var(--acc); }
+.rec .h { font: 500 36px/1.12 "Serif"; margin-top: 10px; }
+.rec .s { font: 400 21px/1.5 "Body"; color: var(--ink2); margin-top: 14px; }
+.rec .pg { font: 600 13px "Body"; letter-spacing: .16em; text-transform: uppercase; color: var(--ink3); margin-top: 28px; }
+.bigq { font: 400 40px/1.25 "Serif"; }
+.split2 { position: absolute; top: 290px; width: 660px; }
+.split2 .n { font: 500 15px "Body"; letter-spacing: .2em; text-transform: uppercase; color: var(--ink3); }
+.split2 .h { font: 500 88px/1 "Serif"; margin-top: 12px; letter-spacing: -.02em; }
+.split2 .s { font: 400 26px/1.45 "Body"; color: var(--ink2); margin-top: 18px; }
+.split2 ul { list-style: none; margin-top: 26px; border-top: 1px solid var(--line2); }
+.split2 li { font: 400 23px/1.4 "Body"; color: var(--ink2); padding: 14px 0; border-bottom: 1px solid var(--line2); }
+.offl { margin-top: 24px; font: 500 20px "Body"; color: var(--ink3); display: flex; align-items: center; gap: 10px; }
+.offl i { width: 12px; height: 12px; border-radius: 50%; background: var(--line2); transition: background .4s; }
+.slide.st-1 .offl i { background: var(--ok); } .slide.st-1 .offl i:nth-child(2) { transition-delay: .4s; } .slide.st-1 .offl i:nth-child(3) { transition-delay: .8s; } .slide.st-1 .offl i:nth-child(4) { transition-delay: 1.2s; }
+.offl b { opacity: 0; transition: opacity .4s 1.5s; color: var(--ok); font-weight: 600; }
+.slide.st-1 .offl b { opacity: 1; }
+.wifi { display: inline-flex; align-items: center; gap: 10px; font: 500 20px "Body"; color: var(--ink3); margin-top: 26px; }
+.wifi s { text-decoration: none; position: relative; }
+.wifi s::after { content: ""; position: absolute; left: -4px; right: -4px; top: 50%; height: 2px; background: var(--err); transform: scaleX(0); transform-origin: left; transition: transform .5s; }
+.slide.st-1 .wifi s::after { transform: scaleX(1); }
+</style>
+</head>
+<body>
+<div id="stage">
+
+<section class="slide glow" data-name="Title" data-min="0" data-noframe>
+  <div class="abs logos" style="left:100px;top:66px;--d:.1s" data-a="down">
+    <img class="muse" src="assets/muse-logo.png" alt="Mysore University School of Engineering logo">
+    <img class="uom" src="assets/uom-crest.png" alt="University of Mysore crest">
+    <div class="sep"></div>
+    <div class="lt">Mysore University School of Engineering<small>Department of AI &amp; ML · BAIL308C Project Management with Git</small></div>
+  </div>
+  <div class="abs label" style="left:100px;top:290px;--d:.2s" data-a="up">Class 3 &nbsp;·&nbsp; Saturday, 28 November 2026</div>
+  <h1 class="hl" style="top:330px;width:760px;font-size:104px;line-height:1.02;--d:.35s">Commit, branch, <span class="scr">stash.</span></h1>
+  <div class="abs lead" style="left:100px;top:600px;width:660px;--d:1.1s" data-a="up">Last week Git arrived on your laptop. Today we use it: real commits, a branch, a merge, and a stash.</div>
+  <div class="abs" style="left:100px;top:770px;font:400 19px Body;color:var(--ink3);--d:1.4s" data-a="up"><b>Abhishek Rai</b> &nbsp;·&nbsp; Experiments 1, 2 and 3</div>
+  <div class="s3d g3">
+    <div class="world">
+      <div class="floor"></div>
+      <svg class="lines" viewBox="0 0 600 600"><g fill="none" stroke-width="6" stroke-linecap="round">
+        <path d="M120 480 L230 380 L340 300 L470 160" stroke="#2563FF"/>
+        <path d="M230 380 C260 470 380 470 440 420" stroke="#FF2E88"/>
+        <path d="M440 420 C500 360 500 260 470 160" stroke="#FF2E88" stroke-dasharray="10 10"/>
+        <path d="M340 300 C300 220 220 200 170 170" stroke="#00A862"/>
+      </g></svg>
+      <div class="nd" style="left:200px;top:560px;--h:40px;--c:#2563FF;--d:.3s"><div class="shadow"></div><div class="stem"></div><div class="ball"></div></div>
+      <div class="nd" style="left:310px;top:460px;--h:70px;--c:#2563FF;--d:.5s"><div class="shadow"></div><div class="stem"></div><div class="ball"></div></div>
+      <div class="nd" style="left:420px;top:380px;--h:100px;--c:#2563FF;--d:.7s"><div class="shadow"></div><div class="stem"></div><div class="ball"></div></div>
+      <div class="nd" style="left:550px;top:240px;--h:150px;--c:#2563FF;--d:.9s"><div class="shadow"></div><div class="stem"></div><div class="ball"></div><div class="tag">master</div></div>
+      <div class="nd" style="left:520px;top:500px;--h:90px;--c:#FF2E88;--d:1.1s"><div class="shadow"></div><div class="stem"></div><div class="ball"></div><div class="tag">feature-branch</div></div>
+      <div class="nd" style="left:250px;top:250px;--h:120px;--c:#00A862;--d:1.3s"><div class="shadow"></div><div class="stem"></div><div class="ball"></div><div class="tag">other-branch</div></div>
+    </div>
+  </div>
+  <aside class="notes">TIME: 0 to 2 min. On the projector while students settle.
+SAY: Good morning. Last Saturday we installed Git and ran git init. Today we finish the three experiments we started: your first commits, a branch and a merge, and stash.
+DO: Laptops on and charging now. Everyone without a laptop: we form groups of three around a laptop in five minutes.</aside>
+</section>
+
+<section class="slide" data-name="Today's plan" data-min="2">
+  <div class="eyebrow" data-a="up">Today &nbsp;·&nbsp; two hours</div>
+  <h2 class="hl">Where we pick up today.</h2>
+  <div class="plan">
+    <div class="c" data-a="up" style="--d:.3s"><div class="t">0:03</div><div class="h">Recap</div><div class="s">Save points, Git vs GitHub, three areas, init</div></div>
+    <div class="c" data-a="up" style="--d:.4s"><div class="t">0:10</div><div class="h">Get ready</div><div class="s">Open the project again, form laptop groups</div></div>
+    <div class="c" data-a="up" style="--d:.5s"><div class="t">0:22</div><div class="h">First commit</div><div class="s">add, commit, log, a second commit</div><div class="e">Experiment 1</div></div>
+    <div class="c" data-a="up" style="--d:.6s"><div class="t">0:48</div><div class="h">Branches</div><div class="s">Create, switch, merge, then once alone</div><div class="e">Experiment 2</div></div>
+    <div class="c" data-a="up" style="--d:.7s"><div class="t">1:36</div><div class="h">Stash</div><div class="s">Park unfinished work, bring it back</div><div class="e">Experiment 3</div></div>
+    <div class="c" data-a="up" style="--d:.8s"><div class="t">1:52</div><div class="h">Wrap-up</div><div class="s">Recap and your practical record</div></div>
+  </div>
+  <div class="abs small" style="left:100px;top:700px;width:1200px;--d:1.1s" data-a="up">A five-minute break before stash. We go slowly: every command, every laptop.</div>
+  <aside class="notes">TIME: 2 to 3 min.
+SAY: Last week we stopped right after git init. Today we finish Experiments 1, 2 and 3. No new experiments today; we take it slowly so everyone has every command working.</aside>
+</section>
+
+<section class="slide" data-name="Recap: last class" data-sec="Recap" data-ask data-min="3">
+  <div class="ask"><div class="q-tag">A question first</div><div class="aq">Last Saturday, what did <em>git init</em> do to your folder?</div><div class="ah">Take two or three answers, then press next.</div></div>
+  <div class="eyebrow" data-a="up"><span class="no">01</span> Recap</div>
+  <h2 class="hl">What we did last <span class="scr">week.</span></h2>
+  <div class="abs ticks" style="left:100px;top:300px">
+    <div class="r" style="--td:.4s"><div class="bx"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>Commits are save points</div>
+    <div class="r" style="--td:.7s"><div class="bx"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>Git is the engine, GitHub the garage</div>
+    <div class="r" style="--td:1s"><div class="bx"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>Installed Git, set name and email</div>
+    <div class="r" style="--td:1.3s"><div class="bx"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>Three areas: desk, bag, vault</div>
+    <div class="r" style="--td:1.6s"><div class="bx"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div><code>git init</code> made <code>my-first-project</code> a repository</div>
+  </div>
+  <div class="abs" style="left:900px;top:300px;width:600px;padding-left:44px;border-left:2px solid var(--acc);--d:1.9s" data-a="right">
+    <div class="label">Today</div>
+    <div style="font:400 46px/1.15 Serif;margin-top:16px">Put something in that repository, and save it for <span class="it">real.</span></div>
+    <div class="small" style="margin-top:20px">Experiments 1, 2 and 3, start to finish.</div>
+  </div>
+  <aside class="notes">TIME: 3 to 6 min.
+ASK: What did git init do to your folder? Answer: it created a hidden .git folder; that folder is the repository and holds the history.
+SAY: Last week: commits are save points, Git versus GitHub, we installed Git and set our name and email, the three areas, and git init. Today we put files in and commit them.</aside>
+</section>
+
+<section class="slide tint" data-name="Recap: four questions" data-sec="Recap" data-min="6">
+  <div class="eyebrow" data-a="up"><span class="no">01</span> Warm-up</div>
+  <h2 class="hl sm">Four questions from last week.</h2>
+  <div class="qcard" style="left:100px;top:250px;--d:.2s" data-a="up"><div class="qn">i.</div><div class="qq">Can you commit with the Wi-Fi off?</div><div class="qa" data-step="1">Yes. Git runs entirely on your laptop. Only GitHub needs the internet.</div></div>
+  <div class="qcard" style="left:575px;top:250px;--d:.35s" data-a="up"><div class="qn">ii.</div><div class="qq">What does <code>git config --global user.email</code> set?</div><div class="qa" data-step="2">The email stamped on every commit you make on this laptop.</div></div>
+  <div class="qcard" style="left:1050px;top:250px;--d:.5s" data-a="up"><div class="qn">iii.</div><div class="qq">Name the three areas, in order.</div><div class="qa" data-step="3">Working directory, staging area, repository.</div></div>
+  <div class="abs card flat" style="left:100px;top:640px;width:1400px;padding:28px 36px;display:flex;align-items:center;gap:30px;--d:.7s" data-a="up">
+    <div style="font:400 46px Serif;font-style:italic;color:var(--acc)">iv.</div>
+    <div style="font:600 28px/1.3 Body">Which command tells you what is going on, any time you are unsure?</div>
+    <div data-step="4" data-sa="stamp" style="margin-left:auto;font:600 40px Mono;color:var(--ok);white-space:nowrap">git status</div>
+  </div>
+  <aside class="notes">TIME: 6 to 10 min. Each press reveals one answer. Cold-call a different student for each, and wait for an answer before revealing.
+SAY for question four: git status. Whenever you are lost today, type git status before asking me.</aside>
+</section>
+
+<section class="slide" data-name="Where we stopped" data-sec="Get ready" data-min="10">
+  <div class="eyebrow" data-a="up"><span class="no">02</span> Where we stopped</div>
+  <h2 class="hl">Open your project again.</h2>
+  <div class="term" data-type data-delay="700" style="left:100px;top:280px;width:860px">
+    <div class="bar"><i></i><i></i><i></i><b>Git Bash</b></div>
+    <div class="body">
+      <div class="ln cmd">cd Desktop/my-first-project</div>
+      <div class="ln cmd">git status</div>
+      <div class="ln out">On branch master</div>
+      <div class="ln out">No commits yet</div>
+      <div class="ln out dim">nothing to commit</div>
+    </div>
+  </div>
+  <div class="hnote" style="left:620px;top:600px;--d:3.2s">this is exactly where we stopped</div>
+  <div class="abs" style="left:1040px;top:290px;width:460px;padding-left:40px;border-left:2px solid var(--acc);--d:.6s" data-a="right">
+    <div style="font:400 32px/1.2 Serif">“No such file or directory”?</div>
+    <div class="small" style="margin-top:14px">Type <code>ls</code> to see where you are, or start fresh: <code>mkdir my-first-project</code>, <code>cd my-first-project</code>, <code>git init</code>.</div>
+  </div>
+  <aside class="notes">TIME: 10 to 13 min.
+DO: Everyone with last week's laptop: open Git Bash, cd Desktop/my-first-project, then git status. You should see On branch master and No commits yet.
+IF the folder is missing, or they made it somewhere else: mkdir my-first-project, cd my-first-project, git init. It takes ten seconds.
+WATCH: Students typing commands in their home folder instead of the project folder. The Git Bash prompt shows the folder name; check it.</aside>
+</section>
+
+<section class="slide tint" data-name="Laptop groups and catch-up" data-sec="Get ready" data-min="13">
+  <div class="eyebrow" data-a="up"><span class="no">02</span> Everyone at a keyboard</div>
+  <h2 class="hl">One laptop, three people.</h2>
+  <div class="abs" style="left:100px;top:290px;width:640px">
+    <div class="steps">
+      <div class="r" data-a="left" style="--d:.3s"><div class="k">1</div><div><div class="t">Form groups of three</div><div class="s">Every group around one laptop with Git working.</div></div></div>
+      <div class="r" data-a="left" style="--d:.45s"><div class="k">2</div><div><div class="t">Rotate the keyboard</div><div class="s">Change typist each experiment, so all three type.</div></div></div>
+      <div class="r" data-a="left" style="--d:.6s"><div class="k">3</div><div><div class="t">Everyone writes it down</div><div class="s">The commands and output go in your own record.</div></div></div>
+    </div>
+  </div>
+  <div class="term" data-type data-delay="900" data-speed="22" style="left:820px;top:270px;width:690px;font-size:19px">
+    <div class="bar"><i></i><i></i><i></i><b>New laptop today? Catch up here</b></div>
+    <div class="body" style="padding:16px 24px 18px">
+      <div class="ln cm"># 1. install Git from git-scm.com, then:</div>
+      <div class="ln cmd">git --version</div>
+      <div class="ln cm"># 2. tell Git who you are</div>
+      <div class="ln cmd">git config --global user.name "Your Name"</div>
+      <div class="ln cmd">git config --global user.email "you@example.com"</div>
+      <div class="ln cmd">git config --global init.defaultBranch master</div>
+      <div class="ln cm"># 3. make the project</div>
+      <div class="ln cmd">cd Desktop</div>
+      <div class="ln cmd">mkdir my-first-project</div>
+      <div class="ln cmd">cd my-first-project</div>
+      <div class="ln cmd">git init</div>
+    </div>
+  </div>
+  <div class="abs small" style="left:820px;top:790px;width:690px;--d:1.4s" data-a="up">Full install steps: Class 2's slides on the website.</div>
+  <aside class="notes">TIME: 13 to 22 min.
+SAY: About a third of you have laptops, so we work in groups of three around one laptop. Change who types at each experiment, so everyone types something today. Everyone writes the commands and output in their own record.
+DO: Group the room now. Put the strongest laptop owners with students who have none.
+DO: Anyone who brought a laptop for the first time: install Git from the pen drive or git-scm.com, then run the commands on the right, top to bottom. Pair them with a student who finished last week.
+TIP: On a shared laptop, git config is per laptop, so commits show the owner's name. That is fine for the record; each student writes the commands they typed.</aside>
+</section>
+
+<section class="slide tint" data-name="Three areas" data-sec="Your first commit" data-steps="3" data-min="22">
+  <div class="eyebrow" data-a="up"><span class="no">03</span> The idea everything builds on</div>
+  <h2 class="hl">Three rooms every change walks through.</h2>
+  <div class="s3d areas">
+    <div class="world">
+      <div class="box" style="left:70px;--c:#FF4D2E"><div class="f"><div class="n">Room one</div><div class="h">Working Directory</div><div class="m">your messy desk</div><div class="s">The files you see and edit.</div><div class="slot"></div></div><div class="tp"></div><div class="rt"></div></div>
+      <div class="box" style="left:570px;--c:#E07800"><div class="f"><div class="n">Room two</div><div class="h">Staging Area</div><div class="m">the bag you pack</div><div class="s">Changes chosen for the next commit.</div><div class="slot"></div></div><div class="tp"></div><div class="rt"></div></div>
+      <div class="box" style="left:1070px;--c:#00A862"><div class="f"><div class="n">Room three</div><div class="h">Repository</div><div class="m">the sealed vault</div><div class="s">Permanent history in <code>.git</code></div><div class="slot"></div></div><div class="tp"></div><div class="rt"></div></div>
+      <div class="acmd" data-step="2" data-sa="zoom" style="left:465px">git add</div>
+      <div class="acmd" data-step="3" data-sa="zoom" style="left:945px">git commit</div>
+      <div class="chip3" style="left:110px">notes.txt <small class="s1">untracked</small><small class="s2">staged</small><small class="s3">committed</small></div>
+    </div>
+  </div>
+  <aside class="notes">TIME: 22 to 26 min. Press next three times.
+SAY: Picture three rooms. The working directory is your desk: messy, anything can change.
+DO: Next. A file appears on the desk.
+SAY: The staging area is a bag you pack. You choose exactly what goes in. git add puts things in the bag.
+DO: Next. The file jumps into the bag.
+SAY: The repository is a sealed vault. git commit seals it. Once sealed, that version is permanent.
+DO: Next. Sealed.
+ASK: Why have a bag at all, why not commit straight away? Answer: so you choose which changes go together in one save point, and leave half-done ones out.</aside>
+</section>
+
+<section class="slide tint" data-name="Lab 1: add and commit" data-sec="Your first commit" data-min="26">
+  <div class="eyebrow" data-a="up"><span class="no">03</span> Experiment 1 · type along</div>
+  <h2 class="hl">Make your first <span class="scr">commit.</span></h2>
+  <div class="term" data-type data-delay="600" data-speed="30" style="left:100px;top:260px;width:1000px;font-size:22px">
+    <div class="bar"><i></i><i></i><i></i><b>~/Desktop/my-first-project (master)</b></div>
+    <div class="body">
+      <div class="ln cmd">echo "Hello Git" > notes.txt</div>
+      <div class="ln cmd">git status</div>
+      <div class="ln out">Untracked files:</div>
+      <div class="ln out hl-r">        notes.txt</div>
+      <div class="ln cmd" data-s="1">git add notes.txt</div>
+      <div class="ln cmd" data-s="1">git status</div>
+      <div class="ln out" data-s="1">Changes to be committed:</div>
+      <div class="ln out hl-g" data-s="1">        new file:   notes.txt</div>
+      <div class="ln cmd" data-s="2">git commit -m "Add initial notes file"</div>
+      <div class="ln out ok" data-s="2">[master (root-commit) 89fdfae] Add initial notes file</div>
+      <div class="ln out" data-s="2"> 1 file changed, 1 insertion(+)</div>
+    </div>
+  </div>
+  <div class="abs" style="left:1150px;top:270px;width:350px">
+    <div style="--d:2.2s" data-a="left"><div class="label" style="color:var(--err)">Red</div><div class="small" style="margin-top:6px">Git sees the file but is not tracking it yet.</div></div>
+    <div class="rule" style="margin:22px 0"></div>
+    <div data-step="1"><div class="label" style="color:var(--ok)">Green</div><div class="small" style="margin-top:6px">Staged. In the bag, ready to commit.</div></div>
+    <div class="rule" style="margin:22px 0"></div>
+    <div data-step="2"><div class="label" style="color:var(--acc)">Committed</div><div class="small" style="margin-top:6px"><b>89fdfae</b> is this save point's ID. Yours will be different.</div></div>
+  </div>
+  <div data-step="2" data-confetti="2" data-cdelay="2400" data-cx="560" data-cy="780" style="position:absolute;width:0;height:0"></div>
+  <aside class="notes">TIME: 26 to 34 min. Three parts: create the file, stage it, commit it.
+DO: Type echo "Hello Git" > notes.txt, then git status. The file shows in red: untracked.
+DO: Next. git add notes.txt, then git status again. Now green: staged.
+DO: Next. git commit -m "Add initial notes file".
+SAY: Everyone just made their first commit, a real, permanent entry in a real history. The seven characters after root-commit are the commit ID. Yours is different from mine; that is correct.
+WATCH: "Please tell me who you are" means git config is not set on this laptop. Run the git config lines from the catch-up slide.
+IF someone forgot -m and an editor opened: see the help slide, three slides ahead.</aside>
+</section>
+
+<section class="slide" data-name="Lab 1: git log" data-sec="Your first commit" data-min="34">
+  <div class="eyebrow" data-a="up"><span class="no">03</span> Read the history</div>
+  <h2 class="hl">git log shows every save point.</h2>
+  <div class="term" data-type data-delay="700" style="left:100px;top:270px;width:960px;font-size:23px">
+    <div class="bar"><i></i><i></i><i></i><b>my-first-project (master)</b></div>
+    <div class="body">
+      <div class="ln cmd">git log</div>
+      <div class="ln out hl-o">commit 89fdfae488675e07c43438bc669489a75659defb</div>
+      <div class="ln out">Author: Ada Lovelace &lt;ada@example.com&gt;</div>
+      <div class="ln out">Date:   Sat Nov 28 10:20:00 2026 +0530</div>
+      <div class="ln out"> </div>
+      <div class="ln out hl-g">    Add initial notes file</div>
+      <div class="ln cmd" data-s="1">git log --oneline</div>
+      <div class="ln out hl-o" data-s="1">89fdfae Add initial notes file</div>
+    </div>
+  </div>
+  <div class="abs" style="left:1110px;top:280px;width:390px">
+    <table class="tbl" style="font-size:21px">
+      <tr data-a="left" style="--d:2s"><td style="color:var(--acc)">commit</td><td>the ID, a long hash</td></tr>
+      <tr data-a="left" style="--d:2.2s"><td style="color:var(--navy)">Author</td><td>from your git config</td></tr>
+      <tr data-a="left" style="--d:2.4s"><td>Date</td><td>when you committed</td></tr>
+      <tr data-a="left" style="--d:2.6s"><td style="color:var(--ok)">Message</td><td>what changed</td></tr>
+    </table>
+  </div>
+  <div class="abs small" style="left:100px;top:760px;--d:1s" data-a="up">Long log and the prompt vanished? Press <span class="kbd">q</span> to get back.</div>
+  <aside class="notes">TIME: 34 to 38 min.
+DO: Type git log. Point to each part: the ID, the author from git config, the date, the message.
+DO: Next. git log --oneline, the short version. Seven characters of the ID are enough to identify a commit.
+TIP: If the log fills the screen and the prompt disappears, press q.</aside>
+</section>
+
+<section class="slide tint" data-name="Your turn: second commit" data-sec="Your first commit" data-min="38">
+  <div class="eyebrow" data-a="up"><span class="no">03</span> Your turn · five minutes</div>
+  <h2 class="hl">Make a second commit, on your own.</h2>
+  <div class="abs steps" style="left:100px;top:290px;width:720px;--d:.2s" data-a="left">
+    <div class="r"><div class="k">1</div><div><div class="t">Create <code>todo.txt</code> with one line</div><div class="s"><code>echo "Buy milk" > todo.txt</code></div></div></div>
+    <div class="r"><div class="k">2</div><div><div class="t">Stage it</div><div class="s"><code>git add todo.txt</code></div></div></div>
+    <div class="r"><div class="k">3</div><div><div class="t">Commit with a real message</div><div class="s"><code>git commit -m "Add todo list"</code></div></div></div>
+    <div class="r" style="margin:0"><div class="k">4</div><div><div class="t">Check: two commits?</div><div class="s"><code>git log --oneline</code></div></div></div>
+  </div>
+  <div class="abs" style="left:900px;top:290px;width:600px">
+    <div class="label" style="margin-bottom:10px;--d:.4s" data-a="up">Commit messages</div>
+    <table class="tbl" style="font-size:24px">
+      <tr data-a="right" style="--d:.6s"><td style="color:var(--err)">Weak</td><td class="mono">"update"</td></tr>
+      <tr data-a="right" style="--d:.8s"><td style="color:var(--err)">Weak</td><td class="mono">"final fix"</td></tr>
+      <tr data-a="right" style="--d:1s"><td style="color:var(--ok)">Clear</td><td class="mono">"Add todo list"</td></tr>
+    </table>
+    <div class="small" style="margin-top:22px;--d:1.2s" data-a="up">Say <b>what</b> changed. Future you will thank you.</div>
+  </div>
+  <aside class="notes">TIME: 38 to 44 min. Students work alone.
+SAY: Your turn. Create todo.txt, stage it, commit it with a real message, and check git log --oneline shows two commits.
+SAY: Messages like update or final fix tell nobody anything six months later. Say what changed.
+DO: Walk the room and look for two lines in git log --oneline.</aside>
+</section>
+
+<section class="slide" data-name="Help, something went wrong" data-sec="Your first commit" data-min="44">
+  <div class="eyebrow" data-a="up"><span class="no">03</span> Everyone hits these</div>
+  <h2 class="hl sm">Three things that look scary, and are not.</h2>
+  <div class="three-help">
+    <div class="c" data-a="up" style="--d:.2s"><div class="n">1</div><div class="h">A strange editor opened</div><div class="s">You forgot <code>-m</code>. If it is Vim (full screen, no menus), quit with:</div><div class="vimkeys"><span class="kbd">Esc</span><span class="kbd">:</span><span class="kbd">q</span><span class="kbd">!</span><span class="kbd">Enter</span></div><div class="s">In Notepad: type a message on line 1, save, close.</div></div>
+    <div class="c" data-a="up" style="--d:.35s"><div class="n">2</div><div class="h">A warning about LF and CRLF</div><div class="msg w">warning: LF will be replaced by CRLF</div><div class="s">Normal on Windows; it ends lines differently. Ignore it, your command worked.</div></div>
+    <div class="c" data-a="up" style="--d:.5s"><div class="n">3</div><div class="h">“Please tell me who you are”</div><div class="msg">*** Please tell me who you are.</div><div class="s">Git has no name or email yet. Run the two <code>git config --global</code> lines, then commit again.</div></div>
+  </div>
+  <aside class="notes">TIME: 44 to 48 min.
+SAY: Three things every beginner sees. None of them mean you broke anything.
+SAY: One: git commit without -m opens an editor. In Vim press Escape, type colon q exclamation, Enter. That quits without committing; commit again with -m. In Notepad write the message on line one, save, close, and the commit completes.
+SAY: Two: the LF and CRLF warning on Windows. Harmless.
+SAY: Three: please tell me who you are. git config did not happen. Run it again.</aside>
+</section>
+
+<section class="slide" data-name="Why branches" data-sec="Branches" data-ask data-min="48">
+  <div class="ask"><div class="q-tag">Think about it</div><div class="aq">Five of you build one app, all editing master at the same time. <em>What happens?</em></div><div class="ah">Take a guess, then press next.</div></div>
+  <div class="eyebrow" data-a="up"><span class="no">04</span> Experiment 2</div>
+  <h2 class="hl">A branch is a safe copy to experiment in.</h2>
+  <div class="abs lead" style="left:100px;top:310px;width:700px;--d:.4s" data-a="up">You want a new kitchen, so you build a full-size mock-up in the garage first. Only when it works do you bring it into the house.</div>
+  <div class="abs" style="left:100px;top:560px;width:700px;--d:.8s" data-a="up">
+    <table class="tbl"><tr><td class="mono" style="color:var(--navy)">master</td><td>the real house, always working</td></tr><tr><td class="mono" style="color:var(--acc)">feature-branch</td><td>the mock-up, try anything</td></tr></table>
+  </div>
+  <div class="abs" style="left:900px;top:250px;width:600px;height:540px">
+    <svg viewBox="0 0 600 540" style="width:100%;height:100%;overflow:visible">
+      <path class="draw" style="--len:560;--d:.6s" d="M40 440 L560 440" stroke="#2563FF" stroke-width="6" stroke-linecap="round" fill="none"/>
+      <path class="draw" style="--len:620;--d:1.2s" d="M150 440 C150 330 230 270 300 270 L400 270 C470 270 520 330 520 440" stroke="#FF2E88" stroke-width="6" stroke-linecap="round" fill="none"/>
+      <g fill="#fff" stroke-width="6"><circle cx="40" cy="440" r="16" stroke="#2563FF"/><circle cx="150" cy="440" r="16" stroke="#2563FF"/><circle cx="300" cy="270" r="16" stroke="#FF2E88"/><circle cx="400" cy="270" r="16" stroke="#FF2E88"/><circle cx="520" cy="440" r="20" stroke="#2563FF"/></g>
+      <text x="350" y="220" text-anchor="middle" font-family="Script" font-size="56" fill="#FF2E88">try ideas here</text>
+      <text x="300" y="510" text-anchor="middle" font-family="Script" font-size="56" fill="#2563FF">master stays safe</text>
+    </svg>
+  </div>
+  <aside class="notes">TIME: 48 to 52 min.
+ASK: Five of you build the same app, everyone editing master directly. What happens? Answer: chaos. Overwritten work, conflicting changes, no way to tell who did what.
+SAY: Renovating a kitchen, you do not touch the real one until the new layout works, so you build a mock-up in the garage. That mock-up is a branch. Master is the real house, always working. When the branch works, one command brings it in: merge.</aside>
+</section>
+
+<section class="slide tint no-anim" data-name="Four branch commands" data-sec="Branches" data-min="52">
+  <div class="eyebrow"><span class="no">04</span> All you need</div>
+  <h2 class="hl">Four commands to branch.</h2>
+  <div class="abs" style="left:100px;top:290px;width:1400px">
+    <table class="tbl" style="font-size:27px">
+      <tr><th style="width:520px">Command</th><th>What it does</th></tr>
+      <tr><td class="mono">git branch feature-branch</td><td>Creates a branch. You do <b>not</b> move onto it.</td></tr>
+      <tr><td class="mono">git checkout feature-branch</td><td>Moves you onto that branch. <code>git switch</code> also works.</td></tr>
+      <tr><td class="mono">git branch</td><td>Lists branches. <b>*</b> marks the one you are on.</td></tr>
+      <tr><td class="mono">git merge feature-branch</td><td>Brings that branch's commits into the branch you are on.</td></tr>
+    </table>
+  </div>
+  <aside class="notes">TIME: 52 to 54 min.
+SAY: Four commands. branch creates, but does not move you. checkout moves you. branch on its own lists them, and the star is where you are. merge brings another branch's work into the one you are standing on.
+TIP: The most common mistake is merging while on the wrong branch. Check git branch first.</aside>
+</section>
+
+<section class="slide" data-name="Lab 2: create, switch, merge" data-sec="Branches" data-min="54">
+  <div class="eyebrow" data-a="up"><span class="no">04</span> Experiment 2 · one step per press</div>
+  <h2 class="hl sm" style="width:760px">Branch, commit, merge.</h2>
+  <div class="term" data-type data-delay="400" data-speed="28" style="left:80px;top:200px;width:740px;font-size:20px;line-height:1.45">
+    <div class="bar"><i></i><i></i><i></i><b>my-first-project</b></div>
+    <div class="body" style="padding:16px 24px 20px">
+      <div class="ln out dim">  (press next for step 1)</div>
+      <div class="ln cmd" data-s="1">git branch feature-branch</div>
+      <div class="ln cmd" data-s="1">git branch</div>
+      <div class="ln out" data-s="1">  feature-branch</div>
+      <div class="ln out hl-g" data-s="1">* master</div>
+      <div class="ln cmd" data-s="2">git checkout feature-branch</div>
+      <div class="ln out" data-s="2">Switched to branch 'feature-branch'</div>
+      <div class="ln cmd" data-s="3">echo "Login page" > login.txt</div>
+      <div class="ln cmd" data-s="3">git add login.txt</div>
+      <div class="ln cmd" data-s="3">git commit -m "Add login page"</div>
+      <div class="ln out ok" data-s="3">[feature-branch 61ad0c2] Add login page</div>
+      <div class="ln cmd" data-s="4">git checkout master</div>
+      <div class="ln out" data-s="4">Switched to branch 'master'</div>
+      <div class="ln cmd" data-s="5">git merge feature-branch</div>
+      <div class="ln out" data-s="5">Updating 1eb0565..61ad0c2</div>
+      <div class="ln out ok" data-s="5">Fast-forward</div>
+    </div>
+  </div>
+  <div class="bg-area" data-a="up" style="--d:.2s">
+    <svg viewBox="0 0 660 450"><path class="bline m" d="M-10 250 L120 250"/><path class="bline f" d="M120 250 C120 180 200 140 300 140 L470 140"/></svg>
+    <div class="cn" style="left:120px;top:250px"><span class="id">your last commit</span></div>
+    <div class="cn c2" style="left:470px;top:140px"><span class="id">61ad0c2</span><span class="msg">Add login page</span></div>
+    <div class="bl master">master</div>
+    <div class="bl feat">feature-branch</div>
+    <div class="head">HEAD</div>
+  </div>
+  <div class="ffstamp">fast-forward</div>
+  <div class="lostnote">login.txt gone? It is safe on the branch.</div>
+  <div class="folder" data-a="up" style="--d:.4s"><div class="lab">Files in your folder</div><div class="f">notes.txt</div><div class="f">todo.txt</div><div class="f login">login.txt</div></div>
+  <div data-step="5" data-confetti="5" data-cdelay="2000" data-cx="1180" data-cy="520" style="position:absolute;width:0;height:0"></div>
+  <aside class="notes">TIME: 54 to 76 min. Five presses; students type each step with you. The picture on the right shows what Git is doing.
+DO step 1: git branch feature-branch, then git branch. A new label appears on the same commit. The star is still on master: creating a branch does not move you.
+DO step 2: git checkout feature-branch. HEAD means "you are here". It moved.
+DO step 3: create login.txt, add it, commit it. A new commit appears, only on the branch.
+DO step 4: git checkout master. HEAD goes back.
+ASK: Run ls. Where did login.txt go? Let them worry for a second. It is safe on the branch; master has not seen it yet.
+DO step 5: git merge feature-branch. You should all see the word Fast-forward.
+SAY: Master had not moved while you worked, so Git just slid master forward. No new commit, nothing to resolve. ls again: login.txt is back.
+WATCH: "Already up to date" means they skipped the commit in step 3. checkout feature-branch, commit login.txt, checkout master, merge again.
+TIP: IDs on screen are from my run. Everyone's differ; that is correct.</aside>
+</section>
+
+<section class="slide tint" data-name="Your turn: a branch on your own" data-sec="Branches" data-min="76">
+  <div class="eyebrow" data-a="up"><span class="no">04</span> Your turn · eight minutes</div>
+  <h2 class="hl">Do the whole branch cycle, on your own.</h2>
+  <div class="abs steps" style="left:100px;top:280px;width:700px;--d:.2s" data-a="left">
+    <div class="r"><div class="k">1</div><div><div class="t">Create a branch and move onto it</div><div class="s"><code>git branch about-page</code> then <code>git checkout about-page</code></div></div></div>
+    <div class="r"><div class="k">2</div><div><div class="t">Commit something on it</div><div class="s"><code>echo "About us" &gt; about.txt</code>, <code>git add about.txt</code>, <code>git commit -m "Add about page"</code></div></div></div>
+    <div class="r"><div class="k">3</div><div><div class="t">Go back to master and merge</div><div class="s"><code>git checkout master</code> then <code>git merge about-page</code></div></div></div>
+    <div class="r" style="margin:0"><div class="k">4</div><div><div class="t">Check your history</div><div class="s"><code>git log --oneline</code></div></div></div>
+  </div>
+  <div class="term" data-type data-delay="1200" data-speed="26" style="left:860px;top:280px;width:640px;font-size:22px" data-nocopy>
+    <div class="bar"><i></i><i></i><i></i><b>What you should see at the end</b></div>
+    <div class="body">
+      <div class="ln cmd">git merge about-page</div>
+      <div class="ln out">Updating 61ad0c2..0803954</div>
+      <div class="ln out ok">Fast-forward</div>
+      <div class="ln cmd">git log --oneline</div>
+      <div class="ln out">0803954 Add about page</div>
+      <div class="ln out">61ad0c2 Add login page</div>
+      <div class="ln out">1eb0565 Add todo list</div>
+      <div class="ln out">89fdfae Add initial notes file</div>
+    </div>
+  </div>
+  <div class="hnote" style="left:900px;top:720px;--d:3.6s">four save points, in order</div>
+  <aside class="notes">TIME: 76 to 84 min. Groups work alone; the new typist in each group does this one.
+SAY: Now the whole cycle without me: a new branch called about-page, a commit on it, back to master, merge. You should see Fast-forward and four commits in the log.
+DO: Walk the room. Check each group's git log --oneline shows four lines, newest first.
+WATCH: "Already up to date" again means the commit was made on master by mistake: they forgot git checkout about-page. Check with git branch.
+TIP: The IDs on screen are from my run; theirs differ.</aside>
+</section>
+
+<section class="slide tint" data-name="Three ways a merge goes" data-sec="Branches" data-min="84">
+  <div class="eyebrow" data-a="up"><span class="no">04</span> Not every merge is a fast-forward</div>
+  <h2 class="hl">Three ways a merge can go.</h2>
+  <div class="mo card flat" style="left:100px;--d:.2s" data-a="up">
+    <span class="pill fresh">Fast-forward</span>
+    <svg viewBox="0 0 380 180"><path class="draw" style="--len:400;--d:.6s" d="M20 130 L120 130" stroke="#2563FF" stroke-width="6" fill="none" stroke-linecap="round"/><path class="draw" style="--len:300;--d:1s" d="M120 130 C120 70 180 50 240 50 L330 50" stroke="#FF2E88" stroke-width="6" fill="none" stroke-linecap="round"/><g fill="#fff" stroke-width="5"><circle cx="20" cy="130" r="11" stroke="#2563FF"/><circle cx="120" cy="130" r="11" stroke="#2563FF"/><circle cx="240" cy="50" r="11" stroke="#FF2E88"/><circle cx="330" cy="50" r="11" stroke="#FF2E88"/></g><text x="330" y="16" text-anchor="middle" font-family="Mono" font-weight="600" font-size="17" fill="#2563FF">master slides here</text></svg>
+    <div class="h">Just slide forward</div><div class="s">Master did not move. Git moves the label. No new commit.</div>
+  </div>
+  <div class="mo card flat" style="left:580px;--d:.35s" data-a="up">
+    <span class="pill cool">Three-way merge</span>
+    <svg viewBox="0 0 380 180"><path class="draw" style="--len:400;--d:.6s" d="M20 130 L330 130" stroke="#2563FF" stroke-width="6" fill="none" stroke-linecap="round"/><path class="draw" style="--len:340;--d:1s" d="M90 130 C90 60 150 50 200 50 C260 50 330 70 330 130" stroke="#FF2E88" stroke-width="6" fill="none" stroke-linecap="round"/><g fill="#fff" stroke-width="5"><circle cx="20" cy="130" r="11" stroke="#2563FF"/><circle cx="90" cy="130" r="11" stroke="#2563FF"/><circle cx="210" cy="130" r="11" stroke="#2563FF"/><circle cx="200" cy="50" r="11" stroke="#FF2E88"/><circle cx="330" cy="130" r="15" stroke="#14161F" fill="#14161F"/></g></svg>
+    <div class="h">Both moved</div><div class="s">Different parts changed. Git makes a new <b>merge commit</b> joining both.</div>
+  </div>
+  <div class="mo card flat" style="left:1060px;--d:.5s" data-a="up">
+    <span class="pill hot">Conflict</span>
+    <svg viewBox="0 0 380 180"><path class="draw" style="--len:400;--d:.6s" d="M20 130 L270 130" stroke="#2563FF" stroke-width="6" fill="none" stroke-linecap="round"/><path class="draw" style="--len:300;--d:1s" d="M90 130 C90 60 150 50 200 50 C250 50 280 80 290 108" stroke="#FF2E88" stroke-width="6" fill="none" stroke-linecap="round"/><g fill="#fff" stroke-width="5"><circle cx="20" cy="130" r="11" stroke="#2563FF"/><circle cx="90" cy="130" r="11" stroke="#2563FF"/><circle cx="210" cy="130" r="11" stroke="#2563FF"/><circle cx="200" cy="50" r="11" stroke="#FF2E88"/></g><text x="330" y="148" text-anchor="middle" font-family="Serif" font-size="60" fill="#B91C1C">?</text></svg>
+    <div class="h">Same lines changed</div><div class="s">Git will not guess. It pauses and asks <b>you</b> to choose.</div>
+  </div>
+  <aside class="notes">TIME: 84 to 88 min.
+SAY: What we did is the simplest case, a fast-forward. When both branches have new commits in different places, Git joins them with a new merge commit, a three-way merge. When both changed the very same lines, Git stops and asks you. That is a conflict.</aside>
+</section>
+
+<section class="slide" data-name="A conflict is not a crisis" data-sec="Branches" data-min="88">
+  <div class="eyebrow" data-a="up"><span class="no">04</span> When Git asks you to choose</div>
+  <h2 class="hl">A conflict is not a <span class="scr">crisis.</span></h2>
+  <div class="cf" data-a="zoom" style="--d:.2s">
+    <div class="mk">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</div>
+    <span class="a">Welcome to our app!</span>
+    <div class="mk">=======</div>
+    <span class="b">Hello and welcome, friend!</span>
+    <div class="mk">&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature-branch</div>
+  </div>
+  <div class="abs steps" style="left:1000px;top:280px;width:500px">
+    <div class="r" data-a="left" style="--d:.5s"><div class="k">1</div><div><div class="t">Open the file</div><div class="s">Find the &lt;&lt;&lt; === &gt;&gt;&gt; markers.</div></div></div>
+    <div class="r" data-a="left" style="--d:.7s"><div class="k">2</div><div><div class="t">Keep the right text</div><div class="s">Delete the other version and all three marker lines.</div></div></div>
+    <div class="r" data-a="left" style="--d:.9s"><div class="k">3</div><div><div class="t">Stage and commit</div><div class="s"><code>git add</code> the file, then <code>git commit</code>.</div></div></div>
+  </div>
+  <div class="abs small" style="left:100px;top:660px;width:820px;--d:1.2s" data-a="up"><span style="color:var(--navy);font-weight:600">Blue</span> is where you are (HEAD). <span style="color:var(--feat);font-weight:600">Pink</span> is the branch coming in.</div>
+  <aside class="notes">TIME: 88 to 91 min. Concept only today; practice comes later.
+SAY: A conflict means two people changed the same lines differently, and Git refuses to guess. Open the file. The top part is your version, the bottom part is the incoming one. Keep what is right, delete the rest and the three marker lines, save, add, commit.
+ASK: Has anyone already hit a merge conflict in a personal project? Let one student share.</aside>
+</section>
+
+<section class="slide glow" data-name="Break" data-fx="timer" data-mins="5" data-min="91">
+  <div class="eyebrow" data-a="up">Break</div>
+  <h2 class="hl" style="width:1000px">Stretch. Water. Back in <span class="scr">five.</span></h2>
+  <div class="abs lead" style="left:100px;top:340px;width:600px;--d:.6s" data-a="up">Keep your terminal open in <code>my-first-project</code>. We use it next.</div>
+  <div class="abs timer-btns no-advance" style="left:100px;top:480px;--d:.8s" data-a="up"><button class="t-go go">Start</button><button class="t-add">+1 min</button></div>
+  <div class="ring-wrap no-advance" style="left:880px;top:150px;width:620px;height:620px" data-a="zoom">
+    <svg viewBox="0 0 660 660"><circle cx="330" cy="330" r="300" fill="none" stroke="#EEF1F8" stroke-width="18"/><circle class="ring-fg" cx="330" cy="330" r="300" fill="none" stroke="#FF4D2E" stroke-width="18" stroke-linecap="round"/></svg>
+    <div class="tt"><div class="v">5:00</div><div class="l">minutes left</div></div>
+  </div>
+  <aside class="notes">TIME: 91 to 96 min.
+DO: Click Start. The ring counts down and chimes at zero. +1 min adds a minute.
+DO: Use the break to help anyone still stuck on installing or the first commit.</aside>
+</section>
+
+<section class="slide tint" data-name="Why stash" data-sec="Stash" data-ask data-min="96">
+  <div class="ask"><div class="q-tag">Picture this</div><div class="aq">Half-way through editing, your teammate says: it is broken, <em>fix it now.</em></div><div class="ah">You are not ready to commit. What do you do?</div></div>
+  <div class="eyebrow" data-a="up"><span class="no">05</span> Experiment 3</div>
+  <h2 class="hl">Stash is a drawer for unfinished work.</h2>
+  <div class="term" data-nocopy style="left:100px;top:300px;width:880px;font-size:22px">
+    <div class="bar"><i></i><i></i><i></i><b>switching with unfinished changes</b></div>
+    <div class="body">
+      <div class="ln cmd">git checkout other-branch</div>
+      <div class="ln out err">error: Your local changes to the following files</div>
+      <div class="ln out err">would be overwritten by checkout:</div>
+      <div class="ln out">        notes.txt</div>
+      <div class="ln out warn">Please commit your changes or stash them</div>
+    </div>
+  </div>
+  <div class="abs" style="left:1040px;top:300px;width:460px;padding-left:40px;border-left:2px solid var(--acc);--d:.6s" data-a="right">
+    <div style="font:400 34px/1.2 Serif">Git may refuse to switch with work in progress.</div>
+    <div class="small" style="margin-top:16px"><code>git stash</code> puts it in a drawer, clears your desk, and lets you switch. Later you take it back out.</div>
+  </div>
+  <aside class="notes">TIME: 96 to 99 min.
+ASK: You are half-way through, not ready to commit, and must switch branches now. What do you do? Take answers.
+SAY: If you try to switch, Git may refuse, because your unfinished change would be overwritten. That is this error. Committing half-finished work pollutes history. Stash is a drawer: put the work away, switch, come back, take it out.</aside>
+</section>
+
+<section class="slide" data-name="Lab 3: stash and pop" data-sec="Stash" data-min="99">
+  <div class="eyebrow" data-a="up"><span class="no">05</span> Experiment 3 · one step per press</div>
+  <h2 class="hl sm" style="width:760px">Stash, switch, pop.</h2>
+  <div class="term" data-type data-delay="400" data-speed="28" style="left:80px;top:200px;width:770px;font-size:20px;line-height:1.45">
+    <div class="bar"><i></i><i></i><i></i><b>my-first-project (master)</b></div>
+    <div class="body" style="padding:16px 24px 20px">
+      <div class="ln out dim">  (press next for step 1)</div>
+      <div class="ln cmd" data-s="1">git branch other-branch</div>
+      <div class="ln cmd" data-s="1">echo "Half-finished idea" >> notes.txt</div>
+      <div class="ln cmd" data-s="1">git status --short</div>
+      <div class="ln out hl-r" data-s="1"> M notes.txt</div>
+      <div class="ln cmd" data-s="2">git stash</div>
+      <div class="ln out ok" data-s="2">Saved working directory and index state WIP on master</div>
+      <div class="ln cmd" data-s="3">git stash list</div>
+      <div class="ln out" data-s="3">stash@{0}: WIP on master: 0803954 Add about page</div>
+      <div class="ln cmd" data-s="4">git checkout other-branch</div>
+      <div class="ln out dim" data-s="4">  ...the urgent fix happens here...</div>
+      <div class="ln cmd" data-s="5">git checkout master</div>
+      <div class="ln cmd" data-s="6">git stash pop</div>
+      <div class="ln out" data-s="6">        modified:   notes.txt</div>
+      <div class="ln out ok" data-s="6">Dropped refs/stash@{0} (6838049...)</div>
+    </div>
+  </div>
+  <div class="wf" data-a="up" style="--d:.2s">
+    <div class="top"><span class="brp"></span><span class="label">notes.txt</span></div>
+    <div class="doc">Hello Git<span class="new">Half-finished idea</span></div>
+    <div class="badge"></div>
+  </div>
+  <div class="s3d cab" data-a="up" style="--d:.4s">
+    <div class="world">
+      <div class="box body"><div class="f"></div><div class="tp"></div><div class="rt"></div></div>
+      <div class="box drw"><div class="f"><i></i><span>stash</span></div><div class="tp"></div><div class="rt"></div></div>
+      <div class="stk">stash@{0}</div>
+    </div>
+  </div>
+  <aside class="notes">TIME: 99 to 110 min. Six presses.
+DO step 1: make a branch to switch to: git branch other-branch. Add an unfinished line to notes.txt with echo and TWO greater-than signs (two adds to the end; one would overwrite the file). git status --short shows M: modified. The drawer slides open.
+DO step 2: git stash. The change goes into the drawer. The desk is clean.
+DO step 3: git stash list. One entry, stash@{0}. The drawer closes.
+DO step 4: git checkout other-branch. Imagine the urgent fix here.
+DO step 5: git checkout master. Back where you were.
+DO step 6: git stash pop. The drawer opens, the unfinished line comes back, and the entry is removed.
+ASK: What happened to your changes when you ran git stash? Answer: saved aside, nothing lost, working folder back to the last commit.
+TIP: Run cat notes.txt after pop to prove the line is back.</aside>
+</section>
+
+<section class="slide tint no-anim" data-name="Stash commands" data-sec="Stash" data-min="110">
+  <div class="eyebrow"><span class="no">05</span> The stash family</div>
+  <h2 class="hl">Four stash commands.</h2>
+  <div class="abs" style="left:100px;top:290px;width:1400px">
+    <table class="tbl" style="font-size:27px">
+      <tr><th style="width:420px">Command</th><th>What it does</th></tr>
+      <tr><td class="mono">git stash</td><td>Put unfinished changes in the drawer. Desk is clean.</td></tr>
+      <tr><td class="mono">git stash list</td><td>See everything in the drawer.</td></tr>
+      <tr><td class="mono">git stash pop</td><td>Take the newest one back out <b>and remove it</b> from the drawer.</td></tr>
+      <tr><td class="mono">git stash apply</td><td>Bring it back but <b>keep a copy</b> in the drawer.</td></tr>
+    </table>
+  </div>
+  <aside class="notes">TIME: 110 to 112 min.
+SAY: Pop takes it out and throws away the drawer copy. Apply brings it back and keeps a copy. You can stash more than once; list shows them all, and the newest is stash@{0}.</aside>
+</section>
+
+<section class="slide" data-name="Recap, cold-call" data-sec="Wrap-up" data-min="112">
+  <div class="eyebrow" data-a="up"><span class="no">06</span> Recap · I pick who answers</div>
+  <h2 class="hl sm">Six questions. Hands down.</h2>
+  <div class="qcard" style="left:100px;top:230px;--d:.1s" data-a="up"><div class="qn">i.</div><div class="qq">What does git init create?</div><div class="qa" data-step="1">A hidden <code>.git</code> folder. That is the repository.</div></div>
+  <div class="qcard" style="left:575px;top:230px;--d:.2s" data-a="up"><div class="qn">ii.</div><div class="qq">Git vs GitHub, in one line?</div><div class="qa" data-step="2">Git tracks history on your laptop. GitHub hosts it online.</div></div>
+  <div class="qcard" style="left:1050px;top:230px;--d:.3s" data-a="up"><div class="qn">iii.</div><div class="qq">What is the staging area for?</div><div class="qa" data-step="3">Choosing exactly which changes go in the next commit.</div></div>
+  <div class="qcard" style="left:100px;top:540px;--d:.4s" data-a="up"><div class="qn">iv.</div><div class="qq">Why branch instead of editing master?</div><div class="qa" data-step="4">Master stays working while you experiment safely.</div></div>
+  <div class="qcard" style="left:575px;top:540px;--d:.5s" data-a="up"><div class="qn">v.</div><div class="qq">What does Fast-forward mean?</div><div class="qa" data-step="5">Master had not moved, so Git just slid its label forward.</div></div>
+  <div class="qcard" style="left:1050px;top:540px;--d:.6s" data-a="up"><div class="qn">vi.</div><div class="qq">What does stash solve?</div><div class="qa" data-step="6">Switching branches without committing unfinished work.</div></div>
+  <aside class="notes">TIME: 112 to 116 min. One press per answer. Cold-call a different student each time and wait for the answer before revealing it.</aside>
+</section>
+
+<section class="slide tint" data-name="Practical record" data-sec="Wrap-up" data-min="116">
+  <div class="eyebrow" data-a="up"><span class="no">06</span> Before next class</div>
+  <h2 class="hl">Write up Experiments 1, 2 and 3.</h2>
+  <div class="rec">
+    <div class="c" data-a="up" style="--d:.2s"><div class="n">Experiment 1</div><div class="h">Setting up and basic commands</div><div class="s">init, add, commit with a message.</div><div class="pg">Aim · Commands · Output · Result</div></div>
+    <div class="c" data-a="up" style="--d:.35s"><div class="n">Experiment 2</div><div class="h">Create and merge a branch</div><div class="s">branch, checkout, commit on the branch, merge into master.</div><div class="pg">Aim · Commands · Output · Result</div></div>
+    <div class="c" data-a="up" style="--d:.5s"><div class="n">Experiment 3</div><div class="h">Stash</div><div class="s">stash, switch branches, come back, stash pop.</div><div class="pg">Aim · Commands · Output · Result</div></div>
+  </div>
+  <div class="abs small" style="left:100px;top:740px;width:1300px;--d:.8s" data-a="up">Write the <b>exact</b> commands you typed and what the terminal printed. Each experiment is marked out of 10.</div>
+  <aside class="notes">TIME: 116 to 118 min.
+SAY: Every experiment in your record is marked out of ten. For each: the aim, the exact commands, what the terminal showed, and the result in your own words. Write up experiments one, two and three before next class, while it is fresh.
+TIP: Tell them these slides are on the class website under Slides.</aside>
+</section>
+
+<section class="slide glow" data-name="Next class" data-sec="Wrap-up" data-min="118">
+  <div class="eyebrow" data-a="up"><span class="no">06</span> Next class</div>
+  <h2 class="hl" style="width:860px">Your laptop meets your GitHub repo.</h2>
+  <div class="abs lead" style="left:100px;top:360px;width:740px;--d:.6s" data-a="up">We download the repository you made in Class 1 onto your laptop, and keep the two in sync. Experiments 4, 5 and 6.</div>
+  <div class="abs" style="left:100px;top:560px;display:flex;gap:12px;flex-wrap:wrap;width:760px;--d:.9s" data-a="up"><span class="pill">git clone</span><span class="pill">git fetch</span><span class="pill">git rebase</span><span class="pill">merge --no-ff</span></div>
+  <div class="abs" style="left:980px;top:300px;width:520px;padding-left:44px;border-left:2px solid var(--acc);--d:.5s" data-a="right">
+    <div class="label">Bring</div>
+    <div class="ticks" style="margin-top:22px">
+      <div class="r" style="--td:1s"><div class="bx"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>Laptop, charged</div>
+      <div class="r" style="--td:1.3s"><div class="bx"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>Git installed</div>
+      <div class="r" style="--td:1.6s;margin:0"><div class="bx"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>Your GitHub login</div>
+    </div>
+  </div>
+  <aside class="notes">TIME: 118 to 119 min.
+SAY: Next class, the laptop meets GitHub. We clone the repository you created in Class 1 and learn fetch, rebase, and merging with a message. Experiments four, five and six.
+SAY: If your group shared a laptop today and you have one at home, install Git there this week using Class 2's slides on the website, and redo today's commands once on your own.</aside>
+</section>
+
+<section class="slide dark" data-name="Thank you" data-confetti-enter="500" data-min="119">
+  <div class="abs" style="left:100px;top:90px;font:600 16px Body;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.9);--d:.1s" data-a="down">BAIL308C &nbsp;·&nbsp; Class 3</div>
+  <h2 class="hl" style="top:250px;font-size:140px;width:1300px">You made real <span class="scr" style="color:#FFF1B8">commits.</span></h2>
+  <div class="abs" style="left:100px;top:580px;width:900px;font:500 28px/1.5 Body;color:#fff;--d:1s" data-a="up">Practise at home: flashcards, quiz, cheat sheet, and these slides.</div>
+  <div class="abs" style="left:100px;top:670px;font:600 36px Mono;color:#fff;--d:1.3s" data-a="up">git-github-by-abhirai2006.netlify.app</div>
+  <div class="abs" style="left:100px;top:760px;font:500 22px Body;color:rgba(255,255,255,.9);--d:1.5s" data-a="up">Questions? Ask now, or catch me after class.</div>
+  <aside class="notes">TIME: 119 to 120 min.
+SAY: That is it for today. You made real commits, branched, merged, merged again on your own, and stashed. Experiments one, two and three are done. Practise on the website; these slides are there under Slides.
+DO: Take questions.</aside>
+</section>
+
+</div>
+<script>
+window.DECK = { id: "class-3", title: "Class 3: Commit, branch, stash", sections: ["Recap", "Get ready", "Your first commit", "Branches", "Stash", "Wrap-up"] };
+</script>
+<script src="engine/deck.js"></script>
+</body>
+</html>
