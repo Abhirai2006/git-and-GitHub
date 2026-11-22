@@ -4,10 +4,15 @@
 // each slide's speaker notes in an <aside class="notes"> block. This script
 // removes those blocks and stores all notes together in one encoded block, so
 // a student opening the deck (or its page source) does not see the notes as
-// plain text. The deck engine decodes them only in teacher mode.
+// plain text. The deck engine shows them only on hidden presenter keys.
 //
 // This hides notes from casual view only. It is not security: anyone who
 // knows the format can decode them.
+//
+// Every deck is written out as ONE standalone file: the shared engine
+// (decks-src/engine), the fonts (decks-src/fonts) and the logos
+// (decks-src/assets) are all embedded, so a deck works offline from a pen
+// drive with nothing else beside it.
 //
 // Runs automatically before `npm run build` (the "prebuild" script), and by
 // hand with `npm run decks`. Output goes to public/decks/<name>.html.
@@ -27,6 +32,13 @@ const clean = (html) =>
   decode(html.replace(/<br\s*\/?>/gi, "\n").replace(/<[^>]+>/g, ""))
     .split("\n").map((l) => l.trim()).join("\n")
     .replace(/\n{3,}/g, "\n\n").trim();
+
+const mime = { woff2: "font/woff2", png: "image/png", jpg: "image/jpeg", svg: "image/svg+xml" };
+const dataUri = (file) => `data:${mime[file.split(".").pop()]};base64,${readFileSync(file).toString("base64")}`;
+const css = readFileSync(join(srcDir, "engine", "deck.css"), "utf8")
+  .replace(/url\(\.\.\/fonts\/([\w-]+\.woff2)\)/g, (m, f) => `url(${dataUri(join(srcDir, "fonts", f))})`);
+const js = readFileSync(join(srcDir, "engine", "deck.js"), "utf8");
+if (/<\/script/i.test(js)) throw new Error("deck.js must not contain a closing script tag");
 
 let count = 0;
 for (const file of readdirSync(srcDir).filter((f) => f.endsWith(".html"))) {
@@ -50,7 +62,10 @@ for (const file of readdirSync(srcDir).filter((f) => f.endsWith(".html"))) {
   const b64 = Buffer.from(JSON.stringify(notes), "utf8").toString("base64").split("").reverse().join("");
   const block = `<script type="text/plain" id="deck-notes">${b64}</script>\n`;
   if (!/<script src="engine\/deck\.js/.test(html)) throw new Error(`${file}: missing <script src="engine/deck.js">`);
-  html = html.replace(/(<script src="engine\/deck\.js)/, block + "$1");
+  html = html.replace(/<script src="engine\/deck\.js"><\/script>/, () => block + "<script>\n" + js + "\n</script>");
+  html = html.replace(/<link rel="stylesheet" href="engine\/deck\.css">/, () => "<style>\n" + css + "\n</style>");
+  html = html.replace(/(src|href)="assets\/([\w.-]+)"/g, (m, a, f) => `${a}="${dataUri(join(srcDir, "assets", f))}"`);
+  if (/(src|href)="(engine|assets|fonts)\//.test(html)) throw new Error(`${file}: a local file reference was left unembedded`);
   html = html.replace(/^<!DOCTYPE html>/i, "<!DOCTYPE html>\n<!-- Generated from decks-src/" + file + " by scripts/build-decks.mjs. Edit the source file, not this one. -->");
   writeFileSync(join(outDir, file), html);
   count++;
