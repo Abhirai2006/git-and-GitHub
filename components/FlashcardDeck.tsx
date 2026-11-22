@@ -220,26 +220,26 @@ export default function FlashcardDeck() {
                     onDragEnd={handleDragEnd}
                   >
                     {/* Front */}
-                    <div className="absolute inset-0 card-flip-face rounded-3xl text-white p-8 sm:p-10 flex flex-col justify-between border-[2.5px] border-ink bg-[linear-gradient(135deg,#6d3bff_0%,#9b3bff_55%,#ff3ea5_100%)] shadow-[8px_8px_0_0_#0e1020]">
+                    <div className="absolute inset-0 card-flip-face rounded-2xl text-white p-8 sm:p-10 flex flex-col justify-between bg-ink shadow-[0_30px_60px_-36px_rgba(17,19,24,.6)]">
                       <div>
-                        <span className="inline-block rounded-full bg-pop-sun px-3 py-1 text-xs font-extrabold text-ink border-2 border-ink">
+                        <span className="inline-block rounded-md bg-white/10 px-2.5 py-1 text-xs font-medium text-white/80">
                           {sessionLabels[current.session]}
                         </span>
                         <p className="font-display text-2xl sm:text-3xl font-medium mt-6 leading-snug">
                           {current.question}
                         </p>
                       </div>
-                      <p className="text-xs text-white/75 font-semibold">Tap to reveal the answer, or swipe to move between cards</p>
+                      <p className="text-xs text-white/50">Tap to reveal the answer, or swipe to move between cards</p>
                     </div>
                     {/* Back */}
-                    <div className="absolute inset-0 card-flip-face [transform:rotateY(180deg)] rounded-3xl bg-pop-sun text-ink border-[2.5px] border-ink shadow-[8px_8px_0_0_#0e1020] p-8 sm:p-10 flex flex-col justify-between overflow-y-auto">
+                    <div className="absolute inset-0 card-flip-face [transform:rotateY(180deg)] rounded-2xl bg-background border border-border p-8 sm:p-10 flex flex-col justify-between overflow-y-auto">
                       <div>
-                        <span className="inline-block rounded-full bg-ink px-3 py-1 text-xs font-extrabold text-pop-sun">
+                        <span className="inline-block rounded-md bg-accent-soft px-2.5 py-1 text-xs font-medium text-accent">
                           Answer
                         </span>
-                        <p className="text-lg sm:text-xl mt-6 leading-relaxed font-medium">{current.answer}</p>
+                        <p className="text-lg sm:text-xl mt-6 leading-relaxed">{current.answer}</p>
                       </div>
-                      <p className="text-xs text-ink/70 font-semibold">Tap again to flip back</p>
+                      <p className="text-xs text-muted">Tap again to flip back</p>
                     </div>
                   </motion.div>
                 </div>
