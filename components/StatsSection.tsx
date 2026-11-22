@@ -30,33 +30,32 @@ function CountUp({ to, suffix = "" }: { to: number; suffix?: string }) {
 }
 
 const stats = [
-  { label: "lab experiments", value: 12, cls: "bg-pop-sun text-ink", r: "-2deg" },
-  { label: "viva flashcards", value: vivaCards.length, cls: "bg-accent text-white", r: "1.5deg" },
-  { label: "quiz questions", value: quizQuestions.length, cls: "bg-pop-pink text-white", r: "-1deg" },
-  { label: "class decks", value: decks.filter((d) => d.ready).length, cls: "bg-pop-lime text-ink", r: "2deg" },
+  { label: "Lab experiments", value: 12 },
+  { label: "Viva flashcards", value: vivaCards.length },
+  { label: "Quiz questions", value: quizQuestions.length },
+  { label: "Class decks", value: decks.filter((d) => d.ready).length },
 ];
 
 export default function StatsSection() {
   return (
-    <section className="mx-auto max-w-6xl px-5 sm:px-8 py-16">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-7">
+    <section className="mx-auto max-w-6xl px-5 sm:px-8 py-14">
+      <dl className="grid grid-cols-2 lg:grid-cols-4 border-y border-border divide-x divide-border">
         {stats.map((s, i) => (
           <motion.div
             key={s.label}
-            initial={{ opacity: 0, y: 30, rotate: 0 }}
-            whileInView={{ opacity: 1, y: 0, rotate: parseFloat(s.r) }}
-            whileHover={{ rotate: 0, scale: 1.04 }}
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
-            transition={{ type: "spring", stiffness: 200, damping: 16, delay: i * 0.08 }}
-            className={`pop-card rounded-3xl p-6 sm:p-7 ${s.cls}`}
+            transition={{ duration: 0.5, delay: i * 0.06 }}
+            className="px-6 py-8 first:pl-0 [&:nth-child(3)]:pl-0 lg:[&:nth-child(3)]:pl-6"
           >
-            <div className="font-display text-5xl sm:text-6xl font-extrabold tracking-tight">
+            <dd className="font-display text-5xl tracking-tight">
               <CountUp to={s.value} />
-            </div>
-            <div className="mt-1 text-sm sm:text-base font-bold opacity-90">{s.label}</div>
+            </dd>
+            <dt className="mt-2 text-sm text-muted">{s.label}</dt>
           </motion.div>
         ))}
-      </div>
+      </dl>
     </section>
   );
 }
