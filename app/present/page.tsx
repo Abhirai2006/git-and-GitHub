@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ArrowUpRight, Clock, Lock, Presentation } from "lucide-react";
+import { ArrowUpRight, Lock, Presentation } from "lucide-react";
 import { decks } from "@/lib/deckData";
 
 export const metadata: Metadata = {
@@ -7,37 +7,31 @@ export const metadata: Metadata = {
   description: "Every class presentation for BAIL308C, Project Management with Git. Open any deck in your browser.",
 };
 
-const grads = [
-  "from-[#2563FF] to-[#7C3AED]",
-  "from-[#FF9E00] via-[#FF4D2E] to-[#FF2E88]",
-  "from-[#00A862] to-[#00B2D6]",
-  "from-[#FF2E88] to-[#7C3AED]",
-];
 
 export default function PresentPage() {
   return (
     <section className="mx-auto max-w-6xl px-5 sm:px-8 py-14 sm:py-20">
-      <span className="sticker inline-flex -rotate-2 items-center gap-2 rounded-lg bg-pop-sun px-3 py-1 text-xs font-extrabold uppercase tracking-wider text-ink">
+      <span className="eyebrow inline-flex items-center gap-2">
         <Presentation size={14} /> Class slides
       </span>
-      <h1 className="font-display text-5xl sm:text-7xl mt-5 leading-[0.95]">
-        Missed something? <span className="grad-text">Replay the class.</span>
+      <h1 className="font-display text-4xl sm:text-5xl mt-4 leading-[1.05]">
+        Missed something? <span className="italic text-accent">Replay the class.</span>
       </h1>
-      <p className="text-muted mt-5 max-w-2xl text-lg font-medium">
+      <p className="text-muted mt-5 max-w-2xl text-lg leading-relaxed">
         The same animated slides used in the lab, one deck per class. Open one, then use the arrow keys, click, or swipe on
         your phone. Every terminal has a Copy button, so you can paste the commands straight into Git Bash.
       </p>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
-        {decks.map((d, i) => {
+        {decks.map((d) => {
           const body = (
             <>
-              <div className={`relative h-44 bg-gradient-to-br ${grads[i % grads.length]} p-6 text-white overflow-hidden border-b-[2.5px] border-line`}>
-                <div className="absolute -right-6 -bottom-10 text-[150px] font-display font-bold leading-none opacity-20 select-none">
+              <div className="relative h-40 bg-panel p-6 overflow-hidden border-b border-border">
+                <div className="absolute right-5 -bottom-6 text-[120px] font-display leading-none text-foreground/[.06] select-none" aria-hidden>
                   {d.classNo}
                 </div>
-                <div className="text-xs font-bold tracking-[.14em] uppercase opacity-90">Class {d.classNo}</div>
-                <div className="font-display text-2xl font-semibold mt-2 leading-tight max-w-[85%]">{d.title}</div>
+                <div className="eyebrow">Class {d.classNo}</div>
+                <div className="font-display text-2xl mt-3 leading-tight max-w-[85%]">{d.title}</div>
               </div>
               <div className="p-6 flex flex-col flex-1">
                 <div className="flex items-center justify-between text-sm">
@@ -56,13 +50,13 @@ export default function PresentPage() {
                   {d.ready ? (
                     <>
                       <span className="text-xs text-muted">{d.slides} slides</span>
-                      <span className="inline-flex items-center gap-1.5 rounded-full border-[2.5px] border-ink bg-pop-sun text-ink px-4 py-2 text-sm font-extrabold group-hover:bg-accent group-hover:text-white transition-colors">
+                      <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent">
                         Open deck <ArrowUpRight size={15} />
                       </span>
                     </>
                   ) : (
                     <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-muted">
-                      {d.classNo === 1 ? <Clock size={14} /> : <Lock size={14} />} {d.classNo === 1 ? "Being prepared" : "Unlocks after class"}
+                      <Lock size={14} /> Unlocks after class
                     </span>
                   )}
                 </div>
@@ -73,19 +67,19 @@ export default function PresentPage() {
             <a
               key={d.slug}
               href={`/decks/${d.slug}.html`}
-              className="pop-card group flex flex-col rounded-3xl bg-background overflow-hidden"
+              className="surface surface-hover group flex flex-col overflow-hidden"
             >
               {body}
             </a>
           ) : (
-            <div key={d.slug} className="flex flex-col rounded-3xl border-[2.5px] border-dashed border-line bg-background overflow-hidden opacity-60">
+            <div key={d.slug} className="flex flex-col rounded-[14px] border border-dashed border-border bg-background overflow-hidden opacity-70">
               {body}
             </div>
           );
         })}
       </div>
 
-      <div className="pop-card mt-12 rounded-2xl bg-panel p-6 text-sm text-muted">
+      <div className="surface mt-12 bg-panel p-6 text-sm text-muted">
         <b className="text-foreground">Keys inside a deck:</b> → or Space next · ← back · O all slides · F full screen · M sound on/off · ? help
       </div>
     </section>
