@@ -71,9 +71,9 @@
 .slide.play .lap .lid { transform: rotateX(-4deg); }
 .lap .lid .face { position: absolute; inset: 0; border-radius: 18px 18px 6px 6px; background: #1C1E26; padding: 16px; backface-visibility: hidden; }
 .lap .lid .back { position: absolute; inset: 0; border-radius: 18px 18px 6px 6px; background: linear-gradient(135deg, #D9D9DE, #B9BAC2); transform: rotateY(180deg) translateZ(1px); }
-.lap .scr { width: 100%; height: 100%; border-radius: 6px; background: #FBFBF9; padding: 22px 24px; font: 500 22px/1.6 "Mono"; color: var(--ink); overflow: hidden; }
-.lap .scr .p { color: var(--acc); font-weight: 700; }
-.lap .scr .o { color: var(--ok); font-weight: 600; opacity: 0; animation: lnIn .3s ease forwards 3.2s; }
+.lap .screen { width: 100%; height: 100%; border-radius: 6px; background: #FBFBF9; padding: 22px 24px; font: 500 22px/1.6 "Mono"; color: var(--ink); overflow: hidden; }
+.lap .screen .p { color: var(--acc); font-weight: 700; }
+.lap .screen .o { color: var(--ok); font-weight: 600; opacity: 0; animation: lnIn .3s ease forwards 3.2s; }
 .lap .base { position: absolute; left: -20px; top: 350px; width: 600px; height: 380px; transform-origin: 50% 0; transform: rotateX(90deg); border-radius: 6px 6px 22px 22px; background: linear-gradient(#E4E4E8, #C9CAD1); box-shadow: 0 0 0 1px rgba(0,0,0,.06) inset; }
 .lap .base .kb { position: absolute; left: 50px; right: 50px; top: 34px; height: 190px; border-radius: 10px; background: repeating-linear-gradient(90deg, #B3B4BC 0 34px, transparent 34px 40px), #CDCED5; opacity: .9; }
 .lap .base .tp { position: absolute; left: 50%; top: 250px; width: 200px; height: 100px; margin-left: -100px; border-radius: 10px; background: #D3D4DA; }
@@ -170,7 +170,7 @@
 .slide.st-3 .bl.feat { left: 380px; top: 40px; }
 .slide.st-5 .bl.master { left: 404px; top: 264px; }
 .head { position: absolute; z-index: 4; font: 700 17px "Body"; letter-spacing: .14em; color: var(--ink); background: #fff; border: 1.5px solid var(--ink); padding: 6px 12px; border-radius: 8px; transition: left .9s cubic-bezier(.5,0,.2,1.1), top .9s cubic-bezier(.5,0,.2,1.1); left: 160px; top: 162px; }
-.head::before { content: "←"; position: absolute; left: -26px; top: 4px; color: var(--ink); font-size: 20px; }
+.head::before { content: ""; position: absolute; left: -11px; top: 50%; margin-top: -7px; border-style: solid; border-width: 7px 10px 7px 0; border-color: transparent var(--ink) transparent transparent; }
 .slide.st-2 .head { left: 258px; top: 102px; }
 .slide.st-3 .head { left: 608px; top: 42px; }
 .slide.st-4 .head { left: 160px; top: 162px; }
@@ -426,7 +426,7 @@ ASK: Show of hands: who has seen Git or GitHub in an internship or job post? Tha
 <!-- 8 -->
 <section class="slide tint" data-name="Git vs GitHub" data-sec="Why Git" data-steps="1" data-min="14">
   <div class="eyebrow" data-a="up"><span class="no">02</span> The mix-up everyone makes</div>
-  <h2 class="hl">Git is not <span class="scr">GitHub.</span></h2>
+  <h2 class="hl" style="top:126px">Git is not <span class="scr">GitHub.</span></h2>
   <div class="split2" style="left:100px;--d:.3s" data-a="left">
     <div class="n">The engine</div><div class="h">Git</div><div class="s">Software on your laptop.</div>
     <ul><li>Tracks every change and saves history</li><li>Works fully offline</li><li>Today we install it</li></ul>
@@ -457,7 +457,7 @@ SAY: Yes. Git is entirely local. Wi-Fi off, commits keep landing.</aside>
     <div class="world" style="left:20px;top:60px">
       <div class="shadow"></div>
       <div class="base"><div class="kb"></div><div class="tp"></div></div>
-      <div class="lid"><div class="back"></div><div class="face"><div class="scr"><span class="p">$</span> <span class="typed">git --version</span><br><span class="o">git version 2.51.0</span></div></div></div>
+      <div class="lid"><div class="back"></div><div class="face"><div class="screen"><span class="p">$</span> <span class="typed">git --version</span><br><span class="o">git version 2.51.0</span></div></div></div>
     </div>
   </div>
   <aside class="notes">TIME: 18 to 30 min. The slow part. Do not rush it.
