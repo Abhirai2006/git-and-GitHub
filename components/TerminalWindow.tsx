@@ -51,25 +51,25 @@ export default function TerminalWindow({
 
   return (
     <div
-      className={`pop-card rounded-2xl overflow-hidden bg-background ${className}`}
+      className={`rounded-xl overflow-hidden border border-border bg-background shadow-[0_24px_60px_-32px_rgba(17,19,24,.35)] ${className}`}
     >
-      <div className="flex items-center gap-1.5 px-4 py-3 border-b-[2.5px] border-line bg-pop-sun">
+      <div className="flex items-center gap-1.5 px-4 py-3 border-b border-border bg-panel">
         <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f56]" />
         <span className="h-2.5 w-2.5 rounded-full bg-[#ffbd2e]" />
         <span className="h-2.5 w-2.5 rounded-full bg-[#27c93f]" />
-        <span className="ml-3 text-xs font-bold text-ink font-mono">git bash</span>
+        <span className="ml-3 text-xs text-muted font-mono">Git Bash</span>
       </div>
       <div className="p-5 sm:p-6 font-mono text-[13px] sm:text-[15px] leading-relaxed min-h-[230px]">
         {done.map((text, i) => (
-          <div key={i} className={text.startsWith("$") ? "text-accent font-semibold" : "text-foreground"}>
+          <div key={i} className={text.startsWith("$") ? "text-foreground font-medium" : "text-muted"}>
             {text}
           </div>
         ))}
         {currentLine && (
-          <div className={`${currentLine.color ?? "text-accent"} ${currentLine.text.startsWith("$") ? "font-semibold" : ""}`}>
+          <div className={`${currentLine.color ?? "text-foreground"} ${currentLine.text.startsWith("$") ? "font-medium" : ""}`}>
             {currentLine.text.slice(0, charIndex)}
             <motion.span
-              className="inline-block w-[7px] h-[14px] bg-pop-pink ml-0.5 align-middle caret-blink"
+              className="inline-block w-[7px] h-[14px] bg-accent ml-0.5 align-middle caret-blink"
             />
           </div>
         )}
