@@ -10,99 +10,52 @@ import { debugCases } from "@/lib/debugData";
 import { decks } from "@/lib/deckData";
 
 const features = [
-  {
-    href: "/present",
-    icon: Presentation,
-    title: "Class slides",
-    desc: "Missed a class, or want to replay one? The exact animated deck from the lab, with copyable commands.",
-    tag: `${decks.filter((d) => d.ready).length} decks`,
-    cls: "lg:col-span-2 bg-accent text-white",
-    icoCls: "bg-white text-accent",
-    big: true,
-  },
-  {
-    href: "/flashcards",
-    icon: Layers,
-    title: "Flashcards",
-    desc: "Flip through viva questions by session. Star the tough ones.",
-    tag: `${vivaCards.length} cards`,
-    cls: "bg-pop-sun text-ink",
-    icoCls: "bg-ink text-pop-sun",
-  },
-  {
-    href: "/quiz",
-    icon: ListChecks,
-    title: "Quiz mode",
-    desc: "Instant feedback, real explanations, confetti if you crush it.",
-    tag: `${quizQuestions.length} questions`,
-    cls: "bg-pop-pink text-white",
-    icoCls: "bg-white text-pop-pink",
-  },
-  {
-    href: "/debug",
-    icon: Bug,
-    title: "Debug it",
-    desc: "Real Git error messages. Read it, diagnose it, pick the fix.",
-    tag: `${debugCases.length} scenarios`,
-    cls: "bg-pop-lime text-ink",
-    icoCls: "bg-ink text-pop-lime",
-  },
-  {
-    href: "/cheatsheet",
-    icon: Terminal,
-    title: "Cheat sheet",
-    desc: "Every command from all twelve experiments. Search it, copy it, done.",
-    tag: `${commandReference.length} commands`,
-    cls: "lg:col-span-3 bg-background text-foreground",
-    wide: true,
-    icoCls: "bg-accent text-white",
-  },
+  { href: "/present", icon: Presentation, title: "Class slides", desc: "The same animated deck used in the lab, one per class. Every command has a copy button.", tag: `${decks.filter((d) => d.ready).length} decks` },
+  { href: "/flashcards", icon: Layers, title: "Flashcards", desc: "Viva questions grouped by session. Star the hard ones and come back to them.", tag: `${vivaCards.length} cards` },
+  { href: "/quiz", icon: ListChecks, title: "Quiz", desc: "Multiple choice with an explanation for every answer. One session or the full set.", tag: `${quizQuestions.length} questions` },
+  { href: "/debug", icon: Bug, title: "Debug it", desc: "Real Git error messages. Read the error, work out the cause, choose the fix.", tag: `${debugCases.length} scenarios` },
+  { href: "/cheatsheet", icon: Terminal, title: "Cheat sheet", desc: "Every command from the twelve experiments, searchable and ready to copy.", tag: `${commandReference.length} commands` },
 ];
 
 export default function FeatureCards() {
   return (
-    <section className="mx-auto max-w-6xl px-5 sm:px-8 py-20">
+    <section className="mx-auto max-w-6xl px-5 sm:px-8 py-16 sm:py-20">
       <motion.div
-        initial={{ opacity: 0, y: 16 }}
+        initial={{ opacity: 0, y: 12 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 0.5 }}
         className="max-w-2xl mb-12"
       >
-        <span className="sticker inline-block -rotate-2 rounded-lg bg-pop-lime px-3 py-1 text-xs font-extrabold uppercase tracking-wider text-ink">
-          pick your weapon
-        </span>
-        <h2 className="font-display text-4xl sm:text-6xl mt-5 leading-[0.95]">
-          Five ways to <span className="grad-text">prep.</span> Zero excuses.
+        <p className="eyebrow">What is here</p>
+        <h2 className="font-display text-3xl sm:text-[44px] leading-[1.08] mt-4">
+          Everything you need for the lab, the record and the viva.
         </h2>
       </motion.div>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {features.map((f, i) => (
           <motion.div
             key={f.href}
-            initial={{ opacity: 0, y: 28 }}
+            initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.55, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
-            className={f.cls.includes("col-span-3") ? "sm:col-span-2 lg:col-span-3" : f.cls.includes("col-span-2") ? "sm:col-span-2" : ""}
+            transition={{ duration: 0.5, delay: i * 0.06, ease: [0.16, 1, 0.3, 1] }}
+            className={i === 0 ? "sm:col-span-2 lg:col-span-1 lg:row-span-2" : ""}
           >
-            <Link href={f.href} className={`pop-card group relative flex h-full min-h-[240px] flex-col justify-between rounded-3xl p-7 ${f.cls}`}>
+            <Link
+              href={f.href}
+              className={`surface surface-hover group flex h-full flex-col justify-between p-7 ${i === 0 ? "bg-accent-soft border-transparent" : ""}`}
+            >
               <div>
                 <div className="flex items-center justify-between">
-                  <span className={`flex h-12 w-12 items-center justify-center rounded-2xl ${f.icoCls}`}>
-                    <f.icon size={22} strokeWidth={2.4} />
-                  </span>
-                  <span className="flex h-10 w-10 items-center justify-center rounded-full border-[2.5px] border-current transition-transform group-hover:rotate-45">
-                    <ArrowUpRight size={18} strokeWidth={2.6} />
-                  </span>
+                  <f.icon size={22} strokeWidth={1.7} className="text-accent" />
+                  <ArrowUpRight size={17} className="text-muted transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </div>
-                <h3 className={`font-display mt-6 ${f.big ? "text-4xl sm:text-5xl" : "text-3xl"}`}>{f.title}</h3>
-                <p className={`mt-2.5 leading-relaxed font-medium opacity-85 ${f.big ? "text-lg max-w-md" : "text-sm"}`}>{f.desc}</p>
+                <h3 className={`font-display mt-8 ${i === 0 ? "text-4xl" : "text-2xl"}`}>{f.title}</h3>
+                <p className={`mt-3 text-muted leading-relaxed ${i === 0 ? "text-base max-w-sm" : "text-sm"}`}>{f.desc}</p>
               </div>
-              <span className="mt-6 inline-block w-fit rounded-full border-2 border-current px-3 py-1 text-xs font-extrabold uppercase tracking-wider">
-                {f.tag}
-              </span>
+              <span className="mt-8 font-mono text-xs text-muted">{f.tag}</span>
             </Link>
           </motion.div>
         ))}
