@@ -50,15 +50,15 @@
   const wipe = mk("div", { id: "wipe" }, stage, '<div class="blob" style="width:620px;height:620px;right:-140px;top:-180px"></div><div class="blob" style="width:380px;height:380px;right:260px;bottom:-200px"></div><div class="wp"></div><div class="wn"></div><div class="wd"></div>');
   const toast = mk("div", { id: "toast" }, document.body);
   const blank = mk("div", { id: "blank" }, document.body);
-  const hint = mk("div", { id: "hint" }, document.body, "Press <b>→</b> or click to move on &nbsp;·&nbsp; <b>?</b> for keys &nbsp;·&nbsp; <b>F</b> full screen");
+  const hint = mk("div", { id: "hint" }, document.body, "Press <b>Space</b> or click to move on &nbsp;·&nbsp; <b>?</b> for keys &nbsp;·&nbsp; <b>F</b> full screen");
   const help = mk("div", { id: "help" }, document.body, '<div class="box"><h3>Keys</h3>' +
-    [["Next step / slide", "→  Space  click"], ["Back", "←  Backspace"], ["Jump to a slide", "number, then Enter"], ["All slides", "O"], ["Full screen", "F"], ["White screen", "B"], ["Replay this slide", "R"], ["Sound on / off", "M"]]
+    [["Next step / slide", "Right arrow, Space, click"], ["Back", "Left arrow, Backspace"], ["Jump to a slide", "number, then Enter"], ["All slides", "O"], ["Full screen", "F"], ["White screen", "B"], ["Replay this slide", "R"], ["Sound on / off", "M"]]
       .map((r) => `<div class="row"><span>${r[0]}</span><b>${r[1]}</b></div>`).join("") +
         '<div class="row"><span>Close</span><b>Esc</b></div></div>');
   const overview = mk("div", { id: "overview" }, document.body, '<h3>All slides</h3><div class="grid"></div>');
   const notesBox = mk("div", { id: "notesbox" }, document.body);
   const navbtns = mk("div", { id: "navbtns", class: "no-advance" }, document.body,
-    '<a href="/present" title="All presentations">All decks</a><button data-n="o" title="All slides">☰</button><button data-n="p" title="Back">←</button><button data-n="n" title="Next">→</button>');
+    '<a href="/present" title="All presentations">All decks</a><button data-n="o" title="All slides">Slides</button><button data-n="p" title="Back">Back</button><button data-n="n" title="Next">Next</button>');
   navbtns.addEventListener("click", (e) => {
     const b = e.target.closest("button"); if (!b) return;
     e.stopPropagation();
