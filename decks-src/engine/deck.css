@@ -76,7 +76,7 @@ body { font-family: "Body", system-ui, "Segoe UI", sans-serif; color: var(--ink)
 .hl { position: absolute; top: 110px; left: 100px; width: 1400px; font: 500 76px/1.04 "Serif"; letter-spacing: -0.025em; color: var(--ink); font-variation-settings: "opsz" 120; }
 .hl.sm { font-size: 62px; }
 .slide.dark .hl { color: #fff; }
-.scr { font-family: "Script"; font-weight: 400; font-size: 1.28em; line-height: .7; letter-spacing: 0; color: var(--acc); padding: 0 .08em; }
+.scr { font-family: "Script"; font-weight: 400; font-size: 1.16em; line-height: .7; letter-spacing: 0; color: var(--acc); padding: 0 .12em 0 .18em; }
 .it { font-style: italic; }
 .lead { font: 400 30px/1.45 "Body"; color: var(--ink2); letter-spacing: -0.005em; }
 .small { font: 400 23px/1.5 "Body"; color: var(--ink2); }
@@ -172,9 +172,10 @@ b, strong { font-weight: 650; color: var(--ink); }
 .slide.play .kin .kw { animation: kIn .9s cubic-bezier(.2,.9,.2,1) both; animation-delay: calc(var(--d, .1s) + var(--i) * var(--st, 60ms)); }
 @keyframes kIn { from { opacity: 0; transform: translateY(.35em); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
 /* script words write themselves on */
-.kin .kw.scr { clip-path: inset(-30% 100% -30% -10%); filter: none; transform: none; opacity: 1; }
+/* the reveal box is far larger than the word, so swashes and loops are never cut */
+.kin .kw.scr { clip-path: inset(-120% 180% -120% -80%); filter: none; transform: none; opacity: 1; }
 .slide.play .kin .kw.scr { animation: write 1.3s cubic-bezier(.55,.1,.3,1) both; animation-delay: calc(var(--d, .1s) + var(--i) * var(--st, 60ms) + .2s); }
-@keyframes write { from { clip-path: inset(-30% 100% -30% -10%); } to { clip-path: inset(-30% -10% -30% -10%); } }
+@keyframes write { from { clip-path: inset(-120% 180% -120% -80%); } 99% { clip-path: inset(-120% -80% -120% -80%); } to { clip-path: none; } }
 
 .slide.play .float { animation: float 7s ease-in-out infinite 1.4s; }
 .slide.play .float2 { animation: float 8.5s ease-in-out infinite .6s; }
