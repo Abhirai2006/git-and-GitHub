@@ -33,7 +33,7 @@ export default function ThemeToggle() {
     <button
       onClick={toggle}
       aria-label="Toggle color theme"
-      className="relative h-10 w-10 rounded-full border-[2.5px] border-line flex items-center justify-center overflow-hidden hover:bg-pop-sun hover:text-ink transition-colors cursor-pointer"
+      className="relative h-10 w-10 rounded-lg border border-border flex items-center justify-center overflow-hidden hover:border-foreground transition-colors cursor-pointer"
     >
       <motion.div
         key={theme}
