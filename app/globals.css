@@ -1,45 +1,40 @@
 @import "tailwindcss";
-@import "@fontsource-variable/bricolage-grotesque";
+@import "@fontsource-variable/fraunces";
 
 /* ------------------------------------------------------------------
-   viva.prep pop theme: cream paper, ink outlines, hard offset shadows,
-   and loud colour blocks. Light is the default; dark keeps the same
-   colours on a deep violet-black.
+   viva.prep theme: white paper, near-black ink, one deep blue accent.
+   Fraunces for headings, Geist for reading text, Geist Mono for code.
+   Dark mode keeps the same structure on a deep ink background.
    ------------------------------------------------------------------ */
 :root {
-  --font-fraunces: "Bricolage Grotesque Variable", "Bricolage Grotesque", system-ui, sans-serif;
-  --color-ink: #0e1020;
-  --color-ink-soft: #1b1d30;
-  --color-paper: #fffdf6;
-  --color-panel: #f5f0e4;
-  --color-border: #e3dccb;
-  --color-accent: #6d3bff;
-  --color-accent-soft: #9b7bff;
-  --color-accent-deep: #3b1db8;
-  --color-green: #00b864;
-  --color-muted: #5f6178;
+  --font-fraunces: "Fraunces Variable", "Fraunces", Georgia, serif;
+  --color-ink: #111318;
+  --color-ink-soft: #1b1e26;
+  --color-paper: #ffffff;
+  --color-panel: #f6f6f3;
+  --color-border: #e4e4df;
+  --color-accent: #1d4ed8;
+  --color-accent-soft: #e8eefc;
+  --color-accent-deep: #1e3a8a;
+  --color-green: #15803d;
+  --color-muted: #5b5f6b;
   --color-term: #c9d1d9;
   --color-term-green: #7ee787;
-  --color-pop-pink: #ff3ea5;
-  --color-pop-sun: #ffd23f;
-  --color-pop-lime: #b8f23b;
-  --color-pop-coral: #ff5a36;
-  --color-pop-sky: #3bc8ff;
-  --color-line: #0e1020;
-  --shadow-hard: #0e1020;
+  --color-line: #111318;
 
   --background: var(--color-paper);
   --foreground: var(--color-ink);
 }
 
 [data-theme="dark"] {
-  --background: #0f0b1c;
-  --foreground: #f6f3ff;
-  --color-panel: #1b1530;
-  --color-border: #322a4f;
-  --color-muted: #aaa3c6;
-  --color-line: #f6f3ff;
-  --shadow-hard: #6d3bff;
+  --background: #0f1115;
+  --foreground: #eceef2;
+  --color-panel: #171a20;
+  --color-border: #2a2e37;
+  --color-muted: #9aa0ad;
+  --color-accent: #7aa2ff;
+  --color-accent-soft: #1a2440;
+  --color-line: #eceef2;
 }
 
 @theme inline {
@@ -55,11 +50,6 @@
   --color-muted: var(--color-muted);
   --color-term: var(--color-term);
   --color-term-green: var(--color-term-green);
-  --color-pop-pink: var(--color-pop-pink);
-  --color-pop-sun: var(--color-pop-sun);
-  --color-pop-lime: var(--color-pop-lime);
-  --color-pop-coral: var(--color-pop-coral);
-  --color-pop-sky: var(--color-pop-sky);
   --color-line: var(--color-line);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -84,7 +74,7 @@ body {
 }
 
 ::selection {
-  background: var(--color-pop-sun);
+  background: var(--color-accent-soft);
   color: var(--color-ink);
 }
 
@@ -138,52 +128,33 @@ body {
 }
 
 .font-display {
-  font-family: var(--font-display), system-ui, sans-serif;
-  letter-spacing: -0.03em;
+  font-family: var(--font-display), Georgia, serif;
+  letter-spacing: -0.02em;
+  font-variation-settings: "opsz" 96;
 }
-/* chunky display headings everywhere, whatever weight class a page used */
-h1.font-display, h2.font-display, h3.font-display, .font-display.text-6xl, .font-display.text-7xl {
-  font-weight: 800;
+h1.font-display, h2.font-display { font-weight: 500; }
+h3.font-display { font-weight: 500; }
+
+/* ---------- quiet helpers (a layer, so utilities like bg-* can override them) ---------- */
+@layer components {
+.surface { background: var(--background); border: 1px solid var(--color-border); border-radius: 14px; }
+.surface-hover { transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease; }
+.surface-hover:hover { border-color: var(--color-foreground); transform: translateY(-2px); box-shadow: 0 12px 30px -18px rgba(17,19,24,.25); }
+.eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--color-muted); }
+.btn-primary { display: inline-flex; align-items: center; gap: .5rem; border-radius: 10px; background: var(--color-ink); color: #fff; font-weight: 600; transition: background .2s ease; }
+.btn-primary:hover { background: var(--color-accent); }
+[data-theme="dark"] .btn-primary { background: #eceef2; color: #0f1115; }
+[data-theme="dark"] .btn-primary:hover { background: var(--color-accent); color: #0f1115; }
+.btn-ghost { display: inline-flex; align-items: center; gap: .5rem; border-radius: 10px; border: 1px solid var(--color-border); font-weight: 600; transition: border-color .2s ease; }
+.btn-ghost:hover { border-color: var(--color-foreground); }
+.dot-grid { background-image: radial-gradient(rgba(17,19,24,.08) 1px, transparent 1px); background-size: 22px 22px; }
+[data-theme="dark"] .dot-grid { background-image: radial-gradient(rgba(255,255,255,.07) 1px, transparent 1px); }
+}
+:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; border-radius: 4px; }
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee, .animate-float-slow { animation: none !important; }
 }
 
-/* ---------- pop helpers ---------- */
-.pop-card {
-  border: 2.5px solid var(--color-line);
-  box-shadow: 6px 6px 0 0 var(--shadow-hard);
-  transition: transform .18s ease, box-shadow .18s ease;
-}
-.pop-card:hover { transform: translate(-3px, -3px); box-shadow: 9px 9px 0 0 var(--shadow-hard); }
-.pop-btn {
-  border: 2.5px solid var(--color-ink);
-  box-shadow: 4px 4px 0 0 var(--color-ink);
-  transition: transform .15s ease, box-shadow .15s ease;
-}
-.pop-btn:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 0 var(--color-ink); }
-.pop-btn:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 0 var(--color-ink); }
-[data-theme="dark"] .pop-btn { border-color: #f6f3ff; box-shadow: 4px 4px 0 0 #6d3bff; }
-.sticker { border: 2.5px solid var(--color-ink); box-shadow: 3px 3px 0 0 var(--color-ink); }
-.text-stroke { -webkit-text-stroke: 2.5px var(--color-line); color: transparent; }
-.grad-text { background: linear-gradient(100deg, #6d3bff 0%, #ff3ea5 50%, #ff5a36 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.paper-grid {
-  background-image:
-    linear-gradient(to right, rgba(14,16,32,.06) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(14,16,32,.06) 1px, transparent 1px);
-  background-size: 40px 40px;
-}
-[data-theme="dark"] .paper-grid {
-  background-image:
-    linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255,255,255,.06) 1px, transparent 1px);
-}
-@keyframes wobble { 0%, 100% { transform: rotate(var(--r, -6deg)) translateY(0); } 50% { transform: rotate(calc(var(--r, -6deg) * -1)) translateY(-8px); } }
-.animate-wobble { animation: wobble 5s ease-in-out infinite; }
-@keyframes blob { 0%, 100% { transform: translate(0, 0) scale(1); } 33% { transform: translate(30px, -40px) scale(1.08); } 66% { transform: translate(-20px, 20px) scale(.95); } }
-.animate-blob { animation: blob 14s ease-in-out infinite; }
-@keyframes spin-slow { to { transform: rotate(360deg); } }
-.animate-spin-slow { animation: spin-slow 18s linear infinite; }
-@media (prefers-reduced-motion: reduce) {
-  .animate-wobble, .animate-blob, .animate-spin-slow, .animate-marquee, .animate-float-slow { animation: none !important; }
-}
 
 .card-flip-face {
   backface-visibility: hidden;
